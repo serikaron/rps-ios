@@ -46,6 +46,8 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
+    
+    static func hex(_ v: String) -> Color { Color(hex: v) }
 }
 
 extension Color {

@@ -21,4 +21,13 @@ extension Image {
         static var searchGIS: Image { return Image("index-search-gis") }
         static var searchOCR: Image { return Image("index-search-ocr") }
     }
+    
+    enum onboarding {
+        static var background: Image { return Image("onboarding-background") }
+        static var logo: Image { return Image("onboarding-logo") }
+        static var accountIcon: Image { return Image("onboarding-account") }
+        static var passwordIcon: Image { return Image("onboarding-password") }
+        static var phoneIcon: Image { return Image("onboarding-phone") }
+        static var codeIcon: Image { return Image("onboarding-code") }
+    }
 }
