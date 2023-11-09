@@ -9,12 +9,21 @@ import SwiftUI
 import DGCharts
 
 struct IndexView: View {
+    @EnvironmentObject var accountService: AccountService
+    
+    @State private var noticeList = [Notice]()
     var body: some View {
         NavigationView {
             content
                 .navigationTitle("首页")
                 .navigationBarTitleDisplayMode(.inline)
-                .ignoresSafeArea(edges: .bottom)
+//                .ignoresSafeArea(edges: .bottom)
+                .onAppear {
+                    Task {
+                        noticeList = await Notice.list(pageNum: 1, pageSize: 10, orgId: accountService.account?.orgId ?? 0)
+                    }
+                }
+                    
         }
     }
     
@@ -26,28 +35,38 @@ struct IndexView: View {
                     .frame(height: 150)
                     .cornerRadius(8)
                 Spacer().frame(height: 10)
-                announceSection
+                noticeSection
                 Spacer().frame(height: 16)
                 actionSection
                 Spacer().frame(height: 16)
                 searchSection
-                Spacer()
+//                Spacer()
             }
             .padding(.top, 15)
             .padding(.horizontal, 12)
+            
         }
     }
     
-    private var announceSection: some View {
+    private var noticeTitle: String {
+        if noticeList.isEmpty {
+            return ""
+        } else {
+            return noticeList[0].title
+        }
+    }
+    
+    private var noticeSection: some View {
         Color.white
             .frame(height: 38)
             .cornerRadius(8)
             .overlay (
                 HStack(spacing: 10) {
                     Image.index.announceIcon
-                    Text("长长长长长长长长长长长长长长长长长长长长长长")
+                    Text(noticeTitle)
                         .customText(size: 14, color: .text.gray3)
                         .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                     .padding(.horizontal, 16)
             )
@@ -83,34 +102,23 @@ struct IndexView: View {
     }
     
     private var searchSection: some View {
-        return ZStack {
-            VStack {
-                searchAction
-                Spacer()
-            }
-            VStack {
-                Spacer().frame(height: 140)
-                searchResult
-            }
+        return VStack(spacing: 0) {
+            searchAction
+            searchResult
         }
     }
     
     @State var input1: String = ""
     
     private var searchAction: some View {
-        return Color(hex: "#EDF1FF")
-            .cornerRadius(8)
-            .shadow(color: Color(hex: "#C8C8C8").opacity(0.25), radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-            .frame(height: 154)
-            .overlay(
-                VStack {
-                    searchInput
-                    Spacer().frame(height: 18)
-                    searchLocation
-                }
-                    .padding(.top, 28)
-                    .padding(.bottom, 36)
-                    .padding(.horizontal, 16)
+        return searchInput
+            .padding(.horizontal, 16)
+            .padding(.top, 28)
+            .padding(.bottom, 28)
+            .background(
+                Color(hex: "#EDF1FF").opacity(0.5)
+                    .cornerRadius(8)
+                    .shadow(color: Color(hex: "#C8C8C8").opacity(0.25), radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
             )
     }
     
@@ -169,16 +177,29 @@ struct IndexView: View {
     
     @State private var selectedTab: ChartTab = .apartment
     private var searchResult: some View {
-        Color.white
-            .overlay(
-                VStack {
-                    ChartTabView(selected: $selectedTab)
-                    ChartView()
+        VStack {
+            ChartTabView(selected: $selectedTab)
+            ChartView()
+            HStack {
+                HStack {
+                    Image.index.pointIcon
+                    Text("价格走势")
+                        .customText(size: 14, color: .text.gray3)
                 }
-                    .padding()
-            )
-//            .frame(height: 361)
-            .cornerRadius(8)
+                Spacer()
+                HStack {
+                    Image.index.editIcon
+                    Text("编辑指标")
+                        .customText(size: 14, color: .main)
+                }
+            }
+        }
+        .padding()
+//        .padding(.bottom, 49)
+        .background(
+            Color.white
+                .cornerRadius(8)
+        )
     }
 }
 
@@ -230,10 +251,9 @@ private struct ChartView: UIViewRepresentable {
             ChartDataEntry(x: 2, y: 2),
             ChartDataEntry(x: 3, y: 1),
             ChartDataEntry(x: 4, y: 2),
-        ])
+        ], label: "abc")
         dataSet.mode = .cubicBezier
         dataSet.drawValuesEnabled = false
-//        dataSet.drawCircleHoleEnabled = false
         dataSet.drawCirclesEnabled = false
         let colors = [Color.main.cgColor, Color.main.opacity(0).cgColor] as CFArray
         let locations:[CGFloat] = [1.0, 0.0]
@@ -247,7 +267,6 @@ private struct ChartView: UIViewRepresentable {
         dataSet.colors = [Color.main.uiColor]
         data.dataSets = [dataSet]
         chart.data = data
-//        chart.leftAxis.enabled = false
         chart.leftAxis.drawLabelsEnabled = false
         chart.leftAxis.drawGridLinesEnabled = false
         chart.leftAxis.axisLineDashLengths = [5, 5, 0]
@@ -255,8 +274,8 @@ private struct ChartView: UIViewRepresentable {
         chart.xAxis.drawAxisLineEnabled = false
         chart.xAxis.labelPosition = .bottom
         chart.xAxis.labelCount = dataSet.count-1
-//        chart.xAxis.drawGridLinesEnabled = false
         chart.xAxis.gridLineDashLengths = [5, 5, 0]
+        chart.legend.enabled = false
         return chart
     }
     
@@ -268,5 +287,6 @@ private struct ChartView: UIViewRepresentable {
 
 #Preview {
     IndexView()
+        .environmentObject(AccountService())
 //    ChartView()
 }

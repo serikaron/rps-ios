@@ -24,6 +24,7 @@ extension Linkman {
     
     struct NetworkUser: Codable {
         let id: Int
+        let fiOrgId: Int
     }
     
     struct GetInfoResponse: Codable {
@@ -63,11 +64,41 @@ extension Linkman {
             ])
             .make()
     }
+    
+    struct NoticeRecord: Codable {
+        let noticeTitle: String
+    }
+    
+    struct NoticeResponse: Codable {
+        let records: [NoticeRecord]
+    }
+    
+    func getNotices(pageNum: Int, pageSize: Int, orgId: Int) async throws -> NoticeResponse {
+        return try await Request()
+            .with(\.path, setTo: "/system/rps/rpsNotice/page")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "pageNum": "\(pageNum)", "pageSize": "\(pageSize)", "orgId": "\(orgId)",
+                "type": "3", "fvPushstatus": "已发布", "fiTypeOfNotice": "0,2,3"
+            ])
+            .with(\.standaloneResponse, setTo: standaloneResponse(NoticeResponse(records: [NoticeRecord.mock])))
+            .make()
+            .response() as NoticeResponse
+    }
 }
 
 private extension Linkman.GetInfoResponse {
     static var mock: Linkman.GetInfoResponse {
-        return Linkman.GetInfoResponse(user: Linkman.NetworkUser(id: 0))
+        return Linkman.GetInfoResponse(user: Linkman.NetworkUser(
+            id: 0,
+            fiOrgId: 0
+        ))
+    }
+}
+
+private extension Linkman.NoticeRecord {
+    static var mock: Linkman.NoticeRecord {
+        return Linkman.NoticeRecord(noticeTitle: "公告1")
     }
 }
 

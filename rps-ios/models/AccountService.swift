@@ -10,6 +10,7 @@ import Combine
 
 struct Account {
     let id: Int
+    let orgId: Int
 }
 
 @MainActor
@@ -46,7 +47,10 @@ class AccountService: ObservableObject {
     
     private func getInfo() async throws {
         let rsp = try await Linkman.shared.getInfo()
-        account = Account(id: rsp.user.id)
+        account = Account(
+            id: rsp.user.id,
+            orgId: rsp.user.fiOrgId
+        )
     }
     
     func register(account: String, name: String, gender: Gender, birthday: String,
@@ -61,6 +65,10 @@ class AccountService: ObservableObject {
         } catch {
             
         }
+    }
+    
+    func getNotice(pageNum: Int, pageSize: Int, orgId: Int) async {
+        
     }
 }
 

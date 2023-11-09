@@ -12,7 +12,6 @@ struct ContentView: View {
     
     init () {
         Linkman.shared.showLog = true
-        Box.setToken(nil)
     }
     
     var body: some View {
