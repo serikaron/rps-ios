@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject var accountService: AccountService
+    
     var body: some View {
         Image.onboarding.background
             .resizable()
@@ -70,7 +72,13 @@ struct LoginView: View {
             Spacer().frame(height: 20)
             OnboardingInput(placeholder: "请输入密码", text: $password)
             Spacer().frame(height: 30)
-            loginButton
+            Button {
+                Task {
+                    await accountService.login(username: account, password: password)
+                }
+            } label: {
+                loginButtonLabel
+            }
             Spacer().frame(height: 16)
             Text("申请注册")
                 .customText(size: 14, color: .text.gray6)
@@ -91,7 +99,11 @@ struct LoginView: View {
                     , alignment: .trailing
                 )
             Spacer().frame(height: 30)
-            loginButton
+            Button {
+                
+            } label: {
+                loginButtonLabel
+            }
             Spacer().frame(height: 16)
             Text("申请注册")
                 .customText(size: 14, color: .text.gray6)
@@ -99,7 +111,7 @@ struct LoginView: View {
         }
     }
     
-    private var loginButton: some View {
+    private var loginButtonLabel: some View {
         Text("登录")
             .customText(size: 18, color: .white)
             .frame(height: 49)
@@ -154,4 +166,5 @@ private struct OnboardingInput: View {
 
 #Preview {
     LoginView()
+        .environmentObject(AccountService())
 }

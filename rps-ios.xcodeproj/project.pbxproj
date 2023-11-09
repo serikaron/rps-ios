@@ -19,7 +19,7 @@
 		72DFCF062AFA234D0001831F /* DividerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF052AFA234D0001831F /* DividerView.swift */; };
 		72DFCF092AFB7F790001831F /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 72DFCF082AFB7F790001831F /* DGCharts */; };
 		72DFCF0F2AFC72A80001831F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF0E2AFC72A80001831F /* LoginView.swift */; };
-		72DFCF142AFC8CC30001831F /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF132AFC8CC30001831F /* Account.swift */; };
+		72DFCF142AFC8CC30001831F /* AccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF132AFC8CC30001831F /* AccountService.swift */; };
 		72DFCF162AFC8DD90001831F /* UserDefaults+RPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF152AFC8DD90001831F /* UserDefaults+RPS.swift */; };
 		72DFCF182AFCB6F20001831F /* Linkman.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF172AFCB6F20001831F /* Linkman.swift */; };
 		72DFCF1A2AFCB7790001831F /* Withable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF192AFCB7790001831F /* Withable.swift */; };
@@ -27,6 +27,8 @@
 		72DFCF1E2AFCB9690001831F /* ErrorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF1D2AFCB9690001831F /* ErrorService.swift */; };
 		72DFCF202AFCBA400001831F /* string+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF1F2AFCBA400001831F /* string+.swift */; };
 		72DFCF222AFCBA6C0001831F /* Linknam+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF212AFCBA6C0001831F /* Linknam+.swift */; };
+		72DFCF242AFCCD520001831F /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF232AFCCD520001831F /* ErrorView.swift */; };
+		72DFCF262AFCCDAE0001831F /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF252AFCCDAE0001831F /* LoadingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +45,7 @@
 		72DFCF052AFA234D0001831F /* DividerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DividerView.swift; sourceTree = "<group>"; };
 		72DFCF0C2AFB7F860001831F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		72DFCF0E2AFC72A80001831F /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		72DFCF132AFC8CC30001831F /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		72DFCF132AFC8CC30001831F /* AccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountService.swift; sourceTree = "<group>"; };
 		72DFCF152AFC8DD90001831F /* UserDefaults+RPS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+RPS.swift"; sourceTree = "<group>"; };
 		72DFCF172AFCB6F20001831F /* Linkman.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Linkman.swift; sourceTree = "<group>"; };
 		72DFCF192AFCB7790001831F /* Withable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Withable.swift; sourceTree = "<group>"; };
@@ -51,6 +53,8 @@
 		72DFCF1D2AFCB9690001831F /* ErrorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorService.swift; sourceTree = "<group>"; };
 		72DFCF1F2AFCBA400001831F /* string+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "string+.swift"; sourceTree = "<group>"; };
 		72DFCF212AFCBA6C0001831F /* Linknam+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linknam+.swift"; sourceTree = "<group>"; };
+		72DFCF232AFCCD520001831F /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		72DFCF252AFCCDAE0001831F /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +133,8 @@
 				72DFCF012AFA130E0001831F /* view+.swift */,
 				72DFCF032AFA18620001831F /* images+.swift */,
 				72DFCF052AFA234D0001831F /* DividerView.swift */,
+				72DFCF232AFCCD520001831F /* ErrorView.swift */,
+				72DFCF252AFCCDAE0001831F /* LoadingView.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -144,7 +150,7 @@
 		72DFCF122AFC8C350001831F /* models */ = {
 			isa = PBXGroup;
 			children = (
-				72DFCF132AFC8CC30001831F /* Account.swift */,
+				72DFCF132AFC8CC30001831F /* AccountService.swift */,
 				72DFCF152AFC8DD90001831F /* UserDefaults+RPS.swift */,
 				72DFCF172AFCB6F20001831F /* Linkman.swift */,
 				72DFCF192AFCB7790001831F /* Withable.swift */,
@@ -239,15 +245,17 @@
 				72DFCF0F2AFC72A80001831F /* LoginView.swift in Sources */,
 				72DFCF022AFA130E0001831F /* view+.swift in Sources */,
 				72DFCEFA2AFA03BA0001831F /* MainView.swift in Sources */,
+				72DFCF242AFCCD520001831F /* ErrorView.swift in Sources */,
 				72DFCF002AFA0AD90001831F /* colors+.swift in Sources */,
 				72DFCF062AFA234D0001831F /* DividerView.swift in Sources */,
 				72DFCF162AFC8DD90001831F /* UserDefaults+RPS.swift in Sources */,
 				72DFCF202AFCBA400001831F /* string+.swift in Sources */,
-				72DFCF142AFC8CC30001831F /* Account.swift in Sources */,
+				72DFCF142AFC8CC30001831F /* AccountService.swift in Sources */,
 				72DFCF1E2AFCB9690001831F /* ErrorService.swift in Sources */,
 				72DFCF182AFCB6F20001831F /* Linkman.swift in Sources */,
 				72DFCF1A2AFCB7790001831F /* Withable.swift in Sources */,
 				72DFCF222AFCBA6C0001831F /* Linknam+.swift in Sources */,
+				72DFCF262AFCCDAE0001831F /* LoadingView.swift in Sources */,
 				72DFCEE92AFA00F50001831F /* rps_iosApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -382,7 +390,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"rps-ios/Preview Content\"";
-				DEVELOPMENT_TEAM = F7H2MU2G5P;
+				DEVELOPMENT_TEAM = J3V535ZD4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "rps-ios/Info.plist";
@@ -398,7 +406,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "serika.rps-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rps.app.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -417,7 +425,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"rps-ios/Preview Content\"";
-				DEVELOPMENT_TEAM = F7H2MU2G5P;
+				DEVELOPMENT_TEAM = J3V535ZD4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "rps-ios/Info.plist";
@@ -433,7 +441,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "serika.rps-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.rps.app.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

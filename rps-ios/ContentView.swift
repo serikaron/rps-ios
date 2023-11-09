@@ -8,14 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var accountService = AccountService()
+    
+    init () {
+        Linkman.shared.showLog = true
+    }
+    
     var body: some View {
+        ZStack {
+            content
+            LoadingView()
+            ErrorView()
+        }
+    }
+    
+    private var content: some View {
         Group {
-            if Account.isLoggedIn {
+            if accountService.isLoggedIn {
                 MainView()
             } else {
                 LoginView()
             }
         }
+        .environmentObject(accountService)
     }
     
 //    private var content: some View {
