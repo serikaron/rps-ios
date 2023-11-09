@@ -12,10 +12,12 @@ struct User {
 }
 
 extension User {
-    static func
-    static func isLoggedIn() -> Bool {
+    static func load() {
         token = UserDefaults.token
-        return token != nil
+    }
+    
+    static var isLoggedIn: Bool {
+        token != nil
     }
 }
 
