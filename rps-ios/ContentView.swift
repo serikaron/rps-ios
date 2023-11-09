@@ -9,8 +9,22 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        MainView()
+        Group {
+            if Account.isLoggedIn {
+                MainView()
+            } else {
+                LoginView()
+            }
+        }
     }
+    
+//    private var content: some View {
+//        if Account.isLoggedIn {
+//            MainView().earseToAnyView()
+//        } else {
+//            LoginView().earseToAnyView()
+//        }
+//    }
 }
 
 #Preview {

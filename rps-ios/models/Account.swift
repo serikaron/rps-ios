@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct User {
+struct Account {
     static private(set) var token: String?
 }
 
-extension User {
+extension Account {
     static func load() {
         token = UserDefaults.token
     }
@@ -19,9 +19,17 @@ extension User {
     static var isLoggedIn: Bool {
         token != nil
     }
+    
+    static func login(account: String, password: String) async throws {
+        
+    }
+    
+    static func login(phone: String, code: String) async throws {
+        
+    }
 }
 
-private extension UserDefaults {
+extension UserDefaults {
     static var token: String? {
         get {
             UserDefaults.rps.string(forKey: "token")

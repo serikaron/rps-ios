@@ -24,3 +24,8 @@ extension View {
     }
 }
 
+extension View {
+    func earseToAnyView() -> AnyView {
+        AnyView(self)
+    }
+}
