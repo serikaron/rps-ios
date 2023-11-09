@@ -12,6 +12,7 @@ struct ContentView: View {
     
     init () {
         Linkman.shared.showLog = true
+        Box.setToken(nil)
     }
     
     var body: some View {
@@ -27,7 +28,7 @@ struct ContentView: View {
             if accountService.isLoggedIn {
                 MainView()
             } else {
-                LoginView()
+                OnboardingView()
             }
         }
         .environmentObject(accountService)

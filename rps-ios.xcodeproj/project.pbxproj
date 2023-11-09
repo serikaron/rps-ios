@@ -18,7 +18,7 @@
 		72DFCF042AFA18620001831F /* images+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF032AFA18620001831F /* images+.swift */; };
 		72DFCF062AFA234D0001831F /* DividerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF052AFA234D0001831F /* DividerView.swift */; };
 		72DFCF092AFB7F790001831F /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 72DFCF082AFB7F790001831F /* DGCharts */; };
-		72DFCF0F2AFC72A80001831F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF0E2AFC72A80001831F /* LoginView.swift */; };
+		72DFCF0F2AFC72A80001831F /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF0E2AFC72A80001831F /* OnboardingView.swift */; };
 		72DFCF142AFC8CC30001831F /* AccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF132AFC8CC30001831F /* AccountService.swift */; };
 		72DFCF162AFC8DD90001831F /* UserDefaults+RPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF152AFC8DD90001831F /* UserDefaults+RPS.swift */; };
 		72DFCF182AFCB6F20001831F /* Linkman.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF172AFCB6F20001831F /* Linkman.swift */; };
@@ -29,6 +29,7 @@
 		72DFCF222AFCBA6C0001831F /* Linknam+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF212AFCBA6C0001831F /* Linknam+.swift */; };
 		72DFCF242AFCCD520001831F /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF232AFCCD520001831F /* ErrorView.swift */; };
 		72DFCF262AFCCDAE0001831F /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF252AFCCDAE0001831F /* LoadingView.swift */; };
+		72F9BF8C2AFCF2E90040C6D2 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F9BF8B2AFCF2E90040C6D2 /* utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,7 +45,7 @@
 		72DFCF032AFA18620001831F /* images+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "images+.swift"; sourceTree = "<group>"; };
 		72DFCF052AFA234D0001831F /* DividerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DividerView.swift; sourceTree = "<group>"; };
 		72DFCF0C2AFB7F860001831F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		72DFCF0E2AFC72A80001831F /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		72DFCF0E2AFC72A80001831F /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		72DFCF132AFC8CC30001831F /* AccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountService.swift; sourceTree = "<group>"; };
 		72DFCF152AFC8DD90001831F /* UserDefaults+RPS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+RPS.swift"; sourceTree = "<group>"; };
 		72DFCF172AFCB6F20001831F /* Linkman.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Linkman.swift; sourceTree = "<group>"; };
@@ -55,6 +56,7 @@
 		72DFCF212AFCBA6C0001831F /* Linknam+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linknam+.swift"; sourceTree = "<group>"; };
 		72DFCF232AFCCD520001831F /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		72DFCF252AFCCDAE0001831F /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		72F9BF8B2AFCF2E90040C6D2 /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,7 +144,7 @@
 		72DFCF0D2AFC70AC0001831F /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				72DFCF0E2AFC72A80001831F /* LoginView.swift */,
+				72DFCF0E2AFC72A80001831F /* OnboardingView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -158,6 +160,7 @@
 				72DFCF1D2AFCB9690001831F /* ErrorService.swift */,
 				72DFCF1F2AFCBA400001831F /* string+.swift */,
 				72DFCF212AFCBA6C0001831F /* Linknam+.swift */,
+				72F9BF8B2AFCF2E90040C6D2 /* utils.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -242,7 +245,7 @@
 				72DFCF1C2AFCB7FB0001831F /* Box.swift in Sources */,
 				72DFCEFD2AFA09770001831F /* IndexView.swift in Sources */,
 				72DFCF042AFA18620001831F /* images+.swift in Sources */,
-				72DFCF0F2AFC72A80001831F /* LoginView.swift in Sources */,
+				72DFCF0F2AFC72A80001831F /* OnboardingView.swift in Sources */,
 				72DFCF022AFA130E0001831F /* view+.swift in Sources */,
 				72DFCEFA2AFA03BA0001831F /* MainView.swift in Sources */,
 				72DFCF242AFCCD520001831F /* ErrorView.swift in Sources */,
@@ -253,6 +256,7 @@
 				72DFCF142AFC8CC30001831F /* AccountService.swift in Sources */,
 				72DFCF1E2AFCB9690001831F /* ErrorService.swift in Sources */,
 				72DFCF182AFCB6F20001831F /* Linkman.swift in Sources */,
+				72F9BF8C2AFCF2E90040C6D2 /* utils.swift in Sources */,
 				72DFCF1A2AFCB7790001831F /* Withable.swift in Sources */,
 				72DFCF222AFCBA6C0001831F /* Linknam+.swift in Sources */,
 				72DFCF262AFCCDAE0001831F /* LoadingView.swift in Sources */,

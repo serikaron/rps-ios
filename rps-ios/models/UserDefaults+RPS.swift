@@ -15,11 +15,9 @@ extension UserDefaults {
     static var token: String? {
         get {
             let out = UserDefaults.rps.string(forKey: "token")
-            print("load token: \(out)")
             return out
         }
         set(token) {
-            print("save token: \(token)")
             UserDefaults.rps.setValue(token, forKey: "token")
         }
     }

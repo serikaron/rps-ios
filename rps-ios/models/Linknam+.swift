@@ -38,6 +38,31 @@ extension Linkman {
             .make()
             .response() as GetInfoResponse
     }
+    
+    func register(account: String, name: String, gender: Gender, birthday: String,
+                  company: String, department: String, position: String,
+                  phone: String, mobile: String, email: String, contact: String,
+                  address: String
+    ) async throws {
+        try await Request()
+            .with(\.path, setTo: "/account/rps/account/clientUser/applyLoginClientUser")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: [
+                "fvClientName": account,
+                "fvClientNickName": name,
+                "fvClientGender": gender.text,
+                "fdDateBirth": birthday,
+                "fvPlaceUnit": company,
+                "fvPlaceOrganization": department,
+                "fvPosition": position,
+                "fiWorkPhone": phone,
+                "fiCellphone": mobile,
+                "fvEmail": email,
+                "fvQqMsn": contact,
+                "fvPlaceArea": address
+            ])
+            .make()
+    }
 }
 
 private extension Linkman.GetInfoResponse {

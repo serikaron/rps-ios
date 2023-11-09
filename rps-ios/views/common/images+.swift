@@ -29,5 +29,7 @@ extension Image {
         static var passwordIcon: Image { return Image("onboarding-password") }
         static var phoneIcon: Image { return Image("onboarding-phone") }
         static var codeIcon: Image { return Image("onboarding-code") }
+        static var selectedIcon: Image { return Image("onboarding-selected") }
+        static var deselectedIcon: Image { return Image("onboarding-deselected") }
     }
 }

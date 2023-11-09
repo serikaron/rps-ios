@@ -48,5 +48,20 @@ class AccountService: ObservableObject {
         let rsp = try await Linkman.shared.getInfo()
         account = Account(id: rsp.user.id)
     }
+    
+    func register(account: String, name: String, gender: Gender, birthday: String,
+                  company: String, department: String, position: String,
+                  phone: String, mobile: String, email: String, contact: String,
+                  address: String
+    ) async {
+        do {
+            try await Linkman.shared.register(account: account, name: name, gender: gender,
+                                        birthday: birthday, company: company, department: department, position: position,
+                                        phone: phone, mobile: mobile, email: email, contact: contact, address: address)
+        } catch {
+            
+        }
+    }
 }
+
 
