@@ -1,0 +1,272 @@
+//
+//  IndexView.swift
+//  rps-ios
+//
+//  Created by serika on 2023/11/7.
+//
+
+import SwiftUI
+import DGCharts
+
+struct IndexView: View {
+    var body: some View {
+        NavigationView {
+            content
+                .navigationTitle("首页")
+                .navigationBarTitleDisplayMode(.inline)
+                .ignoresSafeArea(edges: .bottom)
+        }
+    }
+    
+    var content: some View {
+        ZStack {
+            Color.view.background
+            VStack(alignment: .center, spacing: 0) {
+                Color.black
+                    .frame(height: 150)
+                    .cornerRadius(8)
+                Spacer().frame(height: 10)
+                announceSection
+                Spacer().frame(height: 16)
+                actionSection
+                Spacer().frame(height: 16)
+                searchSection
+                Spacer()
+            }
+            .padding(.top, 15)
+            .padding(.horizontal, 12)
+        }
+    }
+    
+    private var announceSection: some View {
+        Color.white
+            .frame(height: 38)
+            .cornerRadius(8)
+            .overlay (
+                HStack(spacing: 10) {
+                    Image.index.announceIcon
+                    Text("长长长长长长长长长长长长长长长长长长长长长长")
+                        .customText(size: 14, color: .text.gray3)
+                        .lineLimit(1)
+                }
+                    .padding(.horizontal, 16)
+            )
+    }
+    
+    private var actionSection: some View {
+        HStack {
+            NavigationLink {
+                Text("SubView")
+            } label: {
+                actionButtonView(title: "估价师询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
+            }
+            Spacer()
+            actionButtonView(title: "新建委托", subTitle: "New commission", icon: .index.commissionIcon)
+        }
+    }
+    
+    private func actionButtonView(title: String, subTitle: String, icon: Image) -> some View {
+        return ZStack {
+            Image.index.buttonBg
+            HStack {
+                VStack(spacing: 2) {
+                    Text(title).customText(size: 16, color: .main, weight: .bold)
+                    Text(subTitle.uppercased()).customText(size: 8, color: .text.gray9)
+                }
+                Spacer()
+                icon.frame(width: 50, height: 50)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .frame(width: 165, height: 66)
+        }
+    }
+    
+    private var searchSection: some View {
+        return ZStack {
+            VStack {
+                searchAction
+                Spacer()
+            }
+            VStack {
+                Spacer().frame(height: 140)
+                searchResult
+            }
+        }
+    }
+    
+    @State var input1: String = ""
+    
+    private var searchAction: some View {
+        return Color(hex: "#EDF1FF")
+            .cornerRadius(8)
+            .shadow(color: Color(hex: "#C8C8C8").opacity(0.25), radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            .frame(height: 154)
+            .overlay(
+                VStack {
+                    searchInput
+                    Spacer().frame(height: 18)
+                    searchLocation
+                }
+                    .padding(.top, 28)
+                    .padding(.bottom, 36)
+                    .padding(.horizontal, 16)
+            )
+    }
+    
+    private var searchInput: some View {
+        return Color.white
+            .overlay(
+                HStack(spacing: 0) {
+                    TextField("请输入物业名称或地址", text: $input1)
+                    Spacer()
+                    Image.index.searchOCR
+                    Spacer().frame(width: 10)
+                    VerticalDivider(length: 6)
+                    Spacer().frame(width: 10)
+                    Image.main.searchIcon
+                }
+                    .padding(.horizontal, 16)
+            )
+            .frame(height: 36)
+            .cornerRadius(18)
+    }
+    
+    private var searchLocation: some View {
+        return Color.white
+            .overlay(
+                HStack(spacing: 0, content: {
+                    searchLocationButton(title: "浙江省")
+                    Spacer().frame(width: 20)
+                    searchLocationButton(title: "温州市")
+                    Spacer().frame(width: 20)
+                    searchLocationButton(title: "主城区")
+                    Spacer()
+                    Image.index.searchGIS
+                    Spacer().frame(width: 10)
+                    VerticalDivider(length: 6)
+                    Spacer().frame(width: 10)
+                    Image.main.searchIcon
+                })
+                    .padding(.horizontal, 16)
+            )
+            .frame(height: 36)
+            .cornerRadius(18)
+    }
+    
+    private func searchLocationButton(title: String) -> some View {
+        return HStack(spacing: 2) {
+            Text(title)
+                .customText(size: 14, color: .text.gray3)
+            Image.main.arrowIcon
+                .renderingMode(.template)
+                .resizable()
+                .frame(width: 14, height: 14)
+                .rotationEffect(.degrees(-90))
+                .foregroundColor(Color(hex: "#CDCDCD"))
+        }
+    }
+    
+    @State private var selectedTab: ChartTab = .apartment
+    private var searchResult: some View {
+        Color.white
+            .overlay(
+                VStack {
+                    ChartTabView(selected: $selectedTab)
+                    ChartView()
+                }
+                    .padding()
+            )
+//            .frame(height: 361)
+            .cornerRadius(8)
+    }
+}
+
+private enum ChartTab: CaseIterable {
+    case apartment, office, villa, store
+    
+    var text: String {
+        switch self {
+        case .apartment: return "普通公寓"
+        case .office: return "写字楼"
+        case .villa: return "排屋别墅"
+        case .store: return "沿街商铺"
+        }
+    }
+}
+
+private struct ChartTabView: View {
+    @Binding var selected: ChartTab
+    
+    var body: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 35) {
+                ForEach(ChartTab.allCases, id: \.hashValue) { tab in
+                    if tab == selected {
+                        VStack {
+                            Text(tab.text).customText(size: 14, color: .main)
+                            Color.main.frame(width: 20, height: 3)
+                        }
+                    } else {
+                        VStack {
+                            Text(tab.text).customText(size: 14, color: .text.gray3)
+                            Spacer()
+                        }
+                    }
+                }
+            }
+//            .padding(.horizontal, 16)
+            .frame(height: 30)
+        }
+    }
+}
+
+private struct ChartView: UIViewRepresentable {
+    func makeUIView(context: Context) -> DGCharts.LineChartView {
+        let chart = LineChartView()
+        let data = LineChartData()
+        let dataSet = LineChartDataSet(entries: [
+            ChartDataEntry(x: 1, y: 1),
+            ChartDataEntry(x: 2, y: 2),
+            ChartDataEntry(x: 3, y: 1),
+            ChartDataEntry(x: 4, y: 2),
+        ])
+        dataSet.mode = .cubicBezier
+        dataSet.drawValuesEnabled = false
+//        dataSet.drawCircleHoleEnabled = false
+        dataSet.drawCirclesEnabled = false
+        let colors = [Color.main.cgColor, Color.main.opacity(0).cgColor] as CFArray
+        let locations:[CGFloat] = [1.0, 0.0]
+        let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: locations)
+        if gradient == nil {
+            dataSet.fill = ColorFill(color: .magenta)
+        } else {
+            dataSet.fill = LinearGradientFill(gradient: gradient!, angle: 90)
+        }
+        dataSet.drawFilledEnabled = true
+        dataSet.colors = [Color.main.uiColor]
+        data.dataSets = [dataSet]
+        chart.data = data
+//        chart.leftAxis.enabled = false
+        chart.leftAxis.drawLabelsEnabled = false
+        chart.leftAxis.drawGridLinesEnabled = false
+        chart.leftAxis.axisLineDashLengths = [5, 5, 0]
+        chart.rightAxis.enabled = false
+        chart.xAxis.drawAxisLineEnabled = false
+        chart.xAxis.labelPosition = .bottom
+        chart.xAxis.labelCount = dataSet.count-1
+//        chart.xAxis.drawGridLinesEnabled = false
+        chart.xAxis.gridLineDashLengths = [5, 5, 0]
+        return chart
+    }
+    
+    func updateUIView(_ uiView: UIViewType, context: Context) {
+    }
+    
+    typealias UIViewType = LineChartView
+}
+
+#Preview {
+    IndexView()
+//    ChartView()
+}
