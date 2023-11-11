@@ -63,6 +63,7 @@ extension Color {
         static var gray3: Color { return Color(hex: "#333333") }
         static var gray6: Color { return Color(hex: "#666666") }
         static var gray9: Color { return Color(hex: "#999999") }
+        static var grayCD: Color { return Color(hex: "#CDCDCD") }
     }
 }
 

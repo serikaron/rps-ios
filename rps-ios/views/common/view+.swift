@@ -29,3 +29,30 @@ extension View {
         AnyView(self)
     }
 }
+
+struct SetupNavigationBar: ViewModifier {
+    let title: String
+    let backAction: () -> Void
+    
+    func body(content: Content) -> some View {
+        content
+            .navigationTitle(title)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        backAction()
+                    } label: {
+                        Image.main.arrowIcon
+                    }
+                }
+            }
+    }
+}
+
+extension View {
+    func setupNavigationBar(title: String, _ backAction: @escaping () -> Void) -> some View {
+        modifier(SetupNavigationBar(title: title, backAction: backAction))
+    }
+}
+

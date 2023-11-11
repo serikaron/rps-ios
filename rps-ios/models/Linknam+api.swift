@@ -85,20 +85,69 @@ extension Linkman {
             .make()
             .response() as NoticeResponse
     }
-}
-
-private extension Linkman.GetInfoResponse {
-    static var mock: Linkman.GetInfoResponse {
-        return Linkman.GetInfoResponse(user: Linkman.NetworkUser(
-            id: 0,
-            fiOrgId: 0
-        ))
+    
+    struct NetworkSearchResult: Codable {
+        let id: String
+        let fvFamilyRoomName: String?
+        let fvEstateType: String?
+        let fvCompoundName: String?
+        let fvNameAlias: String?
+        let fvStreetMark: String?
+        let picUrls: String?
+        let fvCompletionDate: String?
     }
-}
-
-private extension Linkman.NoticeRecord {
-    static var mock: Linkman.NoticeRecord {
-        return Linkman.NoticeRecord(noticeTitle: "公告1")
+    
+    typealias FuzzySearchResopnse = [NetworkSearchResult]
+    
+    func fuzzySearch(keyword: String) async throws -> FuzzySearchResopnse {
+        return try await Request()
+            .with(\.path, setTo: "/data/rps/dcdata/selectRoomAddr")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "fvFamilyRoomName": keyword
+            ])
+            .with(\.standaloneResponse, setTo: standaloneResponse([NetworkSearchResult.mock]))
+            .make()
+            .response() as FuzzySearchResopnse
+    }
+    
+    struct ExactSearchResponse: Codable {
+        let records: [NetworkSearchResult]
+    }
+    
+    func exactSearch(keyword: String) async throws -> ExactSearchResponse {
+        return try await Request()
+            .with(\.path, setTo: "/data/rps/dcdata/getCompoundByComName")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "fvCompoundName": keyword
+            ])
+            .with(\.standaloneResponse, setTo: standaloneResponse(ExactSearchResponse(records: [NetworkSearchResult.mock])))
+            .make()
+            .response() as ExactSearchResponse
+    }
+    
+    struct NetworkDictItem: Codable {
+        let dictTypeName: String
+        let dictLabel: String
+        let dictValue: String
+        let dictSort: Int
+    }
+    
+    struct NetworkDictType: Codable {
+        let dictType: String
+        let sysDictDataList: [NetworkDictItem]
+    }
+    
+    typealias DictResponse = [NetworkDictType]
+    
+    func getDict() async throws -> DictResponse {
+        return try await Request()
+            .with(\.path, setTo: "sysDictDataList")
+            .with(\.method, setTo: .GET)
+            .with(\.standaloneResponse, setTo: standaloneResponse(DictResponse.mock))
+            .make()
+            .response() as DictResponse
     }
 }
 

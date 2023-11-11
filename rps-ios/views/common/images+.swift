@@ -19,6 +19,7 @@ extension Image {
         static var recordTabIconSelected: Image { return Image("record-tab-selected") }
         static var csTabIconSelected: Image { return Image("cs-tab-selected") }
         static var meTabIconSelected: Image { return Image("me-tab-selected") }
+        static var placeholder: Image { return Image("image-placeholder") }
     }
     
     enum index {

@@ -108,8 +108,6 @@ struct IndexView: View {
         }
     }
     
-    @State var input1: String = ""
-    
     private var searchAction: some View {
         return searchInput
             .padding(.horizontal, 16)
@@ -123,21 +121,23 @@ struct IndexView: View {
     }
     
     private var searchInput: some View {
-        return Color.white
-            .overlay(
-                HStack(spacing: 0) {
-                    TextField("请输入物业名称或地址", text: $input1)
-                    Spacer()
-                    Image.index.searchOCR
-                    Spacer().frame(width: 10)
-                    VerticalDivider(length: 6)
-                    Spacer().frame(width: 10)
-                    Image.main.searchIcon
-                }
-                    .padding(.horizontal, 16)
-            )
+        return NavigationLink {
+            FuzzySearchView()
+        } label: {
+            HStack(spacing: 0) {
+                Image.index.searchOCR
+                Spacer().frame(width: 10)
+                Text("请输入物业名称或地址")
+                    .customText(size: 14, color: .text.grayCD)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(width: 10)
+                Image.main.searchIcon
+            }
+            .padding(.horizontal, 16)
             .frame(height: 36)
+            .background(Color.white)
             .cornerRadius(18)
+        }
     }
     
     private var searchLocation: some View {

@@ -8,6 +8,15 @@
         "revision" : "0a229f8c914b0ec93798cee058cf75b339297513",
         "version" : "5.0.0"
       }
+    },
+    {
+      "identity" : "sbpasyncimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/yutailang0119/SBPAsyncImage.git",
+      "state" : {
+        "revision" : "b1fd0fa16eaa58ae29f728160020ef1b78de740d",
+        "version" : "0.2.0"
+      }
     }
   ],
   "version" : 2

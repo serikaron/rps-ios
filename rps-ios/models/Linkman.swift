@@ -150,6 +150,9 @@ private extension Linkman {
             let rsp = try data.decoded() as Rsp
             
             guard rsp.code == 200 else {
+                if (rsp.code == 401) {
+                    Box.setToken(nil)
+                }
                 throw NetworkError.domainError(rsp.code, rsp.msg)
             }
             
