@@ -13,9 +13,11 @@ struct SearchResult {
     let compoundName: String?
     let completionDate: String?
     let estateType: String?
+    let estateTypeLabel: String?
     let compoundNameAlias: String?
     let address: String?
     let picUrls: String?
+    let comId: Int?
 }
 typealias SearchResultList = [SearchResult]
 
@@ -92,6 +94,23 @@ class EstateService: ObservableObject {
             print("excatSearch ERROR: \(error)")
         }
     }
+    
+    @Published var buildings: Buildings = []
+    
+    func getBuildings(comId: Int, estateType: String, pageSize: Int, pageNum: Int) async -> (total: Int, size: Int, buildings: Buildings) {
+        print("getBuildings \(comId) - \(estateType) - \(pageSize) - \(pageNum)")
+        guard comId != 0, !estateType.isEmpty else {
+            return (0, 0, [])
+        }
+        
+        do {
+            let r = try await Linkman.shared.getBuildings(compoundId: comId, estateType: estateType, pageSize: pageSize, pageNum: pageNum)
+            return (r.total, r.size, r.records)
+        } catch {
+            print("getBuildings FAILED: \(error)")
+            return (0, 0, [])
+        }
+    }
 }
 
 extension SearchResult {
@@ -101,9 +120,11 @@ extension SearchResult {
                      compoundName: "compoundName-\(num)",
                      completionDate: "completionDate-\(num)",
                      estateType: "estateType-\(num)",
+                     estateTypeLabel: "estateTypeLabel-\(num)",
                      compoundNameAlias: "compoundNameAlias-\(num)",
                      address: "address-\(num)",
-                     picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg"
+                     picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
+                     comId: 1
         )
     }
     
@@ -117,10 +138,12 @@ extension SearchResult {
             roomName: item.fvFamilyRoomName,
             compoundName: item.fvCompoundName,
             completionDate: item.fvCompletionDate,
-            estateType: estateType,
+            estateType: item.fvEstateType,
+            estateTypeLabel: estateType,
             compoundNameAlias: item.fvNameAlias,
             address: item.fvStreetMark,
-            picUrls: item.picUrls
+            picUrls: item.picUrls,
+            comId: item.fiCompoundId
         )
     }
 }
@@ -141,6 +164,7 @@ extension EstateService {
         Task {
             out.exactSearchResult = [await SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
             out.fuzzySearchResult = [await SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
+            out.buildings = (0..<10).map { _ in Building.mock }
         }
         return out
     }

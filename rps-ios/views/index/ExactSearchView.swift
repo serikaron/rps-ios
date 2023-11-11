@@ -27,12 +27,24 @@ struct ExactSearchView: View {
             Spacer().frame(height: 10)
             List {
                 ForEach(Array(zip(resultList.indices, resultList)), id: \.0) { idx, result in
-                    listItem(of: result)
-                        .onAppear {
-                            if idx == resultList.count - 2 {
-                                search()
-                            }
+                    ZStack {
+                        NavigationLink(
+                            destination: BuildingsView(comId: result.comId ?? 0, estateType: result.estateType ?? "")
+                                .environmentObject(estateService)
+                        ) {
+                            EmptyView()
                         }
+                        listItem(of: result)
+                            .onAppear {
+                                if idx == resultList.count - 2 {
+                                    search()
+                                }
+                            }
+                    }
+                    .listRowBackground(
+                        Color.white
+                            .cornerRadius(8)
+                    )
                 }
             }
             .listStyle(.plain)
@@ -59,7 +71,7 @@ struct ExactSearchView: View {
                 Text("\(result.completionDate ?? "")建成")
                     .customText(size: 13, color: .text.gray3)
                 Spacer().frame(width: 16)
-                Text(result.estateType ?? "")
+                Text(result.estateTypeLabel ?? "")
                     .customText(size: 12, color: .main)
                 Spacer()
                 Button {
@@ -82,7 +94,7 @@ struct ExactSearchView: View {
                 BackportAsyncImage(url: URL(string: result.picUrls ?? "")) { image in
                     image.resizable()
                 } placeholder: {
-                    Image.main.placeholder
+                    Image.main.placeholder.resizable()
                 }
                 .frame(width: 80, height: 80)
                 .cornerRadius(10)
@@ -90,25 +102,31 @@ struct ExactSearchView: View {
                     Text(result.compoundName ?? "")
                         .customText(size: 16, color: .text.gray3, weight: .bold)
                         .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     Spacer().frame(height: 3)
                     Text("小区别名：\(result.compoundNameAlias ?? "")")
                         .customText(size: 12, color: .text.gray3)
                         .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     Spacer().frame(height: 6)
                     Text("地址：\(result.address ?? "")")
                         .customText(size: 12, color: .text.gray3)
                         .lineLimit(2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(width: 196)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .background(Color.white)
     }
 }
 
 #Preview {
-//            Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiQlFpb0p2WUJkaTBzNlRvQ1NtMlg1RmIxRHZuV3NOZUMiLCJ1c2VySWQiOjQwfQ.38Hkz9cSo2tuMGHGilzrlMr3VRgrbUOrLjldbiKUpc8")
+    //            Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiQlFpb0p2WUJkaTBzNlRvQ1NtMlg1RmIxRHZuV3NOZUMiLCJ1c2VySWQiOjQwfQ.38Hkz9cSo2tuMGHGilzrlMr3VRgrbUOrLjldbiKUpc8")
     Linkman.shared.standalone = true
-    return ExactSearchView(text: "abc")
-        .environmentObject(EstateService.preview)
+    return NavigationView {
+        ExactSearchView(text: "abc")
+            .environmentObject(EstateService.preview)
+    }
 }

@@ -90,6 +90,7 @@ extension Linkman {
         let id: String
         let fvFamilyRoomName: String?
         let fvEstateType: String?
+        let fiCompoundId: Int?
         let fvCompoundName: String?
         let fvNameAlias: String?
         let fvStreetMark: String?
@@ -157,6 +158,28 @@ extension Linkman {
             .with(\.standaloneResponse, setTo: standaloneResponse(DictResponse.mock))
             .make()
             .response() as DictResponse
+    }
+    
+    struct BuildingsResponse: Codable {
+        let records: Buildings
+        let total: Int
+        let size: Int
+    }
+    
+    func getBuildings(compoundId: Int, estateType: String, pageSize: Int, pageNum: Int) async throws -> BuildingsResponse {
+        return try await Request()
+            .with(\.path, setTo: "/data/rps/dcdata/getBuildingByComId")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: [
+                "fiCompoundId": "\(compoundId)",
+                "fvEstateType": estateType,
+                "pageSize": "\(pageSize)",
+                "pageNum": "\(pageNum)"
+            ])
+            .with(\.standaloneResponse, setTo: standaloneResponse(BuildingsResponse(
+                records: [Building.mock], total: 1, size: 1)))
+            .make()
+            .response() as BuildingsResponse
     }
 }
 

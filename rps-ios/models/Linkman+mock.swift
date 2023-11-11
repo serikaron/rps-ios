@@ -33,7 +33,7 @@ extension Linkman.NetworkSearchResult {
 //            fiAreaCode: 330106,
 //            fiSubdistrictId: 330106109,
 //            fiCommunityId: 5,
-//            fiCompoundId: 1,
+            fiCompoundId: 1,
             fvCompoundName: "新世纪花苑",
             fvNameAlias: "新世纪花苑小区",
             fvStreetMark: "11浙江省杭州市西湖区古墩路1105号",
@@ -42,7 +42,8 @@ extension Linkman.NetworkSearchResult {
 //            fvToWest: "",
 //            fvToNorth: "",
 //            fvAreaLocation: "7",
-            picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
+//            picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
+            picUrls: "",
             fvCompletionDate: "2001"
 //            fvPois: null,
 //            fiOrgId: 294,
@@ -59,6 +60,7 @@ extension Linkman.NetworkSearchResult {
             id: "\(num)",
             fvFamilyRoomName: "fvFamilyRoomName-\(num)",
             fvEstateType: "commApartment",
+            fiCompoundId: num,
             fvCompoundName: "fvCompoundName-\(num)",
             fvNameAlias: "fvNameAlias-\(num)",
             fvStreetMark: "fvStreetMark-\(num)",
@@ -120,5 +122,16 @@ extension Linkman.DictResponse {
                                             dictSort: 0),
                 ])
         ]
+    }
+}
+
+extension Building {
+    static var mock: Building {
+        Building(
+            id: 0,
+            fdCompletionDate: "2010",
+            fvBuildingName: "宝石1幢",
+            fvNameAlias: "宝石1幢",
+            fvFloorHeight: "5")
     }
 }
