@@ -22,14 +22,17 @@ struct ExactSearchView: View {
             Spacer().frame(height: 10)
             SearchInputView(text: $text, ocrAction: {}, searchAction: {
                 guard !text.isEmpty else { return }
-                Task {
-                    await estateService.exactSearch(keyword: text)
-                }
+                search()
             })
             Spacer().frame(height: 10)
             List {
-                ForEach(resultList, id: \.id) { result in
+                ForEach(Array(zip(resultList.indices, resultList)), id: \.0) { idx, result in
                     listItem(of: result)
+                        .onAppear {
+                            if idx == resultList.count - 2 {
+                                search()
+                            }
+                        }
                 }
             }
             .listStyle(.plain)
@@ -38,6 +41,12 @@ struct ExactSearchView: View {
         .background(Color.view.background)
         .setupNavigationBar(title: "小区列表") {
             presentationMode.wrappedValue.dismiss()
+        }
+    }
+    
+    private func search() {
+        Task {
+            await estateService.exactSearch(keyword: text)
         }
     }
     
@@ -99,6 +108,7 @@ struct ExactSearchView: View {
 
 #Preview {
 //            Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiQlFpb0p2WUJkaTBzNlRvQ1NtMlg1RmIxRHZuV3NOZUMiLCJ1c2VySWQiOjQwfQ.38Hkz9cSo2tuMGHGilzrlMr3VRgrbUOrLjldbiKUpc8")
+    Linkman.shared.standalone = true
     return ExactSearchView(text: "abc")
         .environmentObject(EstateService.preview)
 }

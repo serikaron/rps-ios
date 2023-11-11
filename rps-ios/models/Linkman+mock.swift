@@ -53,6 +53,19 @@ extension Linkman.NetworkSearchResult {
 //            fvEstateState: "4"
         )
     }
+    
+    static func mockResult(num: Int) -> Linkman.NetworkSearchResult {
+        return Linkman.NetworkSearchResult(
+            id: "\(num)",
+            fvFamilyRoomName: "fvFamilyRoomName-\(num)",
+            fvEstateType: "commApartment",
+            fvCompoundName: "fvCompoundName-\(num)",
+            fvNameAlias: "fvNameAlias-\(num)",
+            fvStreetMark: "fvStreetMark-\(num)",
+            picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
+            fvCompletionDate: "\(num)"
+        )
+    }
 }
 
 extension Linkman.DictResponse {

@@ -12,6 +12,7 @@ struct ContentView: View {
     
     init () {
         Linkman.shared.showLog = true
+//        Linkman.shared.standalone = true
 //        Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiQlFpb0p2WUJkaTBzNlRvQ1NtMlg1RmIxRHZuV3NOZUMiLCJ1c2VySWQiOjQwfQ.38Hkz9cSo2tuMGHGilzrlMr3VRgrbUOrLjldbiKUpc8")
     }
     

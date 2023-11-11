@@ -52,20 +52,42 @@ class EstateService: ObservableObject {
         
         do {
             let rsp = try await Linkman.shared.fuzzySearch(keyword: keyword)
-            return await rsp.asyncMap { await SearchResult.fromNetwork($0) }
+            return await .fromNetwork(rsp)
         } catch {
             return []
         }
     }
     
     @Published var exactSearchResult: SearchResultList = []
+    private struct SearchParam {
+        let keyword: String
+        var pageNum = 1
+        let pageSize = 10
+        var finished = false
+    }
+    private var searchParam = SearchParam(keyword: "")
     
     func exactSearch(keyword: String) async {
-        guard !keyword.isEmpty else { return }
+        if keyword.isEmpty { return }
+        
+        if searchParam.keyword != keyword {
+            searchParam = SearchParam(keyword: keyword)
+        } else {
+            searchParam.pageNum += 1
+        }
+        
+        if searchParam.finished { return }
+        
         
         do {
-            let rsp = try await Linkman.shared.exactSearch(keyword: keyword)
-            let l = await rsp.records.asyncMap { await SearchResult.fromNetwork($0) }
+            let rsp = try await Linkman.shared.exactSearch(keyword: keyword, pageSize: searchParam.pageSize, pageNum: searchParam.pageNum)
+            let l = await SearchResultList.fromNetwork(rsp.records)
+            if searchParam.pageNum == 1 {
+                exactSearchResult = l
+            } else {
+                exactSearchResult.append(contentsOf: l)
+            }
+            searchParam.finished = exactSearchResult.count >= rsp.total || searchParam.pageSize > rsp.size
         } catch {
             print("excatSearch ERROR: \(error)")
         }
@@ -86,7 +108,10 @@ extension SearchResult {
     }
     
     static func fromNetwork(_ item: Linkman.NetworkSearchResult) async -> SearchResult {
-        let estateType = await DictType.estateType(of: item.fvEstateType ?? "") ?? ""
+        var estateType = ""
+        if let fvEstateType = item.fvEstateType {
+            estateType = await DictType.estateType(of: fvEstateType) ?? ""
+        }
         return SearchResult(
             id: item.id,
             roomName: item.fvFamilyRoomName,
@@ -97,6 +122,16 @@ extension SearchResult {
             address: item.fvStreetMark,
             picUrls: item.picUrls
         )
+    }
+}
+
+extension SearchResultList {
+    static func fromNetwork(_ networkList: [Linkman.NetworkSearchResult]) async -> SearchResultList {
+        var out: SearchResultList = []
+        for item in networkList {
+            out.append(await SearchResult.fromNetwork(item))
+        }
+        return out
     }
 }
 

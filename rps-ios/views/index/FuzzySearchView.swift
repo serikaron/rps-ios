@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FuzzySearchView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @StateObject var estateService = EstateService.preview
+    @StateObject var estateService = EstateService()
     
     @State private var nextAction: NextAction = .exactSearch
     @State private var showExactSearchView = false

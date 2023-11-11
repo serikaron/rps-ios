@@ -113,29 +113,38 @@ extension Linkman {
     
     struct ExactSearchResponse: Codable {
         let records: [NetworkSearchResult]
+        let total: Int
+        let size: Int
     }
     
-    func exactSearch(keyword: String) async throws -> ExactSearchResponse {
+    func exactSearch(keyword: String, pageSize: Int, pageNum: Int) async throws -> ExactSearchResponse {
         return try await Request()
             .with(\.path, setTo: "/data/rps/dcdata/getCompoundByComName")
             .with(\.method, setTo: .GET)
             .with(\.query, setTo: [
-                "fvCompoundName": keyword
+                "fvCompoundName": keyword,
+                "pageSize": "\(pageSize)",
+                "pageNum": "\(pageNum)"
             ])
-            .with(\.standaloneResponse, setTo: standaloneResponse(ExactSearchResponse(records: [NetworkSearchResult.mock])))
+//            .with(\.standaloneResponse, setTo: standaloneResponse(ExactSearchResponse(records: [NetworkSearchResult.mock])))
+            .with(\.standaloneResponse, setTo: standaloneResponse(ExactSearchResponse(
+                records: (pageSize*(pageNum-1)..<pageSize*(pageNum)).map { NetworkSearchResult.mockResult(num: $0)},
+                total: 10,
+                size: pageSize
+            )))
             .make()
             .response() as ExactSearchResponse
     }
     
     struct NetworkDictItem: Codable {
-        let dictTypeName: String
-        let dictLabel: String
-        let dictValue: String
-        let dictSort: Int
+        let dictTypeName: String?
+        let dictLabel: String?
+        let dictValue: String?
+        let dictSort: Int?
     }
     
     struct NetworkDictType: Codable {
-        let dictType: String
+        let dictType: String?
         let sysDictDataList: [NetworkDictItem]
     }
     
@@ -143,7 +152,7 @@ extension Linkman {
     
     func getDict() async throws -> DictResponse {
         return try await Request()
-            .with(\.path, setTo: "sysDictDataList")
+            .with(\.path, setTo: "/system/dict/type/selectList")
             .with(\.method, setTo: .GET)
             .with(\.standaloneResponse, setTo: standaloneResponse(DictResponse.mock))
             .make()
