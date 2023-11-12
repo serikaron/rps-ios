@@ -31,6 +31,7 @@ extension Image {
         static var searchOCR: Image { return Image("index-search-ocr") }
         static var editIcon: Image { return Image("index-edit") }
         static var pointIcon: Image { return Image("index-point") }
+        static var close: Image { return Image("index-room-close") }
     }
     
     enum onboarding {

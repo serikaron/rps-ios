@@ -26,6 +26,8 @@ class EstateService: ObservableObject {
     private var fuzzySearchTask: Task<Void, Never>?
     @Published var fuzzySearchResult: SearchResultList = []
     
+    var isPreview = false
+    
     func fuzzySearch(keyword: String) {
         guard !keyword.isEmpty else {
             fuzzySearchResult = []
@@ -111,6 +113,13 @@ class EstateService: ObservableObject {
             return (0, 0, [])
         }
     }
+    
+    var previewFloors = Floors.mock(floorCount: 10, unitCount: 4)
+    func getFloors() -> Floors {
+        if (isPreview) { return previewFloors }
+        
+        return Floors.mock(floorCount: 10, unitCount: 4)
+    }
 }
 
 extension SearchResult {
@@ -161,6 +170,7 @@ extension SearchResultList {
 extension EstateService {
     static var preview: EstateService {
         let out = EstateService()
+        out.isPreview = true
         Task {
             out.exactSearchResult = [await SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
             out.fuzzySearchResult = [await SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]

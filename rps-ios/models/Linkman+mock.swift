@@ -135,3 +135,23 @@ extension Building {
             fvFloorHeight: "5")
     }
 }
+
+extension Floors {
+    static func mock(floorCount: Int, unitCount: Int) -> Floors {
+        Floors(
+            unitTitles: (1...unitCount).map { "\($0)单元" },
+            floors: (1...floorCount).map { floor in
+                Floor(
+                    name: "楼层\(floor)",
+                    rooms: (1...unitCount).map { room in
+                        Room(
+                            floorNum: floor,
+                            roomNum: "\(room)",
+                            roomName: "\(floor)-\(room)"
+                        )
+                    }
+                )
+            }
+        )
+    }
+}

@@ -21,3 +21,19 @@ struct Building: Codable {
 }
 typealias Buildings = [Building]
 
+struct Floor: Codable {
+    let name: String
+    let rooms: Rooms
+}
+
+struct Floors: Codable {
+    let unitTitles: [String]
+    let floors: [Floor]
+}
+
+struct Room: Codable {
+    let floorNum: Int
+    let roomNum: String
+    let roomName: String
+}
+typealias Rooms = [Room]
