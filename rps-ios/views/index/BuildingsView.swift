@@ -19,24 +19,53 @@ struct BuildingsView: View {
     @State private var pageNum = 1
     private let pageSize = 10
     
+    @State private var showPopup = false
+    @State private var popupOffset: CGFloat = 500
+    
     var body: some View {
-        VStack {
-            ScrollView {
-                LazyVStack() {
-                    ForEach(Array(zip(buildings.indices, buildings)), id: \.0) { idx, building in
-                        view(for: building)
-                            .onAppear {
-                                if (idx == buildings.count - 2) {
-                                    loadBuildings()
+        ZStack {
+            VStack {
+                ScrollView {
+                    LazyVStack() {
+                        ForEach(Array(zip(buildings.indices, buildings)), id: \.0) { idx, building in
+                            view(for: building)
+                                .background(Color.white)
+                                .onAppear {
+                                    if (idx == buildings.count - 2) {
+                                        loadBuildings()
+                                    }
                                 }
-                            }
+                                .onTapGesture {
+                                    showPopup = true
+                                    Task {
+                                        await estateService.getFloors(
+                                            buildingName: building.name,
+                                            buildingId: building.id,
+                                            estateType: building.estateType,
+                                            areaCode: building.areaCode)
+                                    }
+                                }
+                        }
                     }
+                    .padding(.horizontal, 12)
+                    .background(Color.white)
                 }
-                .padding(.horizontal, 12)
-                .background(Color.white)
+                .padding(.top, 20)
+                .background(Color.view.background)
             }
-            .padding(.top, 20)
-            .background(Color.view.background)
+            Color.black.opacity(showPopup ? 0.6 : 0)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    showPopup = false
+                    estateService.floors = .empty
+                }
+            floorsPopup
+                .offset(x: 0, y: popupOffset)
+        }
+        .onChange(of: showPopup) { isShow in
+            withAnimation(.spring(duration: 0.2, bounce: 0.3)) {
+                popupOffset = isShow ? 0 : 500
+            }
         }
         .onAppear {
             loadBuildings()
@@ -86,6 +115,11 @@ struct BuildingsView: View {
             allLoaded = buildings.count >= rsp.total || pageSize > rsp.size
             pageNum += 1
         }
+    }
+    
+    private var floorsPopup: some View {
+        showPopup ? FloorsView().earseToAnyView() : EmptyView().earseToAnyView()
+        
     }
 }
 

@@ -90,7 +90,7 @@ private extension Linkman {
     @MainActor
     func make(request: Request) async throws {
         do {
-            print("make \(standalone ? "standalone" : "network") request")
+//            print("make \(standalone ? "standalone" : "network") request")
             if (standalone || request.forceStandalone) {
                 request._response = request.standaloneResponse
                 try await Task.sleep(nanoseconds: UInt64.random(in: 10_000_000...200_000_000))

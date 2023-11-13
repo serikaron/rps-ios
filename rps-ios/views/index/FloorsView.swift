@@ -10,12 +10,9 @@ import SwiftUI
 struct FloorsView: View {
     @EnvironmentObject var estateService: EstateService
     
-    let buildingName: String
-    let buildingId: Int
-    let estateType: String
-    let areaCode: Int
-    
-    @State private var floors = Floors.mock(floorCount: 10, unitCount: 4)
+    private var floors: Floors {
+        estateService.floors
+    }
     
     var body: some View {
         ScrollView([.vertical, .horizontal]) {
@@ -24,11 +21,6 @@ struct FloorsView: View {
                 content
             }
             .border(Color.border)
-            .onAppear {
-                Task {
-                    floors = await estateService.getFloors(buildingId: buildingId, estateType: estateType, areaCode: areaCode)
-                }
-            }
         }
         .frame(width: 250, height: 270)
         .padding(.init(top: 26, leading: 26, bottom: 15, trailing: 40))
@@ -46,7 +38,7 @@ struct FloorsView: View {
         HStack(spacing: 0) {
             RoomText(text: "楼层", width: 50, height: 75)
             VStack(spacing: 0) {
-                RoomText(text: buildingName, width: 200, height: 35)
+                RoomText(text: floors.buildingName, width: 200, height: 35)
                     .frame(height: 35)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 HStack(spacing: 0) {
@@ -118,21 +110,26 @@ private extension Color {
 
 #Preview("online") {
     Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoibmZKT1dHcVYwNXFQd01qQXpSVjAyZTN5WDZGYXNsblQiLCJ1c2VySWQiOjQwfQ.qXqGFyWUOdhkUIE4AhjB5wB1zwOxQ0sG7v4XQahdpEQ")
-    return FloorsView(
-        buildingName: "黎明东路65号",
-        buildingId: 1,
-        estateType: "singleApartment",
-        areaCode: 330106
-    )
-    .environmentObject(
-        EstateService()
-    )
-    .previewLayout(.sizeThatFits)
+    return FloorsView()
+        .environmentObject( EstateService().loadFloors() )
+        .previewLayout(.sizeThatFits)
 }
 
 fileprivate extension EstateService {
     func setPreview(data: Floors) -> EstateService {
-        self.previewFloors = data
+        self.floors = data
+        return self
+    }
+    
+    func loadFloors() -> EstateService {
+        Task {
+            await getFloors(
+                buildingName: "黎明东路65号",
+                buildingId: 1,
+                estateType: "singleApartment",
+                areaCode: 330106
+            )
+        }
         return self
     }
 }
@@ -144,12 +141,7 @@ fileprivate struct PreviewView: View {
     var body: some View {
         ZStack {
             Color.black
-            FloorsView(
-                buildingName: "黎明东路65号",
-                buildingId: 1,
-                estateType: "singleApartment",
-                areaCode: 330106
-            )
+            FloorsView()
                 .environmentObject(
                     EstateService.preview
                         .setPreview(data: .mock(floorCount: floorCount, unitCount: unitCount))

@@ -114,13 +114,8 @@ class EstateService: ObservableObject {
         }
     }
     
-    var previewFloors = Floors.mock(floorCount: 10, unitCount: 4)
-    func getFloors(buildingId: Int, estateType: String, areaCode: Int) async -> Floors {
-        print("getFloors - 1")
-        if (isPreview) { return previewFloors }
-        
-        print("getFloors - 2")
-        
+    @Published var floors: Floors = .empty
+    func getFloors(buildingName: String, buildingId: Int, estateType: String, areaCode: Int) async {
         do {
             let rsp = try await Linkman.shared.getBuildingFloors(buildingId: buildingId, estateType: estateType, areaCode: areaCode)
             let units = rsp.unitInfoResponseList.sorted { $0.order ?? "" < $1.order ?? "" }
@@ -138,10 +133,10 @@ class EstateService: ObservableObject {
                     }
                 )
             }
-            return Floors(unitTitles: units.compactMap { $0.type }, floors: floors)
+            self.floors = Floors(buildingName: buildingName, unitTitles: units.compactMap { $0.type }, floors: floors)
         } catch {
             print("getFloors FAILED: \(error)")
-            return Floors.empty
+            floors = Floors.empty
         }
     }
 }

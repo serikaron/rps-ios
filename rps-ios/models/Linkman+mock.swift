@@ -132,13 +132,17 @@ extension Building {
             fdCompletionDate: "2010",
             fvBuildingName: "宝石1幢",
             fvNameAlias: "宝石1幢",
-            fvFloorHeight: "5")
+            fvFloorHeight: "5",
+            fvEstateType: "singleApartment",
+            fiAreaCode: 330106
+        )
     }
 }
 
 extension Floors {
     static func mock(floorCount: Int, unitCount: Int) -> Floors {
         Floors(
+            buildingName: "宝石1幢",
             unitTitles: (1...unitCount).map { "\($0)单元" },
             floors: (1...floorCount).map { floor in
                 Floor(
