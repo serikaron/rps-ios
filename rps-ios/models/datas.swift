@@ -29,6 +29,8 @@ struct Floor: Codable {
 struct Floors: Codable {
     let unitTitles: [String]
     let floors: [Floor]
+    
+    static var empty: Floors { Floors(unitTitles: [], floors: []) }
 }
 
 struct Room: Codable {
@@ -37,3 +39,4 @@ struct Room: Codable {
     let roomName: String
 }
 typealias Rooms = [Room]
+

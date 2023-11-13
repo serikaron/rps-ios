@@ -52,4 +52,61 @@ final class rps_iosTests: XCTestCase {
         await test(type: "fv_estate_type", key: "singleApartment", value: "商住公寓")
         await test(type: "fv_estate_type", key: "commApartment", value: "普通公寓")
     }
+    
+    func testJsonDynamicKey() throws {
+       let json = """
+    {
+        "unitInfoResponseList": [
+            {
+                "keys": "d1r2",
+                "type": "(2R)1单元",
+                "order": "01",
+                "allselection": [],
+                "allselectionOjb": []
+            },
+            {
+                "keys": "d1r3",
+                "type": "(3R)1单元",
+                "order": "02",
+                "allselection": [],
+                "allselectionOjb": []
+            }
+        ],
+        "floorData": [
+            {
+                "allselection": [],
+                "d1r2": {
+                    "items": [
+                        {
+                            "fiFloorNum": 18,
+                            "fvRoomNum": "02",
+                            "fvRoomName": null,
+                        }
+                    ]
+                },
+                "d1r3": {
+                    "items": [
+                        {
+                            "fiFloorNum": 18,
+                            "fvRoomNum": "03",
+                            "fvRoomName": null,
+                        }
+                    ]
+                },
+                "key": 18,
+                "louceng": "18F"
+            },
+        ],
+        "baseRoomData": []
+    }
+"""
+        
+        let buildingFloor = try json.data(using: .utf8)!.decoded() as Linkman.BuildingFloors
+//        print(buildingFloor)
+        print("OK")
+        XCTAssertEqual(buildingFloor.floorData.count, 1)
+        XCTAssertEqual(buildingFloor.unitInfoResponseList.map { $0.type }, ["(2R)1单元", "(3R)1单元"])
+        XCTAssertEqual(buildingFloor.floorData[0].units.keys.map { $0 }, ["d1r2", "d1r3"])
+        XCTAssertEqual(buildingFloor.floorData[0].units.values.map { $0.items[0].fvRoomNum }, ["02", "03"])
+    }
 }

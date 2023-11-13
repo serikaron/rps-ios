@@ -181,5 +181,82 @@ extension Linkman {
             .make()
             .response() as BuildingsResponse
     }
+    
+    
+    struct UnitInfo: Codable {
+        let keys: String?
+        let type: String?
+        let order: String?
+    }
+
+    struct BuildingFloors: Codable {
+        let unitInfoResponseList: [UnitInfo]
+        let floorData: [FloorData]
+    }
+    
+    struct FloorData: Codable {
+        let units: [String: FloorDataItems]
+        let louceng: String?
+        
+        struct DynamicKey: CodingKey {
+            var stringValue: String
+            init?(stringValue: String) {
+                self.stringValue = stringValue
+                self.intValue = nil
+            }
+            
+            var intValue: Int?
+            init?(intValue: Int) {
+                self.intValue = intValue
+                self.stringValue = ""
+            }
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: DynamicKey.self)
+            
+            var louceng: String?
+            var units = [String: FloorDataItems]()
+            try container.allKeys.forEach { key in
+                if key.stringValue == "louceng" {
+                    louceng = try container.decode(String.self, forKey: key)
+                    return
+                }
+                
+                do {
+                    let items = try container.decode(FloorDataItems.self, forKey: key)
+                    units[key.stringValue] = items
+                } catch {}
+            }
+            
+            self.louceng = louceng
+            self.units = units
+        }
+    }
+    
+    struct FloorDataItem: Codable {
+        let fiFloorNum: Int?
+        let fvRoomNum: String?
+        let fvRoomName: String?
+    }
+    
+    struct FloorDataItems: Codable {
+        let items: [FloorDataItem]
+    }
+    
+    typealias BuildingFloorsResponse = BuildingFloors
+    
+    func getBuildingFloors(buildingId: Int, estateType: String, areaCode: Int) async throws -> BuildingFloors {
+        try await Request()
+            .with(\.path, setTo: "/data/singleApartment/room/getBaseData")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "fvEstateType": estateType,
+                "fiBuildingId": "\(buildingId)",
+                "fiAreaCode": "\(areaCode)"
+            ])
+            .make()
+            .response() as BuildingFloors
+    }
 }
 

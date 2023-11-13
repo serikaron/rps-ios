@@ -1,5 +1,5 @@
 //
-//  RoomsView.swift
+//  FloorsView.swift
 //  rps-ios
 //
 //  Created by serika on 2023/11/12.
@@ -7,10 +7,13 @@
 
 import SwiftUI
 
-struct RoomsView: View {
+struct FloorsView: View {
     @EnvironmentObject var estateService: EstateService
     
     let buildingName: String
+    let buildingId: Int
+    let estateType: String
+    let areaCode: Int
     
     @State private var floors = Floors.mock(floorCount: 10, unitCount: 4)
     
@@ -22,7 +25,9 @@ struct RoomsView: View {
             }
             .border(Color.border)
             .onAppear {
-                floors = estateService.getFloors()
+                Task {
+                    floors = await estateService.getFloors(buildingId: buildingId, estateType: estateType, areaCode: areaCode)
+                }
             }
         }
         .frame(width: 250, height: 270)
@@ -46,7 +51,9 @@ struct RoomsView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 HStack(spacing: 0) {
                     ForEach(floors.unitTitles, id: \.self) { title in
-                        RoomText(text: title,
+                        (floors.unitTitles.count >= 4) 
+                        ? RoomText(text: title, width: 50, height: 40)
+                        : RoomText(text: title,
                                  height: 40,
                                  maxWidth: 200, minWidth: 50
                         )
@@ -68,7 +75,9 @@ struct RoomsView: View {
         HStack(spacing: 0) {
             RoomText(text: floor.name, width: 50, height: 40)
             ForEach(Array(zip(floor.rooms.indices, floor.rooms)), id: \.0) { _, room in
-                RoomText(text: "\(room.floorNum)\(room.roomNum)",
+                floor.rooms.count >= 4
+                ? RoomText(text: "\(room.floorNum)\(room.roomNum)", width: 50, height: 40)
+                : RoomText(text: "\(room.floorNum)\(room.roomNum)",
                          height: 40,
                          maxWidth: 200, minWidth: 50
                 )
@@ -107,6 +116,20 @@ private extension Color {
     }
 }
 
+#Preview("online") {
+    Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoibmZKT1dHcVYwNXFQd01qQXpSVjAyZTN5WDZGYXNsblQiLCJ1c2VySWQiOjQwfQ.qXqGFyWUOdhkUIE4AhjB5wB1zwOxQ0sG7v4XQahdpEQ")
+    return FloorsView(
+        buildingName: "黎明东路65号",
+        buildingId: 1,
+        estateType: "singleApartment",
+        areaCode: 330106
+    )
+    .environmentObject(
+        EstateService()
+    )
+    .previewLayout(.sizeThatFits)
+}
+
 fileprivate extension EstateService {
     func setPreview(data: Floors) -> EstateService {
         self.previewFloors = data
@@ -121,7 +144,12 @@ fileprivate struct PreviewView: View {
     var body: some View {
         ZStack {
             Color.black
-            RoomsView(buildingName: "黎明东路65号")
+            FloorsView(
+                buildingName: "黎明东路65号",
+                buildingId: 1,
+                estateType: "singleApartment",
+                areaCode: 330106
+            )
                 .environmentObject(
                     EstateService.preview
                         .setPreview(data: .mock(floorCount: floorCount, unitCount: unitCount))
