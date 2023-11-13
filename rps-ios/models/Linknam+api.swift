@@ -248,7 +248,7 @@ extension Linkman {
     
     func getBuildingFloors(buildingId: Int, estateType: String, areaCode: Int) async throws -> BuildingFloors {
         try await Request()
-            .with(\.path, setTo: "/data/singleApartment/room/getBaseData")
+            .with(\.path, setTo: "/data/\(estateType)/room/getBaseData")
             .with(\.method, setTo: .GET)
             .with(\.query, setTo: [
                 "fvEstateType": estateType,

@@ -139,6 +139,8 @@ class EstateService: ObservableObject {
             floors = Floors.empty
         }
     }
+    
+    @Published var roomDetail: RoomDetail = .mock
 }
 
 extension SearchResult {

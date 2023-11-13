@@ -45,3 +45,17 @@ struct Room: Codable {
 }
 typealias Rooms = [Room]
 
+struct RoomDetail: Codable {
+    let roomName: String
+    let address: String
+    let estateType: String
+    let landUser: String
+    let completionDate: String
+    let position: String
+    let structure: String
+    let facing: String
+    let height: String
+    let floor: String
+    let property: String
+    let usage: String
+}

@@ -159,3 +159,22 @@ extension Floors {
         )
     }
 }
+
+extension RoomDetail {
+    static var mock: RoomDetail {
+        RoomDetail(
+            roomName: "杭州市壹号院9幢1001室",
+            address: "杭州市壹号院9幢1001室",
+            estateType: "临街商铺",
+            landUser: "无",
+            completionDate: "2001",
+            position: "无",
+            structure: "钢混结构",
+            facing: "西北",
+            height: "12",
+            floor: "1-1",
+            property: "无",
+            usage: "无"
+        )
+    }
+}

@@ -32,6 +32,7 @@ extension Image {
         static var editIcon: Image { return Image("index-edit") }
         static var pointIcon: Image { return Image("index-point") }
         static var close: Image { return Image("index-room-close") }
+        static var mapIcon: Image { return Image("index-map-icon") }
     }
     
     enum onboarding {
