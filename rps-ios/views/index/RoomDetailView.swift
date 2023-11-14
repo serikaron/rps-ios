@@ -16,21 +16,26 @@ struct RoomDetailView: View {
     let familyRoomName: String
     let areaCode: Int
     let estateType: String
-
+    let buildingId: Int
+    
     var body: some View {
-        ScrollView {
-            ZStack(alignment: .top) {
-                Color.red
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .ignoresSafeArea(edges: .bottom)
-                Color.gray
-                    .frame(height: 252)
-                    .frame(maxHeight: .infinity, alignment: .top)
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 219)
-                    content
+        ZStack {
+            Color.view.background
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea(edges: .bottom)
+            ScrollView {
+                ZStack(alignment: .top) {
+                    Color.gray
+                        .frame(height: 252)
+                        .frame(maxHeight: .infinity, alignment: .top)
+                    VStack(spacing: 0) {
+                        Spacer().frame(height: 219)
+                        content
+                    }
                 }
             }
+            inquiryLayer
+                .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .setupNavigationBar(title: "系统询价详情") {
             presentationMode.wrappedValue.dismiss()
@@ -40,7 +45,9 @@ struct RoomDetailView: View {
                 await estateService.getRoomDetail(
                     estateType: estateType,
                     areaCode: areaCode,
-                    familyRoomName: familyRoomName)
+                    familyRoomName: familyRoomName,
+                    buildingId: buildingId
+                )
             }
         }
     }
@@ -48,7 +55,7 @@ struct RoomDetailView: View {
     @State private var selectedTab: RoomDetailTab = .inquiryDetail
     
     private var content: some View {
-        VStack {
+        VStack(spacing: 0) {
             Spacer().frame(height: 20)
             Text(roomDetail.roomName)
                 .customText(size: 18, color: .text.gray3, weight: .medium)
@@ -95,6 +102,26 @@ struct RoomDetailView: View {
             }
         }
         .padding(.horizontal, 16)
+    }
+    
+    @State private var areaText: String = ""
+    
+    private var inquiryLayer: some View {
+        HStack {
+            HStack {
+                TextField("请输入建筑面积", text: $areaText)
+                Text("估一下")
+                    .customText(size: 14, color: .white)
+                    .frame(width: 81, height: 36)
+                    .background(Color.hex("#FFB23F"))
+                    .cornerRadius(8)
+            }
+            .padding(.horizontal, 16)
+        }
+        .frame(height: 50)
+        .background(Color.white)
+        .padding(.horizontal, 12)
+        .cornerRadius(8)
     }
 }
 
@@ -192,17 +219,17 @@ private struct RoomInfoView: View {
     }
     
     private func item(title: String, content: String, isRight: Bool) -> some View {
-        HStack {
+        VStack(spacing: 14) {
             Text(title)
                 .customText(size: 14, color: .text.gray6)
-            if isRight {
-                Spacer()
-            }
             Text(content)
                 .customText(size: 14, color: .text.gray3)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
+}
+
+private enum RoomInfoItem {
+    case estateType
 }
 
 #Preview {
@@ -210,13 +237,14 @@ private struct RoomInfoView: View {
         RoomDetailView(
             familyRoomName: "宝石1幢1单元RF301",
             areaCode: 300106,
-            estateType: "singleApartment"
+            estateType: "singleApartment",
+            buildingId: 1
         )
-            .environmentObject(
-                EstateService()
-                    .setRoomDetail(.mock)
-            )
-            .navigationBarTitleDisplayMode(.inline)
+        .environmentObject(
+            EstateService()
+                .setRoomDetail(.mock)
+        )
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -226,10 +254,11 @@ private struct RoomInfoView: View {
         RoomDetailView(
             familyRoomName: "宝石1幢1单元RF301",
             areaCode: 300106,
-            estateType: "singleApartment"
+            estateType: "singleApartment",
+            buildingId: 1
         )
-            .environmentObject( EstateService() )
-            .navigationBarTitleDisplayMode(.inline)
+        .environmentObject( EstateService() )
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

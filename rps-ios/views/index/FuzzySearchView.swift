@@ -27,7 +27,7 @@ struct FuzzySearchView: View {
             }
             
             NavigationLink(isActive: $showDetail) {
-                RoomDetailView(familyRoomName: selectedRoomInfo?.roomName ?? "", areaCode: selectedRoomInfo?.areacode ?? 0, estateType: selectedRoomInfo?.estateType ?? "")
+                RoomDetailView(familyRoomName: selectedRoomInfo?.roomName ?? "", areaCode: selectedRoomInfo?.areacode ?? 0, estateType: selectedRoomInfo?.estateType ?? "", buildingId: selectedRoomInfo?.buildingId ?? 0)
                     .environmentObject(estateService)
             } label: {
                 EmptyView()

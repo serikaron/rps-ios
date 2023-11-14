@@ -44,7 +44,7 @@ extension Linkman.NetworkSearchResult {
 //            fvAreaLocation: "7",
 //            picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
             picUrls: "",
-            fvCompletionDate: "2001"
+            fvCompletionDate: "2001",
 //            fvPois: null,
 //            fiOrgId: 294,
 //            fvProvinceName: "浙江省",
@@ -52,6 +52,7 @@ extension Linkman.NetworkSearchResult {
 //            fvAreaName: "西湖区",
 //            fvSubdistrictName: "三墩镇",
 //            fvEstateState: "4"
+            fiBuildingId: 0
         )
     }
     
@@ -66,7 +67,8 @@ extension Linkman.NetworkSearchResult {
             fvNameAlias: "fvNameAlias-\(num)",
             fvStreetMark: "fvStreetMark-\(num)",
             picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
-            fvCompletionDate: "\(num)"
+            fvCompletionDate: "\(num)",
+            fiBuildingId: 0
         )
     }
 }
@@ -153,7 +155,8 @@ extension Floors {
                             name: "1801",
                             familyRoomName: "宝石1幢1单元RF301",
                             areaCode: 300106,
-                            estateType: "singleApartment"
+                            estateType: "singleApartment",
+                            buildingId: 0
                         )
                     }
                 )
@@ -165,22 +168,53 @@ extension Floors {
 extension RoomDetail {
     static var mock: RoomDetail {
         RoomDetail(
-            fvFamilyRoomName: "杭州市壹号院9幢1001室",
-            fvProvinceName: "浙江省",
-            fvCityName: "杭州市",
-            fvAreaName: "西湖区",
-            fvSubdistrictName: "翠苑街道",
-            fvEstateType: "shopStreet",
-            estateTypeLabel: "临街商铺",
-            fvLandUser: nil,
-            fvCompletionDate: "2001",
-//            position: "无",
-            fvBuildingStructure: "钢混结构",
-            fvOrientation: "西北",
-            fvFloorHeight: "12",
-            fvInFloor: "1-1",
-            fvHouseProperty: nil,
-            fvHousingUse: nil
+            networkRoomDetail: .mock,
+            roomCount: 0
+        )
+    }
+}
+
+extension Linkman.NetworkRoomDetail {
+    static var mock: Linkman.NetworkRoomDetail {
+        Linkman.NetworkRoomDetail (
+            fvFamilyRoomName: "",
+            fvProvinceName: "",
+            fvCityName: "",
+            fvAreaName: "",
+            fvSubdistrictName: "",
+            fvEstateType: "",
+            estateTypeLabel: "",
+            fvLandUser: "",
+            fvCompletionDate: "",
+            fvBuildingStructure: "",
+            fvOrientation: "",
+            fvFloorHeight: "",
+            fvInFloor: "",
+            fvHouseProperty: "",
+            fvHousingUse: "",
+            fvPosition: "",
+            dcBuilding: .mock,
+            dcCompound: .mock
+        )
+    }
+}
+
+extension Linkman.DCBuilding {
+    static var mock: Linkman.DCBuilding {
+        Linkman.DCBuilding (
+            fvHouseProperty: "",
+            fvBuildingStructure: "",
+            fiLandUpperCount: 0,
+            fvHousingUse: ""
+        )
+    }
+}
+
+extension Linkman.DCCompound {
+    static var mock: Linkman.DCCompound {
+        Linkman.DCCompound(
+            fvLandUser: "",
+            fvCompletionDate: ""
         )
     }
 }

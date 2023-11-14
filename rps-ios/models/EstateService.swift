@@ -19,6 +19,7 @@ struct SearchResult {
     let picUrls: String?
     let comId: Int?
     let areacode: Int?
+    let buildingId: Int?
 }
 typealias SearchResultList = [SearchResult]
 
@@ -137,7 +138,8 @@ class EstateService: ObservableObject {
                                         r.fvRoomName ?? "",
                                     familyRoomName: r.fvFamilyRoomName ?? "",
                                     areaCode: r.fiAreaCode ?? 0,
-                                    estateType: r.fvEstateType ?? ""
+                                    estateType: r.fvEstateType ?? "",
+                                    buildingId: r.fiBuildingId ?? 0
                         )
                     }
                 )
@@ -150,10 +152,11 @@ class EstateService: ObservableObject {
     }
     
     @Published var roomDetail: RoomDetail = .mock
-    func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String) async {
+    func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String, buildingId: Int) async {
         do {
+            let roomCount = try await Linkman.shared.getRoomCount(estateType: estateType, buildingId: buildingId)
             let rsp = try await Linkman.shared.getRoomDetail(estateType: estateType, areaCode: areaCode, familyRoomName: familyRoomName)
-            roomDetail = rsp
+            roomDetail = RoomDetail(networkRoomDetail: rsp, roomCount: roomCount)
         } catch {
             print("getRoomDetail FAILED: \(error)")
         }
@@ -172,7 +175,8 @@ extension SearchResult {
                      address: "address-\(num)",
                      picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
                      comId: 1,
-                     areacode: 300106
+                     areacode: 300106,
+                     buildingId: 1
         )
     }
     
@@ -188,7 +192,8 @@ extension SearchResult {
             address: item.fvStreetMark,
             picUrls: item.picUrls,
             comId: item.fiCompoundId,
-            areacode: item.fiAreaCode
+            areacode: item.fiAreaCode,
+            buildingId: item.fiBuildingId
         )
     }
 }

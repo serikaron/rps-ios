@@ -43,49 +43,134 @@ struct Room: Codable {
     let familyRoomName: String
     let areaCode: Int
     let estateType: String
+    let buildingId: Int
 }
 typealias Rooms = [Room]
 
-@MainActor
-struct RoomDetail: Codable {
-    let fvFamilyRoomName: String?
-    let fvProvinceName: String?
-    let fvCityName: String?
-    let fvAreaName: String?
-    let fvSubdistrictName: String?
-    let fvEstateType: String?
-    let estateTypeLabel: String?
-    let fvLandUser: String?
-    let fvCompletionDate: String?
-    let fvBuildingStructure: String?
-    let fvOrientation: String?
-    let fvFloorHeight: String?
-    let fvInFloor: String?
-    let fvHouseProperty: String?
-    let fvHousingUse: String?
+enum EstateType {
+    case commApartment
     
-    var roomName: String { fvFamilyRoomName ?? "" }
+    init?(_ value: String?) {
+        switch value {
+        case "commApartment": self = .commApartment
+        default: return nil
+        }
+    }
+}
+
+@MainActor
+struct RoomDetail {
+    let networkRoomDetail: Linkman.NetworkRoomDetail
+    let roomCount: Int
+    
+    private let nilText: String = "无"
+    
+    private var _type: EstateType? {
+        EstateType(networkRoomDetail.fvEstateType)
+    }
+    
+    private var dcBuilding: Linkman.DCBuilding { networkRoomDetail.dcBuilding }
+    private var dcCompound: Linkman.DCCompound { networkRoomDetail.dcCompound }
+    
+    private var hasRoom: Bool { roomCount > 0 }
+    
+    var roomName: String { networkRoomDetail.fvFamilyRoomName ?? "" }
     var address: String {
-        return "\(fvProvinceName ?? "")" +
-        "\(fvCityName ?? "")" +
-        "\(fvAreaName ?? "")" +
-        "\(fvSubdistrictName ?? "")" +
-        "\(fvFamilyRoomName ?? "")"
+        return "\(networkRoomDetail.fvProvinceName ?? "")" +
+        "\(networkRoomDetail.fvCityName ?? "")" +
+        "\(networkRoomDetail.fvAreaName ?? "")" +
+        "\(networkRoomDetail.fvSubdistrictName ?? "")" +
+        "\(networkRoomDetail.fvFamilyRoomName ?? "")"
     }
     var estateType: String {
-        guard let t = fvEstateType else { return "无" }
-        return DictType.estate.label(of: t) ?? "无"
+        guard let t = networkRoomDetail.fvEstateType else { return nilText }
+        let out = DictType.estate.label(of: t) ?? nilText
+        switch _type {
+        case .commApartment:
+            return out
+        case nil: return nilText
+        }
     }
-    var landUser: String { fvLandUser ?? "无" }
-    var completionDate: String { fvCompletionDate ?? "无" }
-    var position: String { "无" }
-    var structure: String { fvBuildingStructure ?? "无" }
+    var landUser: String {
+        switch _type {
+        case .commApartment:
+            guard let landUser = hasRoom ? networkRoomDetail.fvLandUser : dcCompound.fvLandUser
+            else { return nilText }
+            return DictType.landUser.label(of: landUser) ?? nilText
+        case nil: return nilText
+        }
+    }
+    var completionDate: String {
+        switch _type {
+        case .commApartment:
+            // 未确定
+            return dcCompound.fvCompletionDate ?? nilText
+        case nil: return nilText
+        }
+    }
+    var position: String {
+        // 未确定
+        switch _type {
+        case .commApartment:
+            guard let position = networkRoomDetail.fvPosition else { return nilText }
+            return DictType.position.label(of: position) ?? nilText
+        case nil: return nilText
+        }
+    }
+    var structure: String {
+        switch _type {
+        case .commApartment:
+            guard let bs = dcBuilding.fvBuildingStructure else { return nilText }
+            return DictType.buildingStructure.label(of: bs) ?? nilText
+        case nil: return nilText
+        }
+    }
     var facing: String {
-        guard let t = fvOrientation else { return "无" }
-        return DictType.orientation.label(of: t) ?? "无"
+        // 楼幢没有orientation
+        switch _type {
+        case .commApartment:
+            guard let o = networkRoomDetail.fvOrientation else { return nilText }
+            return DictType.orientation.label(of: o) ?? nilText
+        case nil: return nilText
+        }
     }
-    var height: String { fvFloorHeight ?? "无" }
-    var floor: String { fvInFloor ?? "无" }
-    var property: String { fvHouseProperty ?? "无" }
-    var usage: String { fvHousingUse ?? "无" }
+    var height: String {
+        switch _type {
+        case .commApartment:
+            return "\(dcBuilding.fiLandUpperCount ?? 0)"
+        case nil: return "0"
+        }
+    }
+    var floor: String {
+        // 自动解释？
+        switch _type {
+        case .commApartment:
+            return hasRoom ?
+            networkRoomDetail.fvInFloor ?? nilText :
+            nilText
+        case nil: return nilText
+        }
+    }
+    var property: String {
+        switch _type {
+        case .commApartment:
+            guard let hp = hasRoom ? networkRoomDetail.fvHouseProperty :
+                    dcBuilding.fvHouseProperty
+            else { return nilText }
+            return DictType.houseProperty.label(of: hp) ?? nilText
+        case nil:
+            return nilText
+        }
+    }
+    var usage: String {
+        switch _type {
+        case .commApartment:
+            guard let hu = hasRoom ? networkRoomDetail.fvHousingUse :
+                    dcBuilding.fvHousingUse
+            else { return nilText }
+            return DictType.housingUse.label(of: hu) ?? nilText
+        case nil:
+            return nilText
+        }
+    }
 }

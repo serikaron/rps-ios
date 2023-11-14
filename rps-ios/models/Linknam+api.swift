@@ -97,6 +97,7 @@ extension Linkman {
         let fvStreetMark: String?
         let picUrls: String?
         let fvCompletionDate: String?
+        let fiBuildingId: Int?
     }
     
     typealias FuzzySearchResopnse = [NetworkSearchResult]
@@ -256,6 +257,7 @@ extension Linkman {
         let fvFamilyRoomName: String?
         let fiAreaCode: Int?
         let fvEstateType: String?
+        let fiBuildingId: Int?
     }
     
     struct FloorDataItems: Codable {
@@ -277,7 +279,41 @@ extension Linkman {
             .response() as BuildingFloors
     }
     
-    typealias RoomDetailResponse = RoomDetail
+    struct DCBuilding: Codable {
+        let fvHouseProperty: String?
+        let fvBuildingStructure: String?
+        let fiLandUpperCount: Int?
+        let fvHousingUse: String?
+    }
+    
+    struct DCCompound: Codable {
+        let fvLandUser: String?
+        let fvCompletionDate: String?
+    }
+    
+    struct NetworkRoomDetail: Codable {
+        let fvFamilyRoomName: String?
+        let fvProvinceName: String?
+        let fvCityName: String?
+        let fvAreaName: String?
+        let fvSubdistrictName: String?
+        let fvEstateType: String?
+        let estateTypeLabel: String?
+        let fvLandUser: String?
+        let fvCompletionDate: String?
+        let fvBuildingStructure: String?
+        let fvOrientation: String?
+        let fvFloorHeight: String?
+        let fvInFloor: String?
+        let fvHouseProperty: String?
+        let fvHousingUse: String?
+        let fvPosition: String?
+        
+        let dcBuilding: DCBuilding
+        let dcCompound: DCCompound
+    }
+    
+    typealias RoomDetailResponse = NetworkRoomDetail
     
     func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String) async throws -> RoomDetailResponse {
         try await Request()

@@ -11,12 +11,18 @@ private typealias SubDict = [String: String]
 private typealias MainDict = [String: SubDict]
 
 enum DictType {
-    case estate, orientation
+    case estate, orientation, landUser, position,
+    buildingStructure, houseProperty, housingUse
     
     var typeName: String {
         switch self {
         case .estate: return "fv_estate_type"
         case .orientation: return "fv_orientation"
+        case .landUser: return "fv_land_user"
+        case .position: return "fv_position"
+        case .buildingStructure: return "fv_building_structure"
+        case .houseProperty: return "fv_house_property"
+        case .housingUse: return "fv_housing_use"
         }
     }
 }
