@@ -40,20 +40,45 @@ struct Floors: Codable {
 
 struct Room: Codable {
     let name: String
+    let familyRoomName: String
+    let areaCode: Int
+    let estateType: String
 }
 typealias Rooms = [Room]
 
 struct RoomDetail: Codable {
-    let roomName: String
-    let address: String
-    let estateType: String
-    let landUser: String
-    let completionDate: String
-    let position: String
-    let structure: String
-    let facing: String
-    let height: String
-    let floor: String
-    let property: String
-    let usage: String
+    let fvFamilyRoomName: String?
+    let fvProvinceName: String?
+    let fvCityName: String?
+    let fvAreaName: String?
+    let fvSubdistrictName: String?
+    let fvEstateType: String?
+    let estateTypeLabel: String?
+    let fvLandUser: String?
+    let fvCompletionDate: String?
+    let fvBuildingStructure: String?
+    let fvOrientation: String?
+    let fvFloorHeight: String?
+    let fvInFloor: String?
+    let fvHouseProperty: String?
+    let fvHousingUse: String?
+    
+    var roomName: String { fvFamilyRoomName ?? "" }
+    var address: String {
+        return "\(fvProvinceName ?? "")" +
+        "\(fvCityName ?? "")" +
+        "\(fvAreaName ?? "")" +
+        "\(fvSubdistrictName ?? "")" +
+        "\(fvFamilyRoomName ?? "")"
+    }
+    var estateType: String { estateTypeLabel ?? "无" }
+    var landUser: String { fvLandUser ?? "无" }
+    var completionDate: String { fvCompletionDate ?? "无" }
+    var position: String { "无" }
+    var structure: String { fvBuildingStructure ?? "无" }
+    var facing: String { fvOrientation ?? "无" }
+    var height: String { fvFloorHeight ?? "无" }
+    var floor: String { fvInFloor ?? "无" }
+    var property: String { fvHouseProperty ?? "无" }
+    var usage: String { fvHousingUse ?? "无" }
 }

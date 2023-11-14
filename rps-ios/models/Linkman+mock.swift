@@ -149,7 +149,10 @@ extension Floors {
                     name: "楼层\(floor)",
                     rooms: (1...unitCount).map { room in
                         Room(
-                            name: "1801"
+                            name: "1801",
+                            familyRoomName: "宝石1幢1单元RF301",
+                            areaCode: 300106,
+                            estateType: "singleApartment"
                         )
                     }
                 )
@@ -161,18 +164,22 @@ extension Floors {
 extension RoomDetail {
     static var mock: RoomDetail {
         RoomDetail(
-            roomName: "杭州市壹号院9幢1001室",
-            address: "杭州市壹号院9幢1001室",
-            estateType: "临街商铺",
-            landUser: "无",
-            completionDate: "2001",
-            position: "无",
-            structure: "钢混结构",
-            facing: "西北",
-            height: "12",
-            floor: "1-1",
-            property: "无",
-            usage: "无"
+            fvFamilyRoomName: "杭州市壹号院9幢1001室",
+            fvProvinceName: "浙江省",
+            fvCityName: "杭州市",
+            fvAreaName: "西湖区",
+            fvSubdistrictName: "翠苑街道",
+            fvEstateType: "shopStreet",
+            estateTypeLabel: "临街商铺",
+            fvLandUser: nil,
+            fvCompletionDate: "2001",
+//            position: "无",
+            fvBuildingStructure: "钢混结构",
+            fvOrientation: "西北",
+            fvFloorHeight: "12",
+            fvInFloor: "1-1",
+            fvHouseProperty: nil,
+            fvHousingUse: nil
         )
     }
 }

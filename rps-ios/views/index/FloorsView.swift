@@ -67,12 +67,22 @@ struct FloorsView: View {
         HStack(spacing: 0) {
             RoomText(text: floor.name, width: 50, height: 40)
             ForEach(Array(zip(floor.rooms.indices, floor.rooms)), id: \.0) { _, room in
-                floor.rooms.count >= 4
-                ? RoomText(text: room.name, width: 50, height: 40)
-                : RoomText(text: room.name,
-                         height: 40,
-                         maxWidth: 200, minWidth: 50
-                )
+                NavigationLink {
+                    RoomDetailView(
+                        familyRoomName: room.familyRoomName, areaCode: room.areaCode, estateType: room.estateType
+                    )
+                        .environmentObject(estateService)
+                } label: {
+                    Group {
+                        floor.rooms.count >= 4
+                        ? RoomText(text: room.name, width: 50, height: 40)
+                        : RoomText(text: room.name,
+                                   height: 40,
+                                   maxWidth: 200, minWidth: 50
+                        )
+                    }
+                    .background(Color.white)
+                }
             }
         }
     }

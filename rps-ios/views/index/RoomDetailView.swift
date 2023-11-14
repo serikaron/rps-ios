@@ -12,6 +12,10 @@ struct RoomDetailView: View {
     @EnvironmentObject var estateService: EstateService
     
     private var roomDetail: RoomDetail { estateService.roomDetail }
+    
+    let familyRoomName: String
+    let areaCode: Int
+    let estateType: String
 
     var body: some View {
         ScrollView {
@@ -30,6 +34,14 @@ struct RoomDetailView: View {
         }
         .setupNavigationBar(title: "系统询价详情") {
             presentationMode.wrappedValue.dismiss()
+        }
+        .onAppear {
+            Task {
+                await estateService.getRoomDetail(
+                    estateType: estateType,
+                    areaCode: areaCode,
+                    familyRoomName: familyRoomName)
+            }
         }
     }
     
@@ -195,11 +207,28 @@ private struct RoomInfoView: View {
 
 #Preview {
     NavigationView {
-        RoomDetailView()
+        RoomDetailView(
+            familyRoomName: "宝石1幢1单元RF301",
+            areaCode: 300106,
+            estateType: "singleApartment"
+        )
             .environmentObject(
                 EstateService()
                     .setRoomDetail(.mock)
             )
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+#Preview("online") {
+    Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiS1B4S1lsRk9HWjRlaVNTUld4RWFBUFNoWVZrZkZWTU8iLCJ1c2VySWQiOjQwfQ.RX-aZ1RW-dht1RpMH_-St3dKS82k1Qp5aoDgSIUsW0Y")
+    return NavigationView {
+        RoomDetailView(
+            familyRoomName: "宝石1幢1单元RF301",
+            areaCode: 300106,
+            estateType: "singleApartment"
+        )
+            .environmentObject( EstateService() )
             .navigationBarTitleDisplayMode(.inline)
     }
 }

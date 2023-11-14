@@ -133,7 +133,10 @@ class EstateService: ObservableObject {
                         let r = l.items[0]
                         return Room(name: roomCount == 0 ?
                                     "\(String(format: "%02d", r.fiFloorNum ?? 0))\(r.fvRoomNum ?? "")" :
-                                        r.fvRoomName ?? ""
+                                        r.fvRoomName ?? "",
+                                    familyRoomName: r.fvFamilyRoomName ?? "",
+                                    areaCode: r.fiAreaCode ?? 0,
+                                    estateType: r.fvEstateType ?? ""
                         )
                     }
                 )
@@ -146,6 +149,14 @@ class EstateService: ObservableObject {
     }
     
     @Published var roomDetail: RoomDetail = .mock
+    func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String) async {
+        do {
+            let rsp = try await Linkman.shared.getRoomDetail(estateType: estateType, areaCode: areaCode, familyRoomName: familyRoomName)
+            roomDetail = rsp
+        } catch {
+            print("getRoomDetail FAILED: \(error)")
+        }
+    }
 }
 
 extension SearchResult {

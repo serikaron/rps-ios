@@ -251,6 +251,9 @@ extension Linkman {
         let fiFloorNum: Int?
         let fvRoomNum: String?
         let fvRoomName: String?
+        let fvFamilyRoomName: String?
+        let fiAreaCode: Int?
+        let fvEstateType: String?
     }
     
     struct FloorDataItems: Codable {
@@ -270,6 +273,21 @@ extension Linkman {
             ])
             .make()
             .response() as BuildingFloors
+    }
+    
+    typealias RoomDetailResponse = RoomDetail
+    
+    func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String) async throws -> RoomDetailResponse {
+        try await Request()
+            .with(\.path, setTo: "/data/rps/dcdata/getRoomDetail")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "fvEstateType": estateType,
+                "fiAreaCode": "\(areaCode)",
+                "fvFamilyRoomName": familyRoomName
+            ])
+            .make()
+            .response() as RoomDetailResponse
     }
 }
 
