@@ -197,25 +197,34 @@ private struct RoomInfoView: View {
         VStack(spacing: 10) {
             HStack {
                 item(title: "物业类型", content: roomDetail.estateType, isRight: false)
+                divider
                 item(title: "使用权类型", content: roomDetail.landUser, isRight: true)
-            }
-            HStack {
+                divider
                 item(title: "建成年份", content: roomDetail.completionDate, isRight: false)
+                divider
                 item(title: "所在部位", content: roomDetail.position, isRight: true)
             }
             HStack {
                 item(title: "建筑结构", content: roomDetail.structure, isRight: false)
+                divider
                 item(title: "建筑朝向", content: roomDetail.facing, isRight: true)
-            }
-            HStack {
+                divider
                 item(title: "地上总层", content: roomDetail.height, isRight: false)
+                divider
                 item(title: "所在楼层", content: roomDetail.floor, isRight: true)
             }
             HStack {
                 item(title: "房屋性质", content: roomDetail.property, isRight: false)
+                divider
                 item(title: "房屋用途", content: roomDetail.usage, isRight: true)
+                Spacer()
             }
         }
+    }
+    
+    private var divider: some View {
+        Color.view.background
+            .frame(width: 1, height: 54)
     }
     
     private func item(title: String, content: String, isRight: Bool) -> some View {
@@ -225,6 +234,8 @@ private struct RoomInfoView: View {
             Text(content)
                 .customText(size: 14, color: .text.gray3)
         }
+        .frame(width: 77)
+//        .frame(maxWidth: .infinity)
     }
 }
 
