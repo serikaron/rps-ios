@@ -68,8 +68,8 @@ struct FloorsView: View {
             RoomText(text: floor.name, width: 50, height: 40)
             ForEach(Array(zip(floor.rooms.indices, floor.rooms)), id: \.0) { _, room in
                 floor.rooms.count >= 4
-                ? RoomText(text: "\(room.floorNum)\(room.roomNum)", width: 50, height: 40)
-                : RoomText(text: "\(room.floorNum)\(room.roomNum)",
+                ? RoomText(text: room.name, width: 50, height: 40)
+                : RoomText(text: room.name,
                          height: 40,
                          maxWidth: 200, minWidth: 50
                 )

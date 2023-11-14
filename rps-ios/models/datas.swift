@@ -39,9 +39,7 @@ struct Floors: Codable {
 }
 
 struct Room: Codable {
-    let floorNum: Int
-    let roomNum: String
-    let roomName: String
+    let name: String
 }
 typealias Rooms = [Room]
 

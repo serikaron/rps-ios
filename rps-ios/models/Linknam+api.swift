@@ -182,6 +182,19 @@ extension Linkman {
             .response() as BuildingsResponse
     }
     
+    typealias RoomCountResponse = Int
+    
+    func getRoomCount(estateType: String, buildingId: Int) async throws -> RoomCountResponse {
+        try await Request()
+            .with(\.path, setTo: "/data/rps/dcdata/selectRoomCount")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "estateType": estateType,
+                "fiBuildingId": "\(buildingId)"
+            ])
+            .make()
+            .response() as RoomCountResponse
+    }
     
     struct UnitInfo: Codable {
         let keys: String?

@@ -149,9 +149,7 @@ extension Floors {
                     name: "楼层\(floor)",
                     rooms: (1...unitCount).map { room in
                         Room(
-                            floorNum: floor,
-                            roomNum: "\(room)",
-                            roomName: "\(floor)-\(room)"
+                            name: "1801"
                         )
                     }
                 )

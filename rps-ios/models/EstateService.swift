@@ -117,6 +117,8 @@ class EstateService: ObservableObject {
     @Published var floors: Floors = .empty
     func getFloors(buildingName: String, buildingId: Int, estateType: String, areaCode: Int) async {
         do {
+            let roomCount = try await Linkman.shared.getRoomCount(estateType: estateType, buildingId: buildingId)
+            
             let rsp = try await Linkman.shared.getBuildingFloors(buildingId: buildingId, estateType: estateType, areaCode: areaCode)
             let units = rsp.unitInfoResponseList.sorted { $0.order ?? "" < $1.order ?? "" }
             let keys = units.compactMap { $0.keys }
@@ -129,7 +131,10 @@ class EstateService: ObservableObject {
                         else { return nil }
                         
                         let r = l.items[0]
-                        return Room(floorNum: r.fiFloorNum ?? 0, roomNum: r.fvRoomNum ?? "", roomName: r.fvRoomName ?? "")
+                        return Room(name: roomCount == 0 ?
+                                    "\(String(format: "%02d", r.fiFloorNum ?? 0))\(r.fvRoomNum ?? "")" :
+                                        r.fvRoomName ?? ""
+                        )
                     }
                 )
             }
