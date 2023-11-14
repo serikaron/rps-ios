@@ -90,6 +90,7 @@ extension Linkman {
         let id: String
         let fvFamilyRoomName: String?
         let fvEstateType: String?
+        let fiAreaCode: Int?
         let fiCompoundId: Int?
         let fvCompoundName: String?
         let fvNameAlias: String?
@@ -200,6 +201,7 @@ extension Linkman {
         let keys: String?
         let type: String?
         let order: String?
+        let unitName: String?
     }
 
     struct BuildingFloors: Codable {

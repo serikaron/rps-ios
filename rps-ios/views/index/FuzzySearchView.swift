@@ -15,6 +15,8 @@ struct FuzzySearchView: View {
     @State private var showExactSearchView = false
     @State private var disableSearch = false
     
+    @State private var showDetail = false
+    
     var body: some View {
         ZStack {
             NavigationLink(isActive: $showExactSearchView) {
@@ -23,6 +25,14 @@ struct FuzzySearchView: View {
             } label: {
                 EmptyView()
             }
+            
+            NavigationLink(isActive: $showDetail) {
+                RoomDetailView(familyRoomName: selectedRoomInfo?.roomName ?? "", areaCode: selectedRoomInfo?.areacode ?? 0, estateType: selectedRoomInfo?.estateType ?? "")
+                    .environmentObject(estateService)
+            } label: {
+                EmptyView()
+            }
+
 
             VStack {
                 Spacer().frame(height: 10)
@@ -36,7 +46,7 @@ struct FuzzySearchView: View {
                         }
                         showExactSearchView = true
                     case .detail:
-                        break
+                        showDetail = true
                     }
                 })
                 Spacer().frame(height: 10)
@@ -51,6 +61,7 @@ struct FuzzySearchView: View {
             .onChange(of: text) { newValue in
                 if !disableSearch {
                     nextAction = .exactSearch
+                    selectedRoomInfo = nil
                     estateService.fuzzySearch(keyword: text)
                 }
                 disableSearch = false
@@ -66,6 +77,8 @@ struct FuzzySearchView: View {
         estateService.fuzzySearchResult
     }
     
+    @State private var selectedRoomInfo: SearchResult?
+    
     private var roomList: some View {
         List {
             ForEach(liteInfoList, id: \.id) { info in
@@ -73,6 +86,7 @@ struct FuzzySearchView: View {
                     disableSearch = true
                     nextAction = .detail
                     text = info.roomName ?? ""
+                    selectedRoomInfo = info
                 } label: {
                     roomItem(info: info)
                         .frame(maxWidth: .infinity, alignment: .leading)

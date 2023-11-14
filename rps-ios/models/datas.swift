@@ -46,6 +46,7 @@ struct Room: Codable {
 }
 typealias Rooms = [Room]
 
+@MainActor
 struct RoomDetail: Codable {
     let fvFamilyRoomName: String?
     let fvProvinceName: String?
@@ -71,12 +72,18 @@ struct RoomDetail: Codable {
         "\(fvSubdistrictName ?? "")" +
         "\(fvFamilyRoomName ?? "")"
     }
-    var estateType: String { estateTypeLabel ?? "无" }
+    var estateType: String {
+        guard let t = fvEstateType else { return "无" }
+        return DictType.estate.label(of: t) ?? "无"
+    }
     var landUser: String { fvLandUser ?? "无" }
     var completionDate: String { fvCompletionDate ?? "无" }
     var position: String { "无" }
     var structure: String { fvBuildingStructure ?? "无" }
-    var facing: String { fvOrientation ?? "无" }
+    var facing: String {
+        guard let t = fvOrientation else { return "无" }
+        return DictType.orientation.label(of: t) ?? "无"
+    }
     var height: String { fvFloorHeight ?? "无" }
     var floor: String { fvInFloor ?? "无" }
     var property: String { fvHouseProperty ?? "无" }

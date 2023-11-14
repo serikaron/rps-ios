@@ -18,6 +18,7 @@ struct SearchResult {
     let address: String?
     let picUrls: String?
     let comId: Int?
+    let areacode: Int?
 }
 typealias SearchResultList = [SearchResult]
 
@@ -56,7 +57,7 @@ class EstateService: ObservableObject {
         
         do {
             let rsp = try await Linkman.shared.fuzzySearch(keyword: keyword)
-            return await .fromNetwork(rsp)
+            return .fromNetwork(rsp)
         } catch {
             return []
         }
@@ -85,7 +86,7 @@ class EstateService: ObservableObject {
         
         do {
             let rsp = try await Linkman.shared.exactSearch(keyword: keyword, pageSize: searchParam.pageSize, pageNum: searchParam.pageNum)
-            let l = await SearchResultList.fromNetwork(rsp.records)
+            let l = SearchResultList.fromNetwork(rsp.records)
             if searchParam.pageNum == 1 {
                 exactSearchResult = l
             } else {
@@ -141,7 +142,7 @@ class EstateService: ObservableObject {
                     }
                 )
             }
-            self.floors = Floors(buildingName: buildingName, unitTitles: units.compactMap { $0.type }, floors: floors)
+            self.floors = Floors(buildingName: buildingName, unitTitles: units.compactMap { $0.unitName }, floors: floors)
         } catch {
             print("getFloors FAILED: \(error)")
             floors = Floors.empty
@@ -170,35 +171,33 @@ extension SearchResult {
                      compoundNameAlias: "compoundNameAlias-\(num)",
                      address: "address-\(num)",
                      picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
-                     comId: 1
+                     comId: 1,
+                     areacode: 300106
         )
     }
     
-    static func fromNetwork(_ item: Linkman.NetworkSearchResult) async -> SearchResult {
-        var estateType = ""
-        if let fvEstateType = item.fvEstateType {
-            estateType = await DictType.estateType(of: fvEstateType) ?? ""
-        }
-        return SearchResult(
+    static func fromNetwork(_ item: Linkman.NetworkSearchResult) -> SearchResult {
+        SearchResult(
             id: item.id,
             roomName: item.fvFamilyRoomName,
             compoundName: item.fvCompoundName,
             completionDate: item.fvCompletionDate,
             estateType: item.fvEstateType,
-            estateTypeLabel: estateType,
+            estateTypeLabel: DictType.estate.label(of: item.fvEstateType ?? "") ?? "",
             compoundNameAlias: item.fvNameAlias,
             address: item.fvStreetMark,
             picUrls: item.picUrls,
-            comId: item.fiCompoundId
+            comId: item.fiCompoundId,
+            areacode: item.fiAreaCode
         )
     }
 }
 
 extension SearchResultList {
-    static func fromNetwork(_ networkList: [Linkman.NetworkSearchResult]) async -> SearchResultList {
+    static func fromNetwork(_ networkList: [Linkman.NetworkSearchResult]) -> SearchResultList {
         var out: SearchResultList = []
         for item in networkList {
-            out.append(await SearchResult.fromNetwork(item))
+            out.append(SearchResult.fromNetwork(item))
         }
         return out
     }
@@ -208,11 +207,9 @@ extension EstateService {
     static var preview: EstateService {
         let out = EstateService()
         out.isPreview = true
-        Task {
-            out.exactSearchResult = [await SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
-            out.fuzzySearchResult = [await SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
-            out.buildings = (0..<10).map { _ in Building.mock }
-        }
+        out.exactSearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
+        out.fuzzySearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
+        out.buildings = (0..<10).map { _ in Building.mock }
         return out
     }
 }
