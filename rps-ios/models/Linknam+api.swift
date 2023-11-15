@@ -98,6 +98,7 @@ extension Linkman {
         let picUrls: String?
         let fvCompletionDate: String?
         let fiBuildingId: Int?
+        let fvInFloor: String?
     }
     
     typealias FuzzySearchResopnse = [NetworkSearchResult]
@@ -258,6 +259,7 @@ extension Linkman {
         let fiAreaCode: Int?
         let fvEstateType: String?
         let fiBuildingId: Int?
+        let fvInFloor: String?
     }
     
     struct FloorDataItems: Codable {
@@ -284,11 +286,17 @@ extension Linkman {
         let fvBuildingStructure: String?
         let fiLandUpperCount: Int?
         let fvHousingUse: String?
+        let fvLandingroomLandSe: String?
+        let fvLandUser: String?
+        let fdCompletionDate: String?
+        let fvEstateType: String?
+        let fvBuildDirection: String?
     }
     
     struct DCCompound: Codable {
         let fvLandUser: String?
         let fvCompletionDate: String?
+        let fvLandLevel: String?
     }
     
     struct NetworkRoomDetail: Codable {
@@ -300,7 +308,7 @@ extension Linkman {
         let fvEstateType: String?
         let estateTypeLabel: String?
         let fvLandUser: String?
-        let fvCompletionDate: String?
+        let fdCompletionDate: String?
         let fvBuildingStructure: String?
         let fvOrientation: String?
         let fvFloorHeight: String?
@@ -308,7 +316,12 @@ extension Linkman {
         let fvHouseProperty: String?
         let fvHousingUse: String?
         let fvPosition: String?
-        
+        let fvLandingroomPosition: String?
+        let fvShopPosition: String?
+        let wuYeFenLei: String?
+        let fiLandUpperCount: Int?
+        let fvLandingroomLandSe: String?
+
         let dcBuilding: DCBuilding
         let dcCompound: DCCompound
     }
@@ -329,3 +342,51 @@ extension Linkman {
     }
 }
 
+extension Linkman.DCBuilding {
+    static var empty: Linkman.DCBuilding {
+        Linkman.DCBuilding(
+            fvHouseProperty: "",
+            fvBuildingStructure: "",
+            fiLandUpperCount: 0,
+            fvHousingUse: "",
+            fvLandingroomLandSe: "",
+            fvLandUser: "",
+            fdCompletionDate: "",
+            fvEstateType: "",
+            fvBuildDirection: "")
+    }
+}
+
+extension Linkman.DCCompound {
+    static var empty: Linkman.DCCompound {
+        Linkman.DCCompound(fvLandUser: "", fvCompletionDate: "", fvLandLevel: "")
+    }
+}
+
+extension Linkman.NetworkRoomDetail {
+    static var empty: Linkman.NetworkRoomDetail {
+        Linkman.NetworkRoomDetail(
+            fvFamilyRoomName: "",
+            fvProvinceName: "",
+            fvCityName: "",
+            fvAreaName: "",
+            fvSubdistrictName: "",
+            fvEstateType: "",
+            estateTypeLabel: "",
+            fvLandUser: "",
+            fdCompletionDate: "",
+            fvBuildingStructure: "",
+            fvOrientation: "",
+            fvFloorHeight: "",
+            fvInFloor: "",
+            fvHouseProperty: "",
+            fvHousingUse: "",
+            fvPosition: "",
+            fvLandingroomPosition: "",
+            fvShopPosition: "",
+            wuYeFenLei: "",
+            fiLandUpperCount: 0,
+            fvLandingroomLandSe: "",
+            dcBuilding: .empty, dcCompound: .empty)
+    }
+}

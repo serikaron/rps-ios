@@ -69,7 +69,11 @@ struct FloorsView: View {
             ForEach(Array(zip(floor.rooms.indices, floor.rooms)), id: \.0) { _, room in
                 NavigationLink {
                     RoomDetailView(
-                        familyRoomName: room.familyRoomName, areaCode: room.areaCode, estateType: room.estateType, buildingId: room.buildingId
+                        familyRoomName: room.familyRoomName,
+                        areaCode: room.areaCode,
+                        estateType: room.estateType,
+                        buildingId: room.buildingId,
+                        floor: room.floor
                     )
                         .environmentObject(estateService)
                 } label: {

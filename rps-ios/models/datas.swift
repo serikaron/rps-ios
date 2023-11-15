@@ -44,15 +44,23 @@ struct Room: Codable {
     let areaCode: Int
     let estateType: String
     let buildingId: Int
+    let floor: String
 }
 typealias Rooms = [Room]
 
 enum EstateType {
-    case commApartment
+    case commApartment, singleApartment, villa, office, landingRoom, shopStreet, industrialSmallGarden, industrialFactory
     
     init?(_ value: String?) {
         switch value {
         case "commApartment": self = .commApartment
+        case "singleApartment": self = .singleApartment
+        case "villa": self = .villa
+        case "office": self = .office
+        case "landingRoom": self = .landingRoom
+        case "shopStreet": self = .shopStreet
+        case "industrialSmallGarden": self = .industrialSmallGarden
+        case "industrialFactory": self = .industrialFactory
         default: return nil
         }
     }
@@ -63,9 +71,13 @@ struct RoomDetail {
     let networkRoomDetail: Linkman.NetworkRoomDetail
     let roomCount: Int
     
+    static var empty: RoomDetail {
+        RoomDetail(networkRoomDetail: .empty, roomCount: 0)
+    }
+    
     private let nilText: String = "无"
     
-    private var _type: EstateType? {
+    var estateType: EstateType? {
         EstateType(networkRoomDetail.fvEstateType)
     }
     
@@ -82,95 +94,269 @@ struct RoomDetail {
         "\(networkRoomDetail.fvSubdistrictName ?? "")" +
         "\(networkRoomDetail.fvFamilyRoomName ?? "")"
     }
-    var estateType: String {
-        guard let t = networkRoomDetail.fvEstateType else { return nilText }
-        let out = DictType.estate.label(of: t) ?? nilText
-        switch _type {
+    var estateTypeText: String {
+        switch estateType {
         case .commApartment:
-            return out
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .office:
+            fallthrough
+        case .landingRoom:
+            fallthrough
+        case .industrialSmallGarden:
+            fallthrough
+        case .industrialFactory:
+            guard let t = networkRoomDetail.fvEstateType else { return nilText }
+            return DictType.estate.label(of: t) ?? nilText
+            
+        case .villa:
+            guard let t = dcBuilding.fvEstateType else { return nilText }
+            return DictType.estate.label(of: t) ?? nilText
+        case .shopStreet:
+            guard let t = hasRoom ? networkRoomDetail.fvEstateType : dcBuilding.fvEstateType
+            else { return nilText }
+            return DictType.estate.label(of: t) ?? nilText
         case nil: return nilText
         }
     }
     var landUser: String {
-        switch _type {
+        switch estateType {
         case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .industrialSmallGarden:
             guard let landUser = hasRoom ? networkRoomDetail.fvLandUser : dcCompound.fvLandUser
             else { return nilText }
             return DictType.landUser.label(of: landUser) ?? nilText
-        case nil: return nilText
+        case .landingRoom:
+            guard let landUser = hasRoom ? networkRoomDetail.fvLandUser : dcBuilding.fvLandUser
+            else { return nilText }
+            return DictType.landUser.label(of: landUser) ?? nilText
+        case .shopStreet:
+            guard let landUser = dcCompound.fvLandUser else { return nilText }
+            return DictType.landUser.label(of: landUser) ?? nilText
+        case .industrialFactory:
+            fallthrough
+        case nil:
+            return nilText
         }
     }
     var completionDate: String {
-        switch _type {
+        switch estateType {
         case .commApartment:
-            // 未确定
-            return dcCompound.fvCompletionDate ?? nilText
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .shopStreet:
+            fallthrough
+        case .industrialSmallGarden:
+            return dcBuilding.fdCompletionDate ?? nilText
+            
+        case .landingRoom:
+            return hasRoom ? networkRoomDetail.fdCompletionDate ?? nilText :
+            dcBuilding.fdCompletionDate ?? nilText
+            
+        case .industrialFactory:
+            fallthrough
         case nil: return nilText
         }
     }
     var position: String {
-        // 未确定
-        switch _type {
+        switch estateType {
         case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .industrialSmallGarden:
             guard let position = networkRoomDetail.fvPosition else { return nilText }
-            return DictType.position.label(of: position) ?? nilText
+            return hasRoom ?
+            DictType.position.label(of: position) ?? nilText :
+            DictType.noRoomPositon.label(of: position) ?? nilText
+        case .landingRoom:
+            guard let position = networkRoomDetail.fvLandingroomPosition else { return nilText }
+            return hasRoom ?
+            DictType.landingroomPosition.label(of: position) ?? nilText :
+            DictType.noRoomPositon.label(of: position) ?? nilText
+        case .shopStreet:
+            guard let position = networkRoomDetail.fvShopPosition else { return nilText }
+            return hasRoom ?
+            DictType.shopPosition.label(of: position) ?? nilText :
+            DictType.noRoomPositon.label(of: position) ?? nilText
+        case .industrialFactory:
+            fallthrough
         case nil: return nilText
         }
     }
     var structure: String {
-        switch _type {
+        switch estateType {
         case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .shopStreet:
+            fallthrough
+        case .industrialSmallGarden:
             guard let bs = dcBuilding.fvBuildingStructure else { return nilText }
             return DictType.buildingStructure.label(of: bs) ?? nilText
+        case .landingRoom:
+            guard let bs = hasRoom ? networkRoomDetail.fvBuildingStructure :
+                    dcBuilding.fvBuildingStructure
+            else { return nilText }
+            return DictType.buildingStructure.label(of: bs) ?? nilText
+        case .industrialFactory:
+            fallthrough
         case nil: return nilText
         }
     }
     var facing: String {
-        // 楼幢没有orientation
-        switch _type {
+        switch estateType {
         case .commApartment:
-            guard let o = networkRoomDetail.fvOrientation else { return nilText }
-            return DictType.orientation.label(of: o) ?? nilText
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .landingRoom:
+            fallthrough
+        case .industrialSmallGarden:
+            return hasRoom ?
+            DictType.orientation.label(of: networkRoomDetail.fvOrientation ?? "") ?? nilText :
+            DictType.buildDirection.label(of: dcBuilding.fvBuildDirection ?? "") ?? nilText
+            
+        case .shopStreet:
+            return DictType.buildDirection.label(of: dcBuilding.fvBuildDirection ?? "") ?? nilText
+            
+        case .industrialFactory:
+            fallthrough
         case nil: return nilText
         }
     }
     var height: String {
-        switch _type {
+        switch estateType {
         case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .industrialSmallGarden:
             return "\(dcBuilding.fiLandUpperCount ?? 0)"
+        case .landingRoom:
+            let i = hasRoom ? networkRoomDetail.fiLandUpperCount : dcBuilding.fiLandUpperCount
+            return "\(i ?? 0)"
+        case .shopStreet:
+            let i = dcBuilding.fiLandUpperCount
+            return "\(i ?? 0)"
+        case .industrialFactory:
+            fallthrough
         case nil: return "0"
         }
     }
-    var floor: String {
-        // 自动解释？
-        switch _type {
+    var floor: String? {
+        guard hasRoom else { return nil }
+        switch estateType {
         case .commApartment:
-            return hasRoom ?
-            networkRoomDetail.fvInFloor ?? nilText :
-            nilText
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .landingRoom:
+            fallthrough
+        case .shopStreet:
+            fallthrough
+        case .industrialSmallGarden:
+            return networkRoomDetail.fvInFloor ?? nilText
+        case .industrialFactory:
+            fallthrough
         case nil: return nilText
         }
     }
     var property: String {
-        switch _type {
+        switch estateType {
         case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .shopStreet:
+            fallthrough
+        case .industrialSmallGarden:
             guard let hp = hasRoom ? networkRoomDetail.fvHouseProperty :
                     dcBuilding.fvHouseProperty
             else { return nilText }
             return DictType.houseProperty.label(of: hp) ?? nilText
+            
+        case .landingRoom:
+            fallthrough
+        case .industrialFactory:
+            fallthrough
         case nil:
             return nilText
         }
     }
     var usage: String {
-        switch _type {
+        switch estateType {
         case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .shopStreet:
+            fallthrough
+        case .industrialSmallGarden:
             guard let hu = hasRoom ? networkRoomDetail.fvHousingUse :
                     dcBuilding.fvHousingUse
             else { return nilText }
             return DictType.housingUse.label(of: hu) ?? nilText
+        case .landingRoom:
+            guard let hu = dcBuilding.fvHousingUse else { return nilText }
+            return DictType.housingUse.label(of: hu) ?? nilText
+        case .industrialFactory:
+            fallthrough
         case nil:
             return nilText
         }
+    }
+    var landLevel: String {
+        guard estateType == .shopStreet else { return nilText }
+        return DictType.landLevel.label(of: dcCompound.fvLandLevel ?? "") ?? nilText
+    }
+    var landingroomUsage: String {
+        guard estateType == .landingRoom else { return nilText }
+        guard let lrs = hasRoom ? networkRoomDetail.fvLandingroomLandSe :
+                dcBuilding.fvLandingroomLandSe
+        else { return nilText }
+        return DictType.landingroomLandSe.label(of: lrs) ?? nilText
     }
 }

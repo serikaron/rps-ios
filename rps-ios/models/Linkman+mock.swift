@@ -52,7 +52,8 @@ extension Linkman.NetworkSearchResult {
 //            fvAreaName: "西湖区",
 //            fvSubdistrictName: "三墩镇",
 //            fvEstateState: "4"
-            fiBuildingId: 0
+            fiBuildingId: 0,
+            fvInFloor: "1-1"
         )
     }
     
@@ -68,7 +69,8 @@ extension Linkman.NetworkSearchResult {
             fvStreetMark: "fvStreetMark-\(num)",
             picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
             fvCompletionDate: "\(num)",
-            fiBuildingId: 0
+            fiBuildingId: 0,
+            fvInFloor: "1-1"
         )
     }
 }
@@ -156,7 +158,8 @@ extension Floors {
                             familyRoomName: "宝石1幢1单元RF301",
                             areaCode: 300106,
                             estateType: "singleApartment",
-                            buildingId: 0
+                            buildingId: 0,
+                            floor: "1-1"
                         )
                     }
                 )
@@ -185,7 +188,7 @@ extension Linkman.NetworkRoomDetail {
             fvEstateType: "",
             estateTypeLabel: "",
             fvLandUser: "",
-            fvCompletionDate: "",
+            fdCompletionDate: "",
             fvBuildingStructure: "",
             fvOrientation: "",
             fvFloorHeight: "",
@@ -193,6 +196,11 @@ extension Linkman.NetworkRoomDetail {
             fvHouseProperty: "",
             fvHousingUse: "",
             fvPosition: "",
+            fvLandingroomPosition: "",
+            fvShopPosition: "",
+            wuYeFenLei: "",
+            fiLandUpperCount: 0,
+            fvLandingroomLandSe: "",
             dcBuilding: .mock,
             dcCompound: .mock
         )
@@ -205,7 +213,12 @@ extension Linkman.DCBuilding {
             fvHouseProperty: "",
             fvBuildingStructure: "",
             fiLandUpperCount: 0,
-            fvHousingUse: ""
+            fvHousingUse: "",
+            fvLandingroomLandSe: "",
+            fvLandUser: "",
+            fdCompletionDate: "",
+            fvEstateType: "",
+            fvBuildDirection: ""
         )
     }
 }
@@ -214,7 +227,8 @@ extension Linkman.DCCompound {
     static var mock: Linkman.DCCompound {
         Linkman.DCCompound(
             fvLandUser: "",
-            fvCompletionDate: ""
+            fvCompletionDate: "",
+            fvLandLevel: ""
         )
     }
 }
