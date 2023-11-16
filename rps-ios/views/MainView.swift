@@ -56,6 +56,11 @@ struct MainView: View {
                     .ignoresSafeArea()
             )
         }
+        .onAppear {
+            Task {
+                await DictType.getDict()
+            }
+        }
     }
 }
 

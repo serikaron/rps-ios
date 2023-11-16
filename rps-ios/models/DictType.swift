@@ -7,12 +7,12 @@
 
 import Foundation
 
-private typealias SubDict = [String: String]
-private typealias MainDict = [String: SubDict]
 
-enum DictType {
-    case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe,
-    position, noRoomPositon, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate
+enum DictType: String {
+    typealias SubDict = [String: String]
+    typealias MainDict = [String: SubDict]
+    
+    case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPositon, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages, common_has
     
     var typeName: String {
         switch self {
@@ -31,12 +31,21 @@ enum DictType {
         case .landLevel: return "fv_land_level"
         case .planeShape: return "fv_plane_shape"
         case .levelDecorate: return "fv_level_decorate_fk"
+        case .propertyAttribute: return "fv_property_attribute"
+        case .mainHouse: return "main_house"
+        case .auxiliaryHouse: return "auxiliary_house"
+        case .appendages: return "appendages"
+        default:
+            return rawValue
         }
     }
 }
 
 extension DictType {
-    static private var dict: MainDict?
+    static private var dict: MainDict? {
+        didSet { UserDefaults.dictType = dict }
+    }
+    
     static private var task: Task<Void, Never>?
     
     static func valueOf(type: String, key: String) async -> String? {
@@ -48,6 +57,9 @@ extension DictType {
     }
     
     fileprivate static func pickValue(type: String, key: String) -> String? {
+        if dict == nil {
+            dict = UserDefaults.dictType
+        }
         guard let dict = dict,
               let subDict = dict[type]
         else { return nil }
@@ -101,3 +113,79 @@ extension DictType {
 //        pickValue(type: "fv_estate_type", key: key)
 //    }
 //}
+
+extension DictType {
+    enum PropertyAttribute: Hashable {
+        case mainHouse
+        case auxiliaryHouse(subType: AuxiliaryHouse?)
+        case appendages(subType: Appendages?)
+        
+        init?(mainType: String, subType: String) {
+            switch mainType {
+            case "main_house": self = .mainHouse
+            case "auxiliary_house":
+                guard let subType = AuxiliaryHouse(rawValue: subType) else { return nil }
+                self = .auxiliaryHouse(subType: subType)
+            case "appendages":
+                guard let subType = Appendages(rawValue: subType) else { return nil }
+                self = .appendages(subType: subType)
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case .mainHouse:
+                return "main_house"
+            case .auxiliaryHouse:
+                return "auxiliary_house"
+            case .appendages:
+                return "appendages"
+            }
+        }
+        var label: String { DictType.propertyAttribute.label(of: dictKey) ?? "" }
+    }
+    
+    enum MainHouse: String, CaseIterable {
+        case mian
+        
+        var dictKey: String { rawValue }
+        var label: String { DictType.mainHouse.label(of: dictKey) ?? "" }
+    }
+    
+    enum AuxiliaryHouse: String, CaseIterable {
+        case garden, terrace, attic, basement
+        
+        var dictKey: String { rawValue }
+        var label: String {
+            DictType.auxiliaryHouse.label(of: dictKey) ?? ""
+        }
+    }
+    
+    enum Appendages: String, CaseIterable {
+        case attic, main_room, jump_layer, sheds, automatic_garage, storeroom, ground_garage, stilt_floor, ground_vehicles, underground_car, theunderground_garage, basement, terrace
+        
+        var dictKey: String { rawValue }
+        var label: String { DictType.appendages.label(of: dictKey) ?? "" }
+    }
+    
+    enum CommonHas: CaseIterable {
+        case has, not
+        init?(rawValue: String) {
+            switch rawValue {
+            case "0": self = .not
+            case "1": self = .has
+            default: return nil
+            }
+        }
+        var dictKey: String {
+            switch self {
+            case .has:
+                return "1"
+            case .not:
+                return "0"
+            }
+        }
+        var label: String { DictType.common_has.label(of: dictKey) ?? "" }
+    }
+}

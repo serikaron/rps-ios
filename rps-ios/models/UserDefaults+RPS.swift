@@ -35,4 +35,73 @@ extension UserDefaults {
             }
         }
     }
+    
+    static var dictType: DictType.MainDict? {
+        get {
+            UserDefaults.rps.value(forKey: "dictType") as? DictType.MainDict
+        }
+        set(value) {
+            if value == nil {
+                UserDefaults.rps.removeObject(forKey: "dictType")
+            } else {
+                UserDefaults.rps.setValue(value, forKey: "dictType")
+            }
+        }
+    }
+    
+    static var dictType1: DictType.MainDict? {
+        get {
+            guard let allKeys = UserDefaults.rps.stringArray(forKey: "dictType.mainDict.keys"),
+                  !allKeys.isEmpty
+            else { return nil }
+            
+            var out = DictType.MainDict()
+            
+            allKeys.forEach { mainKey in
+                guard let allSubKeys = UserDefaults.rps.stringArray(forKey: "dictType.\(mainKey).subDict.keys"),
+                      !allSubKeys.isEmpty
+                else { return }
+                
+                var subDict = DictType.SubDict()
+                allSubKeys.forEach { subKey in
+                    guard let value = UserDefaults.rps.string(forKey: "dictType.\(mainKey).\(subKey)")
+                    else { return }
+                    subDict[subKey] = value
+                }
+                out[mainKey] = subDict
+            }
+            
+            return out
+        }
+        
+        set(value) {
+            if let mainDict = value {
+                mainDict.forEach { (mainKey, subDict) in
+                    subDict.forEach { (subKey, value) in
+                        UserDefaults.rps.setValue(value, forKey: "dictType.\(mainKey).\(subKey)")
+                    }
+                    
+                    UserDefaults.rps.setValue(subDict.keys, forKey: "dictType.\(mainKey).subDict.keys")
+                }
+                UserDefaults.rps.setValue(mainDict.keys, forKey: "dictType.mainDict.keys")
+            } else {
+                if let allKeys = UserDefaults.rps.stringArray(forKey: "dictType.mainDict.keys"),
+                   !allKeys.isEmpty {
+                    
+                    allKeys.forEach { mainKey in
+                        guard let allSubKeys = UserDefaults.rps.stringArray(forKey: "dictType.\(mainKey).subDict.keys"),
+                              !allSubKeys.isEmpty
+                        else { return }
+                        
+                        allSubKeys.forEach { subKey in
+                            UserDefaults.rps.removeObject(forKey: "dictType.\(mainKey).\(subKey)")
+                        }
+                        
+                        UserDefaults.rps.removeObject(forKey: "dictType.\(mainKey).subDict.keys")
+                    }
+                    UserDefaults.rps.removeObject(forKey: "dictType.mainDict.keys")
+                }
+            }
+        }
+    }
 }

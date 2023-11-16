@@ -53,6 +53,17 @@ final class rps_iosTests: XCTestCase {
         await test(type: "fv_estate_type", key: "commApartment", value: "普通公寓")
     }
     
+    func testDictTypeStore() async throws {
+        print("start")
+        
+        XCTAssertEqual(nil, DictType.estate.label(of: "shopStreet"))
+        
+        Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoib0ZGZFdNM0NtOFRYUVIzY1VRcUhPOU05SjI5RHRLZFMiLCJ1c2VySWQiOjQwfQ.ugzfKG8Rv8ecY9ma71GzR0tt_QKtafSQw5Y611Buusc")
+        await DictType.getDict()
+        
+        XCTAssertEqual("临街商业", DictType.estate.label(of: "shopStreet")!)
+    }
+    
     func testJsonDynamicKey() throws {
        let json = """
     {

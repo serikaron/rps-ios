@@ -374,15 +374,88 @@ struct Inquiry {
             networkInquiry["fbBuildingArea"] = value
         }
     }
-}
-
-struct InquiryResult {
-    let price: String
-    let totalPrice: String
-    let date: String
     
-    static var empty: InquiryResult {
-        InquiryResult(price: "", totalPrice: "", date: "")
+    var price: String {
+        networkInquiry["fvValuationPrice"] as? String ?? ""
+    }
+    
+    var totalPrice: String {
+        networkInquiry["fvValuationTotalPrice"] as? String ?? ""
+    }
+    
+    var date: String {
+        networkInquiry["fvValuationDate"] as? String ?? ""
+    }
+    
+    var auxiliaryRoomList: [AuxiliaryRoom] {
+        get {
+            guard let l = networkInquiry["fvAuxiliaryRoomsAndAccessories"] as? [[String: Any]]
+            else { return [] }
+            return l.compactMap { room -> AuxiliaryRoom? in
+                guard let attributeString = room["fvPropertyAttribute"] as? String,
+                      let name = room["fvRpsPageName"] as? String,
+                      let rights = room["fvPropertyRights"] as? String,
+                      let unit = room["jjdw"] as? String
+                else { return nil }
+                
+                guard let attribute = DictType.PropertyAttribute(mainType: attributeString, subType: name),
+                      let commonHas = DictType.CommonHas(rawValue: rights)
+                else { return nil }
+                
+                return AuxiliaryRoom(
+                    propertyAttribute: attribute,
+                    commonHas: commonHas,
+                    unit: unit,
+                    area: area
+                )
+            }
+        }
+    }
+    
+    mutating func addAuxiliaryRoom(_ room: AuxiliaryRoom) {
+        guard let area = room.area,
+              let unit = room.unit,
+              let propertyAttribute = room.propertyAttribute,
+              let commonHas = room.commonHas
+        else { return }
+        
+        var sub: String?
+        switch propertyAttribute {
+        case .mainHouse:
+            sub = DictType.MainHouse.mian.dictKey
+        case .auxiliaryHouse(let subType):
+            sub = subType?.dictKey
+        case .appendages(let subType):
+            sub = subType?.dictKey
+        }
+        guard let name = sub else { return }
+        let attribute = propertyAttribute.dictKey
+        let rights = commonHas.dictKey
+        let value = "\(area)"
+        
+        let item = [
+            "fvPropertyAttribute": attribute,
+            "fvRpsPageName": name,
+            "fvPropertyRights": rights,
+            "jjdw": unit,
+            "value": value
+        ]
+        
+        var l = networkInquiry["fvAuxiliaryRoomsAndAccessories"] as? [[String: String]]
+        if l != nil {
+            l?.append(item)
+        } else {
+            l = [item]
+        }
+        networkInquiry["fvAuxiliaryRoomsAndAccessories"] = l
+    }
+    
+    mutating func removeAuxiliaryRoom(at idx: Int) {
+        guard var l = networkInquiry["fvAuxiliaryRoomsAndAccessories"] as? [[String: String]],
+                l.count > idx
+        else { return }
+        l.remove(at: idx)
+        networkInquiry["fvAuxiliaryRoomsAndAccessories"] = l
     }
 }
 
@@ -429,3 +502,34 @@ enum LevelDecorate: CaseIterable {
     
     var label: String { DictType.levelDecorate.label(of: dictKey) ?? "" }
 }
+
+struct AuxiliaryRoom {
+    var propertyAttribute: DictType.PropertyAttribute? {
+        didSet {
+            switch propertyAttribute {
+            case .mainHouse:
+                unit = "m²"
+            case .auxiliaryHouse(let subType):
+                if let subType = subType,
+                   subType.label.contains("车") {
+                    unit = "个"
+                } else {
+                    unit = "m²"
+                }
+            case .appendages(let subType):
+                if let subType = subType,
+                   subType.label.contains("车") {
+                    unit = "个"
+                } else {
+                    unit = "m²"
+                }
+            default:
+                unit = "m²"
+            }
+        }
+    }
+    var commonHas: DictType.CommonHas?
+    var unit: String?
+    var area: Double?
+}
+
