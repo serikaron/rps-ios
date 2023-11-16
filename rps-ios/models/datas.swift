@@ -368,8 +368,12 @@ struct Inquiry {
         Inquiry(networkInquiry: Linkman.NetworkInquiry())
     }
     
-    var area: Double {
-        get { networkInquiry["fbBuildingArea"] as? Double ?? 0 }
+    func stringValue(of key: String, defaultValue: String? = nil) -> String? {
+        networkInquiry[key] as? String ?? defaultValue
+    }
+    
+    var area: Double? {
+        get { networkInquiry["fbBuildingArea"] as? Double }
         set(value) {
             networkInquiry["fbBuildingArea"] = value
         }
@@ -381,6 +385,14 @@ struct Inquiry {
     
     var totalPrice: String {
         networkInquiry["fvValuationTotalPrice"] as? String ?? ""
+    }
+    
+    var priceBefore: String {
+        networkInquiry["fvUnitPriceBeforeAdjustment"] as? String ?? ""
+    }
+    
+    var totalPriceBefore: String {
+        networkInquiry["fvTotalPriceBeforeAdjustment"] as? String ?? ""
     }
     
     var date: String {

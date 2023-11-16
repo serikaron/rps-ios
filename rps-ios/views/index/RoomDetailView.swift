@@ -20,17 +20,12 @@ struct RoomDetailView: View {
     let buildingId: Int
     let floor: String
     
-    @State private var inquiry: Inquiry? {
-        didSet {
-            guard let area = inquiry?.area else { return }
-            areaText = "\(area)"
-        }
-    }
+    @State private var inquiry: Inquiry?
     
     @State private var initialized: Bool = false
     @State private var hasInquiryResult: Bool = false
     @State private var detailExtened: Bool = false
-    @State private var areaText: String = ""
+    @State private var hasDetailResult: Bool = false
     
     var body: some View {
         ZStack {
@@ -49,21 +44,28 @@ struct RoomDetailView: View {
                             mapView
                             if hasInquiryResult {
                                 ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
-                                actionView
+                                if !hasDetailResult {
+                                    actionView
+                                }
                             }
                             if detailExtened {
                                 DecorateView(inquiry: $inquiry)
                                 AuxiliaryRoomListView(inquiry: $inquiry)
                                 ResultAdjustView(inquiry: $inquiry)
                             }
+                            if hasDetailResult {
+                                DetailResultView(inquiry: $inquiry)
+                                actionView
+                            }
+                            Spacer().frame(height: 20)
                         }
                     }
                 }
                 OverlayView(
-                    areaText: $areaText,
                     inquiry: $inquiry,
                     hasInquiryResult: $hasInquiryResult,
-                    detailExtened: $detailExtened
+                    detailExtened: $detailExtened,
+                    hasDetailResult: $hasDetailResult
                 )
             }
         }
@@ -373,10 +375,10 @@ private struct RoomInfoView: View {
 private struct OverlayView: View {
     @EnvironmentObject var estateService: EstateService
     
-    @Binding var areaText: String
     @Binding var inquiry: Inquiry?
     @Binding var hasInquiryResult: Bool
     @Binding var detailExtened: Bool
+    @Binding var hasDetailResult: Bool
     
     var body: some View {
         VStack {
@@ -397,29 +399,32 @@ private struct OverlayView: View {
         !detailExtened
     }
     
+    private var areaText: Binding<String> {Binding(
+        get: {
+            guard let area = inquiry?.area else { return "" }
+            return "\(area)"
+        },
+        set: { inquiry?.area = Double($0) }
+    )}
+    
     private var inquiryView: some View {
         HStack {
-            HStack {
-                TextField("请输入建筑面积", text: $areaText)
-                Text("估一下")
-                    .customText(size: 14, color: .white)
-                    .frame(width: 81, height: 36)
-                    .background(Color.hex("#FFB23F"))
-                    .cornerRadius(8)
-                    .onTapGesture {
-                        Task {
-                            guard var inquiry = inquiry,
-                                  let area = Double(areaText)
-                            else { return }
-                            
-                            inquiry.area = area
-                            inquiry = await estateService.inquire(inquiry: inquiry)
-                            hasInquiryResult = true
-                        }
+            TextField("请输入建筑面积", text: areaText)
+                .keyboardType(.numberPad)
+            Text("估一下")
+                .customText(size: 14, color: .white)
+                .frame(width: 81, height: 36)
+                .background(Color.hex("#FFB23F"))
+                .cornerRadius(8)
+                .onTapGesture {
+                    Task {
+                        guard let inquiry = inquiry else { return }
+                        self.inquiry = await estateService.inquire(inquiry: inquiry)
+                        hasInquiryResult = true
                     }
-            }
-            .padding(.horizontal, 16)
+                }
         }
+        .padding(.horizontal, 16)
         .frame(height: 50)
         .background(Color.white)
         .cornerRadius(8)
@@ -448,6 +453,11 @@ private struct OverlayView: View {
     
     private var detailButton: some View {
         Button {
+            Task {
+                guard let inquiry = inquiry else { return }
+                self.inquiry = await estateService.inquireDetail(inquiry: inquiry)
+                hasDetailResult = true
+            }
         } label: {
             Text("详细估价")
                 .customText(size: 16, color: .white)
@@ -457,6 +467,33 @@ private struct OverlayView: View {
                 .cornerRadius(8)
         }
     }
+}
+
+#Preview("Overlay") {
+    VStack {
+        Text("估一下")
+        OverlayView(
+            inquiry: .constant(.empty),
+            hasInquiryResult: .constant(false),
+            detailExtened: .constant(false),
+            hasDetailResult: .constant(true)
+        )
+        Text("估一下 + 展开")
+        OverlayView(
+            inquiry: .constant(.empty),
+            hasInquiryResult: .constant(true),
+            detailExtened: .constant(false),
+            hasDetailResult: .constant(true)
+        )
+        Text("详细估价")
+        OverlayView(
+            inquiry: .constant(.empty),
+            hasInquiryResult: .constant(true),
+            detailExtened: .constant(false),
+            hasDetailResult: .constant(true)
+        )
+    }
+    .background(Color.gray)
 }
 
 private enum RoomInfoItem {
@@ -886,6 +923,82 @@ private struct ResultAdjustView: View {
     }
 }
 
+private struct DetailResultView: View {
+    @Binding var inquiry: Inquiry?
+    
+    var body: some View {
+        VStack {
+            Text("详细估价结果").headerText()
+            Spacer().frame(height: 20)
+            ForEach(Item.allCases, id: \.self) { item in
+                ListItem(title: item.title, content: "\(inquiry?.stringValue(of: item.rawValue) ?? "0")\(item.unit)")
+                Divider()
+            }
+        }
+        .sectionStyle()
+    }
+    
+    private enum Item: String, CaseIterable {
+        case fvTotalPriceBeforeAdjustment, fvUnitPriceBeforeAdjustment, fvValuationTotalPrice, fvValuationPrice, fvTotalPriceAuxiliaryRoomsHavePropertyRights, fvTotalPriceAuxiliaryRoomsNoPropertyRights, fvTotalPriceAccessoriesHavePropertyRights, fvTotalPriceAccessoriesNoPropertyRights, fvNetMortgageValue, fvValuationDate
+        
+        var title: String {
+            switch self {
+            case .fvTotalPriceBeforeAdjustment:
+                return "调整前总价"
+            case .fvUnitPriceBeforeAdjustment:
+                return "调整前单价"
+            case .fvValuationTotalPrice:
+                return "房地产评估总价"
+            case .fvValuationPrice:
+                return "房地产评估单价"
+            case .fvTotalPriceAuxiliaryRoomsHavePropertyRights:
+                return "辅房总价（有产权）"
+            case .fvTotalPriceAuxiliaryRoomsNoPropertyRights:
+                return "辅房总价（无产权）"
+            case .fvTotalPriceAccessoriesHavePropertyRights:
+                return "附属物总价（有产权）"
+            case .fvTotalPriceAccessoriesNoPropertyRights:
+                return "附属物总价（无产权）"
+            case .fvNetMortgageValue:
+                return "抵押净值"
+            case .fvValuationDate:
+                return "估价时间"
+            }
+        }
+        
+        var unit: String {
+            switch self {
+            case .fvTotalPriceBeforeAdjustment:
+                return "元/m²"
+            case .fvUnitPriceBeforeAdjustment:
+                return "元"
+            case .fvValuationTotalPrice:
+                return "元/m²"
+            case .fvValuationPrice:
+                return "元"
+            case .fvTotalPriceAuxiliaryRoomsHavePropertyRights:
+                return "元"
+            case .fvTotalPriceAuxiliaryRoomsNoPropertyRights:
+                return "元"
+            case .fvTotalPriceAccessoriesHavePropertyRights:
+                return "元"
+            case .fvTotalPriceAccessoriesNoPropertyRights:
+                return "元"
+            case .fvNetMortgageValue:
+                return "元"
+            case .fvValuationDate:
+                return ""
+            }
+        }
+    }
+}
+
+#Preview("DetailResultView") {
+    PreviewView {
+        DetailResultView(inquiry: $0)
+    }
+}
+
 private struct HeaderTextModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -1024,32 +1137,6 @@ private struct PreviewView<Content: View>: View {
 
 #Preview("AuxiliaryRoomCreateView") {
     AuxiliaryRoomCreateView(inquiry: .constant(.empty))
-}
-
-#Preview("Overlay") {
-    VStack {
-        Text("估一下")
-        OverlayView(
-            areaText: .constant("100"),
-            inquiry: .constant(.empty),
-            hasInquiryResult: .constant(false),
-            detailExtened: .constant(false)
-        )
-        Text("估一下 + 展开")
-        OverlayView(
-            areaText: .constant("100"),
-            inquiry: .constant(.empty),
-            hasInquiryResult: .constant(true),
-            detailExtened: .constant(false)
-        )
-        Text("详细估价")
-        OverlayView(
-            areaText: .constant("100"),
-            inquiry: .constant(.empty),
-            hasInquiryResult: .constant(true),
-            detailExtened: .constant(true)
-        )
-    }
 }
 
 /*

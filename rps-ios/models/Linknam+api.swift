@@ -388,6 +388,26 @@ extension Linkman {
         
         return out
     }
+    
+    func inquireDetail(inquiry: NetworkInquiry) async throws -> NetworkInquiry {
+        let req = try await Request()
+            .with(\.path, setTo: "/inquiry/rps/inquiry/systemDetailInquiry")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: inquiry)
+            .make()
+        
+        guard let data = req._response else {
+            throw "response not exits"
+        }
+        
+        guard let dataDict = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let out = dataDict["data"] as? NetworkInquiry
+        else {
+            throw "data not in response"
+        }
+        
+        return out
+    }
 }
 
 

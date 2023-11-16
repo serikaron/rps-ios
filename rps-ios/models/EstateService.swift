@@ -185,6 +185,16 @@ class EstateService: ObservableObject {
             return .empty
         }
     }
+    
+    func inquireDetail(inquiry: Inquiry) async -> Inquiry {
+        do {
+            let r = try await Linkman.shared.inquireDetail(inquiry: inquiry.networkInquiry)
+            return Inquiry(networkInquiry: r)
+        } catch {
+            print("inquireDetail FAILED: \(error)")
+            return .empty
+        }
+    }
 }
 
 extension SearchResult {
