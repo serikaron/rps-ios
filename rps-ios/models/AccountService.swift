@@ -16,7 +16,11 @@ struct Account {
 @MainActor
 class AccountService: ObservableObject {
     @Published var isLoggedIn: Bool = false
-    @Published var account: Account?
+    @Published var account: Account? {
+        didSet {
+            UserDefaults.account = account
+        }
+    }
     
     var cancelable: Cancellable?
     
@@ -31,6 +35,8 @@ class AccountService: ObservableObject {
             .sink(receiveValue: { token in
                 UserDefaults.token = token
             })
+        
+        account = UserDefaults.account
     }
     
     func login(username: String, password: String) async {

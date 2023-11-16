@@ -21,4 +21,18 @@ extension UserDefaults {
             UserDefaults.rps.setValue(token, forKey: "token")
         }
     }
+    
+    static var account: Account? {
+        get {
+            let orgId = UserDefaults.rps.integer(forKey: "account.orgId")
+            return Account(id: 0, orgId: orgId)
+        }
+        set(account) {
+            if account == nil {
+                UserDefaults.rps.removeObject(forKey: "account.orgId")
+            } else {
+                UserDefaults.rps.setValue(account!.orgId, forKey: "account.orgId")
+            }
+        }
+    }
 }

@@ -11,6 +11,7 @@ extension Image {
     enum main {
         static var searchIcon: Image { return Image("search-icon") }
         static var arrowIcon: Image { return Image("arrow-icon") }
+        static var arrowIconRight: Image { return Image("arrow-icon-right") }
         static var indexTabIcon: Image { return Image("index-tab") }
         static var recordTabIcon: Image { return Image("record-tab") }
         static var csTabIcon: Image { return Image("cs-tab") }

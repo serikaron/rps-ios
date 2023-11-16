@@ -165,6 +165,28 @@ class EstateService: ObservableObject {
             print("getRoomDetail FAILED: \(error)")
         }
     }
+    
+    func createInquiry(buildingId: Int, estateType: String, areaCode: Int, searchAddr: String, orgId: Int) async -> Inquiry {
+        do {
+            let r = try await Linkman.shared.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: searchAddr, orgId: orgId)
+            return Inquiry(networkInquiry: r)
+        } catch {
+            print("createInquiry FAILED: \(error)")
+            return .empty
+        }
+    }
+    
+    func inquire(inquiry: Inquiry) async -> InquiryResult {
+        do {
+            let r = try await Linkman.shared.inquire(inquiry: inquiry.networkInquiry)
+            return InquiryResult(
+                price: r.price, totalPrice: r.totalPrice, date: r.date
+                )
+        } catch {
+            print("inquire FAILED: \(error)")
+            return .empty
+        }
+    }
 }
 
 extension SearchResult {
@@ -222,5 +244,19 @@ extension EstateService {
         out.fuzzySearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
         out.buildings = (0..<10).map { _ in Building.mock }
         return out
+    }
+}
+
+private extension Linkman.NetworkInquiry {
+    var price: String {
+        self["fvValuationPrice"] as? String ?? ""
+    }
+    
+    var totalPrice: String {
+        self["fvValuationTotalPrice"] as? String ?? ""
+    }
+    
+    var date: String {
+        self["fvValuationDate"] as? String ?? ""
     }
 }

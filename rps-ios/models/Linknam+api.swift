@@ -215,20 +215,6 @@ extension Linkman {
         let units: [String: FloorDataItems]
         let louceng: String?
         
-        struct DynamicKey: CodingKey {
-            var stringValue: String
-            init?(stringValue: String) {
-                self.stringValue = stringValue
-                self.intValue = nil
-            }
-            
-            var intValue: Int?
-            init?(intValue: Int) {
-                self.intValue = intValue
-                self.stringValue = ""
-            }
-        }
-        
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: DynamicKey.self)
             
@@ -339,6 +325,83 @@ extension Linkman {
             ])
             .make()
             .response() as RoomDetailResponse
+    }
+    
+//    struct NetworkInquiry {
+//        var dict: [String: Any]
+//        
+//        init(from data: Data) throws {
+//            guard let d = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+//            else { throw "decode NetworkInquiry FAILED" }
+//            self.dict = d
+//        }
+//        
+//        init() {
+//            self.dict = [:]
+//        }
+//    }
+    
+    typealias NetworkInquiry = [String: Any]
+    
+    func createInquiry(buildingId: Int, estateType: String, areaCode: Int, searchAddr: String, orgId: Int) async throws -> NetworkInquiry {
+        let req = try await Request()
+            .with(\.path, setTo: "/inquiry/rps/inquiry/addSystem")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: [
+                "fiBuildingId": "\(buildingId)",
+                "fvEstateType": estateType,
+                "fiAreaCode": areaCode,
+                "fvSearchAddr": searchAddr,
+                "fiOrgId": orgId
+            ])
+            .make()
+        
+        guard let data = req._response else {
+            throw "response not exits"
+        }
+        
+        guard let dataDict = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let out = dataDict["data"] as? NetworkInquiry
+        else {
+            throw "data not in response"
+        }
+        
+        return out
+    }
+    
+    func inquire(inquiry: NetworkInquiry) async throws -> NetworkInquiry {
+        let req = try await Request()
+            .with(\.path, setTo: "/inquiry/rps/inquiry/systemInquiry")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: inquiry)
+            .make()
+        
+        guard let data = req._response else {
+            throw "response not exits"
+        }
+        
+        guard let dataDict = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let out = dataDict["data"] as? NetworkInquiry
+        else {
+            throw "data not in response"
+        }
+        
+        return out
+    }
+}
+
+
+struct DynamicKey: CodingKey {
+    var stringValue: String
+    init?(stringValue: String) {
+        self.stringValue = stringValue
+        self.intValue = nil
+    }
+    
+    var intValue: Int?
+    init?(intValue: Int) {
+        self.intValue = intValue
+        self.stringValue = ""
     }
 }
 

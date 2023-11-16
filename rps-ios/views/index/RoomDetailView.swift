@@ -10,6 +10,7 @@ import SwiftUI
 struct RoomDetailView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var estateService: EstateService
+    @EnvironmentObject var accountService: AccountService
     
     private var roomDetail: RoomDetail { estateService.roomDetail }
     
@@ -19,24 +20,45 @@ struct RoomDetailView: View {
     let buildingId: Int
     let floor: String
     
+    @State private var inquiry: Inquiry? {
+        didSet {
+            guard let area = inquiry?.area else { return }
+            areaText = "\(area)"
+        }
+    }
+    @State var inquiryResult: InquiryResult?
+    private var hasInquiryResult: Bool { inquiryResult != nil }
+    
     var body: some View {
         ZStack {
             Color.view.background
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea(edges: .bottom)
-            ScrollView {
-                ZStack(alignment: .top) {
-                    Color.gray
-                        .frame(height: 252)
-                        .frame(maxHeight: .infinity, alignment: .top)
-                    VStack(spacing: 0) {
-                        Spacer().frame(height: 219)
-                        content
+            VStack(spacing: 0) {
+                ScrollView {
+                    ZStack(alignment: .top) {
+                        Color.gray
+                            .frame(height: 252)
+                            .frame(maxHeight: .infinity, alignment: .top)
+                        VStack(spacing: 0) {
+                            Spacer().frame(height: 219)
+                            content
+                            Spacer().frame(height: 10)
+                            mapView
+                            Spacer().frame(height: 10)
+                            if hasInquiryResult {
+                                resultView
+                                Spacer().frame(height: 10)
+                                actionView
+                                Spacer().frame(height: 10)
+                            }
+                        }
                     }
                 }
+//                Spacer()
+                inquiryLayer
+//                    .frame(maxHeight: .infinity, alignment: .bottom)
             }
-            inquiryLayer
-                .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .setupNavigationBar(title: "系统询价详情") {
             presentationMode.wrappedValue.dismiss()
@@ -49,6 +71,7 @@ struct RoomDetailView: View {
                     familyRoomName: familyRoomName,
                     buildingId: buildingId
                 )
+                inquiry = await estateService.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: familyRoomName, orgId: accountService.account?.orgId ?? 0)
             }
         }
     }
@@ -57,7 +80,17 @@ struct RoomDetailView: View {
     
     private var content: some View {
         VStack(spacing: 0) {
-            Spacer().frame(height: 20)
+            if hasInquiryResult {
+                HStack(spacing: 20) {
+                    Text("单价：\(inquiryResult?.price ?? "")元/m²")
+                        .customText(size: 16, color: .text.gray6, weight: .medium)
+                    Text("总价：\(inquiryResult?.totalPrice ?? "")元")
+                        .customText(size: 16, color: .text.gray6, weight: .medium)
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                Spacer().frame(height: 17)
+            }
             Text(roomDetail.roomName)
                 .customText(size: 18, color: .text.gray3, weight: .medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -68,13 +101,8 @@ struct RoomDetailView: View {
                 .frame(height: 1)
             Spacer().frame(height: 16)
             tabView
-            Spacer().frame(height: 30)
-            mapView
-            Spacer().frame(height: 20)
         }
-        .background(Color.white)
-        .cornerRadius(10)
-        .padding(.horizontal, 12)
+        .sectionStyle()
     }
     
     private var tabView: some View {
@@ -102,7 +130,65 @@ struct RoomDetailView: View {
                     .cornerRadius(5)
             }
         }
-        .padding(.horizontal, 16)
+        .sectionStyle()
+    }
+    
+    private var resultView: some View {
+        VStack(spacing: 0) {
+            Text("估价结果")
+                .customText(size: 16, color: .text.gray3, weight: .medium)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer().frame(height: 20)
+            resultItem(title: "房产评估单价", value: "\(inquiryResult?.price ?? "")元/m²")
+            Spacer().frame(height: 10)
+            resultItem(title: "房产评估总价", value: "\(inquiryResult?.totalPrice ?? "")元")
+            Spacer().frame(height: 10)
+            resultItem(title: "估价时间", value: "\(inquiryResult?.date ?? "")")
+        }
+        .sectionStyle()
+    }
+    
+    private func resultItem(title: String, value: String) -> some View {
+        HStack {
+            Text(title)
+                .customText(size: 14, color: .text.gray6)
+            Spacer()
+            Text(value)
+                .customText(size: 14, color: .text.gray6)
+        }
+    }
+    
+    private var actionView: some View {
+        VStack(spacing: 20) {
+            HStack {
+                actionItem(title: "获取报告单")
+                Spacer()
+                actionItem(title: "估价师询价")
+                Spacer()
+                actionItem(title: "委托报告")
+            }
+            HStack {
+                actionItem(title: "价格反馈")
+                Spacer()
+                actionItem(title: "复制询价")
+                Spacer()
+                actionItem(title: "历史信息")
+            }
+        }
+        .sectionStyle()
+    }
+    
+    private func actionItem(title: String) -> some View {
+        Text(title)
+            .customText(size: 14, color: .main)
+            .padding(.horizontal, 10)
+            .frame(height: 30)
+            .background(Color.white)
+            .cornerRadius(15)
+            .overlay (
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(Color.main, lineWidth: 1)
+            )
     }
     
     @State private var areaText: String = ""
@@ -116,6 +202,13 @@ struct RoomDetailView: View {
                     .frame(width: 81, height: 36)
                     .background(Color.hex("#FFB23F"))
                     .cornerRadius(8)
+                    .onTapGesture {
+                        Task {
+                            guard var inquiry = inquiry else { return }
+                            inquiry.area = Double(areaText) ?? 0
+                            inquiryResult = await estateService.inquire(inquiry: inquiry)
+                        }
+                    }
             }
             .padding(.horizontal, 16)
         }
@@ -175,7 +268,7 @@ private struct RoomInfoView: View {
         VStack {
             HStack {
                 Text("基本信息")
-                    .customText(size: 16, color: .text.gray3)
+                    .customText(size: 16, color: .text.gray3, weight: .medium)
                 Spacer()
                 Text("基本信息纠错")
                     .customText(size: 14, color: .white)
@@ -197,21 +290,18 @@ private struct RoomInfoView: View {
                 ForEach(Array(zip(itemToShow.indices, itemToShow)), id: \.0) { _, row in
                     HStack(spacing:0) {
                         ForEach(Array(zip(row.indices, row)), id: \.0) { idx, item in
+                            if (idx != 0) { divider }
                             itemView(title: title(for: item), content: value(for: item))
-                            if idx == row.count - 1 {
-                                if row.count != 4 {
-                                    Spacer().earseToAnyView()
-                                }
-                            } else {
-                                divider.earseToAnyView()
+                            if idx == row.count - 1 &&
+                                row.count != 4 {
+                                Spacer().earseToAnyView()
                             }
                         }
                     }
-                    .padding(.horizontal, 16)
+                    .frame(width: 320)
                 }
             }
         }
-        .padding(.horizontal, 16)
     }
     
     private var divider: some View {
@@ -226,7 +316,7 @@ private struct RoomInfoView: View {
             Text(content)
                 .customText(size: 14, color: .text.gray3)
         }
-        .frame(width: 77)
+        .frame(width: 80)
 //        .frame(maxWidth: .infinity)
     }
     
@@ -270,7 +360,7 @@ private struct RoomInfoView: View {
     }
     
     private var itemToShow: [[RoomInfoItem]] {
-        print("itemToShow, estateType: \(estateType)")
+//        print("itemToShow, estateType: \(estateType)")
         switch estateType {
         case .commApartment:
             fallthrough
@@ -315,6 +405,115 @@ private enum RoomInfoItem {
     case estateType, landUser, completionDate, position, structure, facing, height, floor, landLevel, usage, property, landingroomUsage
 }
 
+struct DetailView: View {
+    var body: some View {
+        VStack {
+            VStack {
+                Text("室内因素")
+                    .headerText()
+                Spacer().frame(height: 20)
+                planeShapePicker
+                divider
+                levelDecoratePicker
+                divider
+                decorateDatePicker
+            }
+            .sectionStyle()
+        }
+    }
+    
+    private var divider: some View {
+        Color.view.background
+            .frame(height: 1)
+    }
+    
+    @State private var planeShape: PlaneShape?
+    private var planeShapePicker: some View {
+        Menu {
+            Picker("", selection: $planeShape) {
+                ForEach(PlaneShape.allCases, id: \.self) { shape in
+                    Text(shape.label)
+                }
+            }
+        } label: {
+            HStack {
+                Text("户型布局")
+                Spacer()
+                Text(planeShape?.label ?? "请选择户型布局")
+                Image.main.arrowIconRight
+            }
+            .customText(size: 14, color: .text.gray6)
+            .frame(height: 36)
+        }
+    }
+    
+    @State private var levelDecorate: LevelDecorate?
+    private var levelDecoratePicker: some View {
+        Menu {
+            Picker("", selection: $levelDecorate) {
+                ForEach(LevelDecorate.allCases, id: \.self) { deco in
+                    Text(deco.label)
+                }
+            }
+        } label: {
+            HStack {
+                Text("装修情况")
+                Spacer()
+                Text(levelDecorate?.label ?? "请选择装修情况")
+                Image.main.arrowIconRight
+            }
+            .customText(size: 14, color: .text.gray6)
+            .frame(height: 36)
+        }
+    }
+    
+    @State private var date: Date = Date()
+    private var decorateDatePicker: some View {
+        HStack {
+            Text("装修时间")
+            Spacer()
+            Text(date.toString(format: "YYYY-MM-dd"))
+            Image.main.arrowIconRight
+        }
+        .customText(size: 14, color: .text.gray6)
+        .frame(height: 36)
+        .overlay (
+            DatePicker("date", selection: $date, in: ...Date(), displayedComponents: [.date])
+                .datePickerStyle(.compact)
+                .blendMode(.destinationOver)
+        )
+    }
+}
+
+private struct HeaderTextModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .customText(size: 16, color: .text.gray3, weight: .medium)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+private extension View {
+    func headerText() -> some View {
+        modifier(HeaderTextModifier())
+    }
+}
+
+private struct SectionStyleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(.vertical, 20)
+            .padding(.horizontal, 16)
+            .background(Color.white)
+            .cornerRadius(10)
+            .padding(.horizontal, 12)
+    }
+}
+private extension View {
+    func sectionStyle() -> some View {
+        modifier(SectionStyleModifier())
+    }
+}
+
 #Preview {
     NavigationView {
         RoomDetailView(
@@ -322,12 +521,14 @@ private enum RoomInfoItem {
             areaCode: 300106,
             estateType: "singleApartment",
             buildingId: 1,
-            floor: "1-1"
+            floor: "1-1",
+            inquiryResult: InquiryResult(price: "100", totalPrice: "10000", date: "2000-01-01")
         )
         .environmentObject(
             EstateService()
                 .setRoomDetail(.mock)
         )
+        .environmentObject(AccountService())
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -346,8 +547,14 @@ private enum RoomInfoItem {
             floor: "1-1"
         )
         .environmentObject( EstateService() )
+        .environmentObject(AccountService())
         .navigationBarTitleDisplayMode(.inline)
     }
+}
+
+#Preview("DetailView") {
+    return DetailView()
+        .background(Color.view.background)
 }
 
 private extension EstateService {

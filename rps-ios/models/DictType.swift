@@ -12,7 +12,7 @@ private typealias MainDict = [String: SubDict]
 
 enum DictType {
     case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe,
-    position, noRoomPositon, shopPosition, landingroomPosition, landLevel
+    position, noRoomPositon, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate
     
     var typeName: String {
         switch self {
@@ -29,6 +29,8 @@ enum DictType {
         case .landingroomPosition: return "fv_landingroom_position"
         case .buildDirection: return "fv_build_direction"
         case .landLevel: return "fv_land_level"
+        case .planeShape: return "fv_plane_shape"
+        case .levelDecorate: return "fv_level_decorate_fk"
         }
     }
 }

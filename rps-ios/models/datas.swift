@@ -360,3 +360,72 @@ struct RoomDetail {
         return DictType.landingroomLandSe.label(of: lrs) ?? nilText
     }
 }
+
+struct Inquiry {
+    var networkInquiry: Linkman.NetworkInquiry
+    
+    static var empty: Inquiry {
+        Inquiry(networkInquiry: Linkman.NetworkInquiry())
+    }
+    
+    var area: Double {
+        get { networkInquiry["fbBuildingArea"] as? Double ?? 0 }
+        set(value) {
+            networkInquiry["fbBuildingArea"] = value
+        }
+    }
+}
+
+struct InquiryResult {
+    let price: String
+    let totalPrice: String
+    let date: String
+    
+    static var empty: InquiryResult {
+        InquiryResult(price: "", totalPrice: "", date: "")
+    }
+}
+
+enum PlaneShape: CaseIterable, Hashable {
+    case good, aboveAverage, average, belowAverage, poor
+    
+    var dictKey: String {
+        switch self {
+        case .good:
+            return "0"
+        case .aboveAverage:
+            return "1"
+        case .average:
+            return "3"
+        case .belowAverage:
+            return "4"
+        case .poor:
+            return "5"
+        }
+    }
+    
+    var label: String {
+        DictType.planeShape.label(of: dictKey) ?? ""
+    }
+}
+
+enum LevelDecorate: CaseIterable {
+    case raw, simple, medium, heigh, grand
+    
+    var dictKey: String {
+        switch self {
+        case .raw:
+            return "1"
+        case .simple:
+            return "2"
+        case .medium:
+            return "3"
+        case .heigh:
+            return "4"
+        case .grand:
+            return "5"
+        }
+    }
+    
+    var label: String { DictType.levelDecorate.label(of: dictKey) ?? "" }
+}
