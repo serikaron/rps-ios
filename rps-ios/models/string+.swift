@@ -18,7 +18,7 @@ extension String: LocalizedError {
 }
 
 extension String {
-    func toDate(format: String) -> Date? {
+    func toDate(format: String = "YYYY-MM-dd") -> Date? {
         let f = DateFormatter()
         f.dateFormat = format
         return f.date(from: self)
@@ -34,7 +34,7 @@ extension String {
 }
 
 extension Date {
-    func toString(format: String) -> String {
+    func toString(format: String = "YYYY-MM-dd") -> String {
         let f = DateFormatter()
         f.dateFormat = format
         return f.string(from: self)

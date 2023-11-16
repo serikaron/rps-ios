@@ -188,4 +188,71 @@ extension DictType {
         }
         var label: String { DictType.common_has.label(of: dictKey) ?? "" }
     }
+    
+    enum PlaneShape: CaseIterable, Hashable {
+        case good, aboveAverage, average, belowAverage, poor
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = .average
+            case "2": self = .aboveAverage
+            case "3": self = .good
+            case "4": self = .belowAverage
+            case "5": self = .poor
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case .good:
+                return "3"
+            case .aboveAverage:
+                return "2"
+            case .average:
+                return "1"
+            case .belowAverage:
+                return "4"
+            case .poor:
+                return "5"
+            }
+        }
+        
+        var label: String {
+            DictType.planeShape.label(of: dictKey) ?? ""
+        }
+    }
+
+    enum LevelDecorate: CaseIterable {
+        case raw, simple, medium, heigh, grand
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = .raw
+            case "2": self = .simple
+            case "3": self = .medium
+            case "4": self = .heigh
+            case "5": self = .grand
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case .raw:
+                return "1"
+            case .simple:
+                return "2"
+            case .medium:
+                return "3"
+            case .heigh:
+                return "4"
+            case .grand:
+                return "5"
+            }
+        }
+        
+        var label: String { DictType.levelDecorate.label(of: dictKey) ?? "" }
+    }
+
 }

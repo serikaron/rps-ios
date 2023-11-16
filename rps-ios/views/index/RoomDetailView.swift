@@ -46,21 +46,15 @@ struct RoomDetailView: View {
                         VStack(spacing: 10) {
                             Spacer().frame(height: 219)
                             content
-//                            Spacer().frame(height: 10)
                             mapView
-//                            Spacer().frame(height: 10)
                             if hasInquiryResult {
                                 ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
-//                                Spacer().frame(height: 10)
                                 actionView
-//                                Spacer().frame(height: 10)
                             }
                             if detailExtened {
-                                DecorateView()
-//                                Spacer().frame(height: 10)
-                                if inquiry != nil {
-                                    AuxiliaryRoomListView(inquiry: $inquiry)
-                                }
+                                DecorateView(inquiry: $inquiry)
+                                AuxiliaryRoomListView(inquiry: $inquiry)
+                                ResultAdjustView(inquiry: $inquiry)
                             }
                         }
                     }
@@ -498,82 +492,83 @@ private struct ResultView: View {
 }
 
 private struct DecorateView: View {
+    @Binding var inquiry: Inquiry?
+    
     var body: some View {
         VStack {
-            VStack {
-                Text("室内因素")
-                    .headerText()
-                Spacer().frame(height: 20)
-                planeShapePicker
-                divider
-                levelDecoratePicker
-                divider
-                decorateDatePicker
-            }
-            .sectionStyle()
+            Text("室内因素")
+                .headerText()
+            Spacer().frame(height: 20)
+            planeShapePicker
+            Divider()
+            levelDecoratePicker
+            Divider()
+            decorateDatePicker
         }
+        .sectionStyle()
     }
     
-    private var divider: some View {
-        Color.view.background
-            .frame(height: 1)
-    }
-    
-    @State private var planeShape: PlaneShape?
     private var planeShapePicker: some View {
-        Menu {
-            Picker("", selection: $planeShape) {
-                ForEach(PlaneShape.allCases, id: \.self) { shape in
-                    Text(shape.label)
+        FlexibleListItem(title: "户型布局") {
+            Menu {
+                ForEach(DictType.PlaneShape.allCases, id: \.self) { shape in
+                    Button {
+                        inquiry?.style = shape
+                    } label: {
+                        Text(shape.label)
+                    }
+                }
+            } label: {
+                HStack {
+                    Text(inquiry?.style?.label ?? "请选择户型布局")
+                    Image.main.arrowIconRight
                 }
             }
-        } label: {
-            HStack {
-                Text("户型布局")
-                Spacer()
-                Text(planeShape?.label ?? "请选择户型布局")
-                Image.main.arrowIconRight
-            }
-            .customText(size: 14, color: .text.gray6)
-            .frame(height: 36)
         }
     }
     
-    @State private var levelDecorate: LevelDecorate?
     private var levelDecoratePicker: some View {
-        Menu {
-            Picker("", selection: $levelDecorate) {
-                ForEach(LevelDecorate.allCases, id: \.self) { deco in
-                    Text(deco.label)
+        FlexibleListItem(title: "装修情况") {
+            Menu {
+                ForEach(DictType.LevelDecorate.allCases, id: \.self) { deco in
+                    Button {
+                        inquiry?.decoration = deco
+                    } label: {
+                        Text(deco.label)
+                    }
+                }
+            } label: {
+                HStack {
+                    Text(inquiry?.decoration?.label ?? "请选择装修情况")
+                    Image.main.arrowIconRight
                 }
             }
-        } label: {
-            HStack {
-                Text("装修情况")
-                Spacer()
-                Text(levelDecorate?.label ?? "请选择装修情况")
-                Image.main.arrowIconRight
-            }
-            .customText(size: 14, color: .text.gray6)
-            .frame(height: 36)
         }
     }
     
-    @State private var date: Date = Date()
+    private var date: Binding<Date> {Binding(
+        get: { inquiry?.decorationDate?.toDate() ?? Date() },
+        set: { inquiry?.decorationDate = $0.toString() }
+    )}
     private var decorateDatePicker: some View {
-        HStack {
-            Text("装修时间")
-            Spacer()
-            Text(date.toString(format: "YYYY-MM-dd"))
-            Image.main.arrowIconRight
+        FlexibleListItem(title: "装修时间") {
+            HStack {
+                Text(inquiry?.decorationDate ?? "选择装修时间")
+                Image.main.arrowIconRight
+            }
         }
-        .customText(size: 14, color: .text.gray6)
-        .frame(height: 36)
         .overlay (
-            DatePicker("date", selection: $date, in: ...Date(), displayedComponents: [.date])
+            DatePicker("date", selection: date, in: ...Date(), displayedComponents: [.date])
                 .datePickerStyle(.compact)
                 .blendMode(.destinationOver)
         )
+    }
+}
+
+#Preview("DecorateView") {
+    PreviewView {
+        DecorateView(inquiry: $0)
+            .background(Color.view.background)
     }
 }
 
@@ -822,6 +817,75 @@ private extension AuxiliaryRoom {
     }
 }
 
+private struct ResultAdjustView: View {
+    @Binding var inquiry: Inquiry?
+    
+    private var date: Binding<Date> {Binding(
+        get: { inquiry?.date.toDate() ?? Date() },
+        set: { inquiry?.date = $0.toString() }
+    )}
+    private var dateString: String {
+        if let date = inquiry?.date,
+           !date.isEmpty {
+            return date
+        } else {
+            return "请选择估价时间"
+        }
+    }
+    
+    private var fee: Binding<String> {Binding(
+        get: { inquiry?.fee ?? "" },
+        set: { inquiry?.fee = $0 }
+    )}
+    
+    private var feeRatio: Binding<String> {Binding(
+        get: { inquiry?.feeRatio ?? "" },
+        set: { inquiry?.feeRatio = $0 }
+    )}
+    
+    var body: some View {
+        VStack {
+            Text("结果调整").headerText()
+            VStack {
+                FlexibleListItem(title: "估价时间") {
+                    Text(dateString)
+                    Image.main.arrowIconRight
+                }
+                .overlay(
+                    DatePicker("date", selection: date, in: ...Date(), displayedComponents: [.date])
+                        .datePickerStyle(.compact)
+                        .blendMode(.destinationOver)
+                )
+                Divider()
+                FlexibleListItem(title: "处置税费金额") {
+                    HStack {
+                        TextField("", text: fee)
+                            .multilineTextAlignment(.trailing)
+                            .keyboardType(.numberPad)
+                        Text("元")
+                    }
+                }
+                Divider()
+                FlexibleListItem(title: "处置税费比例") {
+                    HStack {
+                        TextField("", text: feeRatio)
+                            .multilineTextAlignment(.trailing)
+                            .keyboardType(.numberPad)
+                        Text("%")
+                    }
+                }
+            }
+        }
+        .sectionStyle()
+    }
+}
+
+#Preview("ResultAdjustView") {
+    PreviewView {
+        ResultAdjustView(inquiry: $0)
+    }
+}
+
 private struct HeaderTextModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -936,23 +1000,21 @@ private struct Divider: View {
     ResultView(inquiry: .empty, detailExtened: .constant(true))
 }
 
-#Preview("DecorateView") {
-    return DecorateView()
-        .background(Color.view.background)
-}
-
-private struct AuxiliaryRoomListPreview: View {
+private struct PreviewView<Content: View>: View {
     @State private var inquiry: Inquiry? = .empty
+    let content: (_ inquiry: Binding<Inquiry?>) -> Content
     
     var body: some View {
         NavigationView {
-            AuxiliaryRoomListView(inquiry: $inquiry)
+            content($inquiry)
         }
     }
 }
 
 #Preview("AuxiliaryRoomListView") {
-    AuxiliaryRoomListPreview()
+    PreviewView { inquiry in
+        AuxiliaryRoomListView(inquiry: inquiry)
+    }
 }
 
 #Preview("AuxiliaryRoomView") {

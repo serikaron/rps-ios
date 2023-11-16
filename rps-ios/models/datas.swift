@@ -384,7 +384,59 @@ struct Inquiry {
     }
     
     var date: String {
-        networkInquiry["fvValuationDate"] as? String ?? ""
+        get { networkInquiry["fvValuationDate"] as? String ?? "" }
+        set(value) {
+            networkInquiry["fvValuationDate"] = value
+        }
+    }
+    
+    var fee: String {
+        get { networkInquiry["fvTaxesFees"] as? String ?? "" }
+        set(value) {
+           networkInquiry["fvTaxesFees"] = value
+        }
+    }
+    
+    var feeRatio: String {
+        get { networkInquiry["fvTaxesFeesRatio"] as? String ?? "" }
+        set(value) {
+            networkInquiry["fvTaxesFeesRatio"] = value
+        }
+    }
+    
+    var style: DictType.PlaneShape? {
+        get {
+            DictType.PlaneShape(rawValue: networkInquiry["fvStyle"] as? String)
+        }
+        set(value) {
+            if let dictKey = value?.dictKey {
+                networkInquiry["fvStyle"] = dictKey
+            } else {
+                networkInquiry.removeValue(forKey: "fvStyle")
+            }
+        }
+    }
+    
+    var decoration: DictType.LevelDecorate? {
+        get {
+            DictType.LevelDecorate(rawValue: networkInquiry["fvDecoreate"] as? String)
+        }
+        set(value) {
+            if let dictKey = value?.dictKey {
+                networkInquiry["fvDecoreate"] = dictKey
+            } else {
+                networkInquiry.removeValue(forKey: "fvDecoreate")
+            }
+        }
+    }
+    
+    var decorationDate: String? {
+        get {
+            networkInquiry["fvDateDecorate"] as? String
+        }
+        set(value) {
+            networkInquiry["fvDateDecorate"] = value
+        }
     }
     
     var auxiliaryRoomList: [AuxiliaryRoom] {
@@ -457,50 +509,6 @@ struct Inquiry {
         l.remove(at: idx)
         networkInquiry["fvAuxiliaryRoomsAndAccessories"] = l
     }
-}
-
-enum PlaneShape: CaseIterable, Hashable {
-    case good, aboveAverage, average, belowAverage, poor
-    
-    var dictKey: String {
-        switch self {
-        case .good:
-            return "0"
-        case .aboveAverage:
-            return "1"
-        case .average:
-            return "3"
-        case .belowAverage:
-            return "4"
-        case .poor:
-            return "5"
-        }
-    }
-    
-    var label: String {
-        DictType.planeShape.label(of: dictKey) ?? ""
-    }
-}
-
-enum LevelDecorate: CaseIterable {
-    case raw, simple, medium, heigh, grand
-    
-    var dictKey: String {
-        switch self {
-        case .raw:
-            return "1"
-        case .simple:
-            return "2"
-        case .medium:
-            return "3"
-        case .heigh:
-            return "4"
-        case .grand:
-            return "5"
-        }
-    }
-    
-    var label: String { DictType.levelDecorate.label(of: dictKey) ?? "" }
 }
 
 struct AuxiliaryRoom {
