@@ -256,12 +256,15 @@ extension Linkman {
     
     func getBuildingFloors(buildingId: Int, estateType: String, areaCode: Int) async throws -> BuildingFloors {
         try await Request()
-            .with(\.path, setTo: "/data/\(estateType)/room/getBaseData")
+            .with(\.path, setTo: "/data/rps/dcdata/getBaseData")
             .with(\.method, setTo: .GET)
             .with(\.query, setTo: [
                 "fvEstateType": estateType,
                 "fiBuildingId": "\(buildingId)",
-                "fiAreaCode": "\(areaCode)"
+                "fiAreaCode": "\(areaCode)",
+                "buildingEnterFlag": "0",
+                "isPutRoomBaseData": "false",
+                "collectRoomTableFlag": "0"
             ])
             .make()
             .response() as BuildingFloors
@@ -314,14 +317,15 @@ extension Linkman {
     
     typealias RoomDetailResponse = NetworkRoomDetail
     
-    func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String) async throws -> RoomDetailResponse {
+    func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String, orgId: Int) async throws -> RoomDetailResponse {
         try await Request()
             .with(\.path, setTo: "/data/rps/dcdata/getRoomDetail")
             .with(\.method, setTo: .GET)
             .with(\.query, setTo: [
                 "fvEstateType": estateType,
                 "fiAreaCode": "\(areaCode)",
-                "fvFamilyRoomName": familyRoomName
+                "fvFamilyRoomName": familyRoomName,
+                "orgId": "\(orgId)"
             ])
             .make()
             .response() as RoomDetailResponse

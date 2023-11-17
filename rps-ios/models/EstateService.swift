@@ -154,12 +154,12 @@ class EstateService: ObservableObject {
     }
     
     @Published var roomDetail: RoomDetail = .empty
-    func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String, buildingId: Int) async {
+    func getRoomDetail(estateType: String, areaCode: Int, familyRoomName: String, buildingId: Int, orgId: Int) async {
 //        print("getRoomDetail, estateType:\(estateType), areaCode:\(areaCode), familyRoomName:\(familyRoomName), buildingId:\(buildingId)")
         roomDetail = .empty
         do {
             let roomCount = try await Linkman.shared.getRoomCount(estateType: estateType, buildingId: buildingId)
-            let rsp = try await Linkman.shared.getRoomDetail(estateType: estateType, areaCode: areaCode, familyRoomName: familyRoomName)
+            let rsp = try await Linkman.shared.getRoomDetail(estateType: estateType, areaCode: areaCode, familyRoomName: familyRoomName, orgId: orgId)
             roomDetail = RoomDetail(networkRoomDetail: rsp, roomCount: roomCount)
         } catch {
             print("getRoomDetail FAILED: \(error)")

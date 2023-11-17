@@ -80,7 +80,8 @@ struct RoomDetailView: View {
                     estateType: estateType,
                     areaCode: areaCode,
                     familyRoomName: familyRoomName,
-                    buildingId: buildingId
+                    buildingId: buildingId,
+                    orgId: accountService.account?.orgId ?? 0
                 )
                 inquiry = await estateService.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: familyRoomName, orgId: accountService.account?.orgId ?? 0)
                 initialized = true
