@@ -233,7 +233,7 @@ private struct RoomInfoView: View {
     let floor: String
     
     private var roomDetail: RoomDetail { estateService.roomDetail }
-    private var estateType: EstateType? { roomDetail.estateType }
+    private var estateType: DictType.EstateType? { roomDetail.estateType }
 //    private var estateType: EstateType? { EstateType.shopStreet }
     
     var body: some View {
@@ -623,6 +623,19 @@ private struct AuxiliaryRoomListView: View {
     }
     
     var body: some View {
+        switch inquiry?.estateType {
+        case .landingRoom:
+            fallthrough
+        case .shopStreet:
+            fallthrough
+        case .none:
+            return EmptyView().earseToAnyView()
+        default:
+            return content.earseToAnyView()
+        }
+    }
+    
+    private var content: some View {
         VStack {
             Text("辅房及附属物")
                 .headerText()
@@ -671,6 +684,13 @@ private struct AuxiliaryRoomListView: View {
     }
 }
 
+#Preview("AuxiliaryRoomListView") {
+    var inquiry = Inquiry.empty
+    return PreviewView(inquiry: inquiry.setEstateType(.commApartment)) { inquiry in
+        AuxiliaryRoomListView(inquiry: inquiry)
+    }
+}
+
 private struct AuxiliaryRoomInfoView: View {
     let room: AuxiliaryRoom
     
@@ -689,6 +709,11 @@ private struct AuxiliaryRoomInfoView: View {
         .background(Color.view.background)
     }
     
+}
+
+#Preview("AuxiliaryRoomView") {
+    AuxiliaryRoomInfoView(room: AuxiliaryRoom(propertyAttribute: .auxiliaryHouse(subType: .attic), commonHas: .not, unit: "m", area: 200))
+        .background(Color.black)
 }
 
 private struct AuxiliaryRoomCreateView: View {
@@ -845,6 +870,10 @@ private struct AuxiliaryRoomCreateView: View {
     }
 }
 
+#Preview("AuxiliaryRoomCreateView") {
+    AuxiliaryRoomCreateView(inquiry: .constant(.empty))
+}
+
 private extension AuxiliaryRoom {
     static func fixedRoom(with area: Double) -> AuxiliaryRoom {
         AuxiliaryRoom(
@@ -931,12 +960,25 @@ private struct DetailResultView: View {
         VStack {
             Text("详细估价结果").headerText()
             Spacer().frame(height: 20)
-            ForEach(Item.allCases, id: \.self) { item in
+            ForEach(items, id: \.self) { item in
                 ListItem(title: item.title, content: "\(inquiry?.stringValue(of: item.rawValue) ?? "0")\(item.unit)")
                 Divider()
             }
         }
         .sectionStyle()
+    }
+    
+    private var items: [Item] {
+        switch inquiry?.estateType {
+        case .landingRoom:
+            fallthrough
+        case .shopStreet:
+            return [.fvTotalPriceBeforeAdjustment, .fvUnitPriceBeforeAdjustment, .fvValuationTotalPrice, .fvValuationPrice, .fvNetMortgageValue, .fvValuationDate]
+        case nil:
+            return []
+        default:
+            return Item.allCases
+        }
     }
     
     private enum Item: String, CaseIterable {
@@ -998,6 +1040,290 @@ private struct DetailResultView: View {
     PreviewView {
         DetailResultView(inquiry: $0)
     }
+}
+
+private struct LandInfoView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
+    let land: LandIndustrialFactory
+    
+    var body: some View {
+        VStack {
+            ListItem(title: "土地名称", content: land.name ?? "")
+            ListItem(title: "土地面积（m²）", content: "\(land.area ?? 0)m²")
+            ListItem(title: "土地性质", content: land.landUser?.label ?? "")
+            ListItem(title: "土地终止日期", content: land.endDate ?? "")
+            ListItem(title: "土地用途", content: land.landSe?.label ?? "")
+            ListItem(title: "临路状况", content: land.roadCondition?.label ?? "")
+        }
+        .sectionStyle()
+        .frame(maxHeight: .infinity, alignment: .top)
+        .background(Color.view.background)
+        .setupNavigationBar(title: "土地信息详情") {
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+}
+
+#Preview("LandInfo") {
+    LandInfoView(land: LandIndustrialFactory(
+        name: "land",
+        area: 10,
+        landUser: ._1,
+        endDate: "2001",
+        landSe: ._1,
+        roadCondition: ._1
+    ))
+}
+
+private struct LandCreateView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
+    @Binding var inquiry: Inquiry?
+    
+    @State private var newLand = LandIndustrialFactory()
+    
+    private var name: Binding<String> { Binding(
+        get: { newLand.name ?? "" },
+        set: { newLand.name = $0 }
+    )}
+    
+    private var area: Binding<String> { Binding(
+        get: {
+            if let a = newLand.area {
+                return "\(a)"
+            } else {
+                return ""
+            }
+        },
+        set: { newLand.area = Double($0) }
+    )}
+    
+    private var date: Binding<Date> { Binding(
+        get: { newLand.endDate?.toDate() ?? Date() },
+        set: { newLand.endDate = $0.toString() }
+    )}
+    
+    var body: some View {
+        VStack {
+            VStack {
+                FlexibleListItem(title: "土地名称") {
+                    TextField("请输入", text: name)
+                        .multilineTextAlignment(.trailing)
+                }
+                FlexibleListItem(title: "土地面积（m²）") {
+                    HStack {
+                        TextField("请输入", text: name)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    Text("m²")
+                }
+                FlexibleListItem(title: "土地性质") {
+                    Menu {
+                        ForEach(DictType.LandUser.allCases, id: \.self) { landUser in
+                            Button {
+                                newLand.landUser = landUser
+                            } label: {
+                                Text(landUser.label)
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text(newLand.landUser?.label ?? "请选择")
+                            Image.main.arrowIconRight
+                        }
+                    }
+                }
+                FlexibleListItem(title: "土地终止日期") {
+                    Text(newLand.endDate ?? "请选择日期")
+                        .overlay(
+                            DatePicker("date", selection: date)
+                                .datePickerStyle(.compact)
+                                .blendMode(.destinationOver)
+                        )
+                }
+                FlexibleListItem(title: "土地用途") {
+                    Menu {
+                        ForEach(DictType.LandSe.allCases, id: \.self) { landSe in
+                            Button {
+                                newLand.landSe = landSe
+                            } label: {
+                                Text(landSe.label)
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text(newLand.landSe?.label ?? "请选择")
+                            Image.main.arrowIconRight
+                        }
+                    }
+                }
+                FlexibleListItem(title: "临路状况") {
+                    Menu {
+                        ForEach(DictType.TemporaryRoadConditions.allCases, id: \.self) { roadCondition in
+                            Button {
+                                newLand.roadCondition = roadCondition
+                            } label: {
+                                Text(roadCondition.label)
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text(newLand.roadCondition?.label ?? "请选择")
+                            Image.main.arrowIconRight
+                        }
+                    }
+                }
+            }
+            .sectionStyle()
+            Spacer()
+            Button {
+                inquiry?.addLand(newLand)
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Text("保存")
+                    .customText(size: 16, color: .white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 40)
+                    .background(Color.main)
+                    .cornerRadius(8)
+            }
+            .padding(.horizontal, 12)
+        }
+        .background(Color.view.background)
+        .setupNavigationBar(title: "新建土地信息") {
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+}
+
+#Preview("CreateLand") {
+    PreviewView {
+        LandCreateView(inquiry: $0)
+    }
+}
+
+private struct LandListView: View {
+    @Binding var inquiry: Inquiry?
+    
+    var body: some View {
+        VStack {
+            Text("土地信息")
+                .headerText()
+            Spacer().frame(height: 20)
+            VStack {
+                ForEach(Array(zip(items.indices, items)), id: \.0) { idx, item in
+                    itemView(for: item, idx: idx)
+                    Divider()
+                }
+                NavigationLink {
+                    LandCreateView(inquiry: $inquiry)
+                } label: {
+                    HStack {
+                        Image.index.addIcon
+                        Text("新增土地信息")
+                            .customText(size: 14, color: .text.gray3)
+                    }
+                    .frame(height: 36)
+                }
+            }
+        }
+        .sectionStyle()
+    }
+    
+    private var items: [LandIndustrialFactory] {
+        var out = [LandIndustrialFactory(name: "主房")]
+        if let l = inquiry?.landList {
+            out += l
+        }
+        return out
+    }
+    
+    private func itemView(for item: LandIndustrialFactory, idx: Int) -> some View {
+        HStack {
+            Text("\(idx+1)")
+                .customText(size: 14, color: .text.gray6)
+            Spacer().frame(width: 50)
+            Text(item.name ?? "")
+            Spacer().frame(width: 50)
+            Text("\(item.area ?? 0)m²")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer()
+            if idx != 0 {
+                Button {
+                    inquiry?.removeLand(at: idx)
+                } label: {
+                    Image.index.removeIcon
+                }
+            }
+            NavigationLink {
+                LandInfoView(land: item)
+            } label: {
+                Text("查看详情")
+                    .customText(size: 14, color: .main)
+            }
+        }
+    }
+}
+
+#Preview("LandList") {
+    NavigationView {
+        PreviewView {
+            LandListView(inquiry: $0)
+        }
+    }
+}
+
+private struct InfoFixView: View {
+    @Binding var inquiry: Inquiry?
+    
+    var body: some View {
+        VStack {
+            Text("基本信息纠错")
+                .frame(maxWidth: .infinity, alignment: .center)
+                .headerText()
+                .overlay(
+                    Button {
+                    } label: {
+                        Image.index.close
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                )
+            VStack {
+                ForEach(items, id: \.self) { item in
+                    itemView(for: item)
+                }
+            }
+        }
+        .sectionStyle()
+    }
+    
+    private func itemView(for item: Item) -> some View {
+        HStack {
+            
+        }
+    }
+    
+    private enum Item {
+        case landUser
+        
+        var title: String {
+            switch self {
+            case .landUser: return "使用权类型"
+            }
+        }
+    }
+    
+    private var items: [Item] {
+        [.landUser]
+    }
+}
+
+#Preview("InfoFixView") {
+    PreviewView {
+        InfoFixView(inquiry: $0)
+    }
+    .setEstateType(.commApartment)
 }
 
 private struct HeaderTextModifier: ViewModifier {
@@ -1115,7 +1441,7 @@ private struct Divider: View {
 }
 
 private struct PreviewView<Content: View>: View {
-    @State private var inquiry: Inquiry? = .empty
+    @State var inquiry: Inquiry? = .empty
     let content: (_ inquiry: Binding<Inquiry?>) -> Content
     
     var body: some View {
@@ -1123,22 +1449,13 @@ private struct PreviewView<Content: View>: View {
             content($inquiry)
         }
     }
-}
-
-#Preview("AuxiliaryRoomListView") {
-    PreviewView { inquiry in
-        AuxiliaryRoomListView(inquiry: inquiry)
+    
+    func setEstateType(_ type: DictType.EstateType) -> some View {
+        _ = inquiry?.setEstateType(type)
+        return self
     }
 }
 
-#Preview("AuxiliaryRoomView") {
-    AuxiliaryRoomInfoView(room: AuxiliaryRoom(propertyAttribute: .auxiliaryHouse(subType: .attic), commonHas: .not, unit: "m", area: 200))
-        .background(Color.black)
-}
-
-#Preview("AuxiliaryRoomCreateView") {
-    AuxiliaryRoomCreateView(inquiry: .constant(.empty))
-}
 
 /*
  */
@@ -1203,6 +1520,11 @@ private extension EstateService {
 private extension Inquiry {
     mutating func prepareAuxiliaryRoomList() -> Inquiry {
         addAuxiliaryRoom(.fixedRoom(with: 200))
+        return self
+    }
+    
+    mutating func setEstateType(_ type: DictType.EstateType) -> Inquiry {
+        setString("fvEstateType", of: type.dictKey)
         return self
     }
 }

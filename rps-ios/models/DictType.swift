@@ -12,7 +12,8 @@ enum DictType: String {
     typealias SubDict = [String: String]
     typealias MainDict = [String: SubDict]
     
-    case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPositon, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages, common_has
+    case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPositon, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages
+    case common_has, fv_land_se, fv_temporary_road_conditions
     
     var typeName: String {
         switch self {
@@ -120,14 +121,14 @@ extension DictType {
         case auxiliaryHouse(subType: AuxiliaryHouse?)
         case appendages(subType: Appendages?)
         
-        init?(mainType: String, subType: String) {
+        init?(mainType: String?, subType: String?) {
             switch mainType {
             case "main_house": self = .mainHouse
             case "auxiliary_house":
-                guard let subType = AuxiliaryHouse(rawValue: subType) else { return nil }
+                let subType = subType == nil ? nil : AuxiliaryHouse(rawValue: subType!)
                 self = .auxiliaryHouse(subType: subType)
             case "appendages":
-                guard let subType = Appendages(rawValue: subType) else { return nil }
+                let subType = subType == nil ? nil : Appendages(rawValue: subType!)
                 self = .appendages(subType: subType)
             default: return nil
             }
@@ -255,4 +256,136 @@ extension DictType {
         var label: String { DictType.levelDecorate.label(of: dictKey) ?? "" }
     }
 
+    enum EstateType: String {
+        case commApartment, singleApartment, villa, office, landingRoom, shopStreet, industrialSmallGarden, industrialFactory
+        
+        init?(_ value: String?) {
+            switch value {
+            case "commApartment": self = .commApartment
+            case "singleApartment": self = .singleApartment
+            case "villa": self = .villa
+            case "office": self = .office
+            case "landingRoom": self = .landingRoom
+            case "shopStreet": self = .shopStreet
+            case "industrialSmallGarden": self = .industrialSmallGarden
+            case "industrialFactory": self = .industrialFactory
+            default: return nil
+            }
+        }
+        
+        var dictKey: String { rawValue }
+        var label: String { DictType.estate.label(of: dictKey) ?? "" }
+    }
+
+    enum LandUser: CaseIterable {
+        case _1, _2, _3
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            }
+        }
+        
+        var label: String { DictType.landUser.label(of: dictKey) ?? "" }
+    }
+    
+    enum LandSe: CaseIterable {
+        case _1, _2, _3, _4, _5
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            }
+        }
+        
+        var label: String { DictType.fv_land_se.label(of: dictKey) ?? "" }
+    }
+    
+    enum TemporaryRoadConditions: CaseIterable {
+        case _1, _2, _3, _4, _5, _6
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            }
+        }
+        
+        var label: String { DictType.fv_temporary_road_conditions.label(of: dictKey) ?? "" }
+    }
+    
+    enum BuildingStructure: CaseIterable {
+        case _1, _2, _3, _4, _5, _6, _7, _8
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            case "7": self = ._7
+            case "8": self = ._8
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            case ._7: return "7"
+            case ._8: return "8"
+            }
+        }
+
+        var label: String { DictType.buildingStructure.label(of: dictKey) ?? "" }
+    }
 }
