@@ -42,10 +42,21 @@ struct RoomDetailView: View {
                             Spacer().frame(height: 219)
                             content
                             mapView
-                            if hasInquiryResult {
-                                ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
-                                if !hasDetailResult {
-                                    actionView
+                            if inquiry?.estateType == .industrialFactory {
+                                LandListView(inquiry: $inquiry)
+                                BuildListView(inquiry: $inquiry)
+                                if hasInquiryResult {
+                                    ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
+                                    if !hasDetailResult {
+                                        actionView
+                                    }
+                                }
+                            } else {
+                                if hasInquiryResult {
+                                    ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
+                                    if !hasDetailResult {
+                                        actionView
+                                    }
                                 }
                             }
                             if detailExtened {
@@ -470,32 +481,32 @@ private struct OverlayView: View {
     }
 }
 
-#Preview("Overlay") {
-    VStack {
-        Text("估一下")
-        OverlayView(
-            inquiry: .constant(.empty),
-            hasInquiryResult: .constant(false),
-            detailExtened: .constant(false),
-            hasDetailResult: .constant(true)
-        )
-        Text("估一下 + 展开")
-        OverlayView(
-            inquiry: .constant(.empty),
-            hasInquiryResult: .constant(true),
-            detailExtened: .constant(false),
-            hasDetailResult: .constant(true)
-        )
-        Text("详细估价")
-        OverlayView(
-            inquiry: .constant(.empty),
-            hasInquiryResult: .constant(true),
-            detailExtened: .constant(false),
-            hasDetailResult: .constant(true)
-        )
-    }
-    .background(Color.gray)
-}
+//#Preview("Overlay") {
+//    VStack {
+//        Text("估一下")
+//        OverlayView(
+//            inquiry: .constant(.empty),
+//            hasInquiryResult: .constant(false),
+//            detailExtened: .constant(false),
+//            hasDetailResult: .constant(true)
+//        )
+//        Text("估一下 + 展开")
+//        OverlayView(
+//            inquiry: .constant(.empty),
+//            hasInquiryResult: .constant(true),
+//            detailExtened: .constant(false),
+//            hasDetailResult: .constant(true)
+//        )
+//        Text("详细估价")
+//        OverlayView(
+//            inquiry: .constant(.empty),
+//            hasInquiryResult: .constant(true),
+//            detailExtened: .constant(false),
+//            hasDetailResult: .constant(true)
+//        )
+//    }
+//    .background(Color.gray)
+//}
 
 private enum RoomInfoItem {
     case estateType, landUser, completionDate, position, structure, facing, height, floor, landLevel, usage, property, landingroomUsage
@@ -509,11 +520,15 @@ private struct ResultView: View {
         VStack(spacing: 0) {
             Text("估价结果").headerText()
             Spacer().frame(height: 20)
-            ListItem(title: "房产评估单价", content: "\(inquiry.price)元/m²")
-            Spacer().frame(height: 10)
-            ListItem(title: "房产评估总价", content: "\(inquiry.totalPrice)元")
-            Spacer().frame(height: 10)
-            ListItem(title: "估价时间", content: "\(inquiry.date)")
+            VStack(spacing: 10) {
+                if inquiry.estateType == .industrialFactory {
+                    ListItem(title: "土地总价", content: "\(inquiry.landTotalPrice ?? "0")元")
+                    ListItem(title: "建筑物总价", content: "\(inquiry.buildTotalPrice ?? "0")元")
+                }
+                ListItem(title: "房产评估单价", content: "\(inquiry.price)元/m²")
+                ListItem(title: "房产评估总价", content: "\(inquiry.totalPrice)元")
+                ListItem(title: "估价时间", content: "\(inquiry.date)")
+            }
             if detailExtened {
                 Divider()
                 Button {
@@ -540,8 +555,8 @@ private struct DecorateView: View {
             planeShapePicker
             Divider()
             levelDecoratePicker
-            Divider()
-            decorateDatePicker
+//            Divider()
+//            decorateDatePicker
         }
         .sectionStyle()
     }
@@ -603,12 +618,12 @@ private struct DecorateView: View {
     }
 }
 
-#Preview("DecorateView") {
-    PreviewView {
-        DecorateView(inquiry: $0)
-            .background(Color.view.background)
-    }
-}
+//#Preview("DecorateView") {
+//    PreviewView {
+//        DecorateView(inquiry: $0)
+//            .background(Color.view.background)
+//    }
+//}
 
 private struct AuxiliaryRoomListView: View {
     
@@ -684,12 +699,12 @@ private struct AuxiliaryRoomListView: View {
     }
 }
 
-#Preview("AuxiliaryRoomListView") {
-    var inquiry = Inquiry.empty
-    return PreviewView(inquiry: inquiry.setEstateType(.commApartment)) { inquiry in
-        AuxiliaryRoomListView(inquiry: inquiry)
-    }
-}
+//#Preview("AuxiliaryRoomListView") {
+//    var inquiry = Inquiry.empty
+//    return PreviewView(inquiry: inquiry.setEstateType(.commApartment)) { inquiry in
+//        AuxiliaryRoomListView(inquiry: inquiry)
+//    }
+//}
 
 private struct AuxiliaryRoomInfoView: View {
     let room: AuxiliaryRoom
@@ -711,10 +726,10 @@ private struct AuxiliaryRoomInfoView: View {
     
 }
 
-#Preview("AuxiliaryRoomView") {
-    AuxiliaryRoomInfoView(room: AuxiliaryRoom(propertyAttribute: .auxiliaryHouse(subType: .attic), commonHas: .not, unit: "m", area: 200))
-        .background(Color.black)
-}
+//#Preview("AuxiliaryRoomView") {
+//    AuxiliaryRoomInfoView(room: AuxiliaryRoom(propertyAttribute: .auxiliaryHouse(subType: .attic), commonHas: .not, unit: "m", area: 200))
+//        .background(Color.black)
+//}
 
 private struct AuxiliaryRoomCreateView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -870,9 +885,9 @@ private struct AuxiliaryRoomCreateView: View {
     }
 }
 
-#Preview("AuxiliaryRoomCreateView") {
-    AuxiliaryRoomCreateView(inquiry: .constant(.empty))
-}
+//#Preview("AuxiliaryRoomCreateView") {
+//    AuxiliaryRoomCreateView(inquiry: .constant(.empty))
+//}
 
 private extension AuxiliaryRoom {
     static func fixedRoom(with area: Double) -> AuxiliaryRoom {
@@ -947,11 +962,11 @@ private struct ResultAdjustView: View {
     }
 }
 
-#Preview("ResultAdjustView") {
-    PreviewView {
-        ResultAdjustView(inquiry: $0)
-    }
-}
+//#Preview("ResultAdjustView") {
+//    PreviewView {
+//        ResultAdjustView(inquiry: $0)
+//    }
+//}
 
 private struct DetailResultView: View {
     @Binding var inquiry: Inquiry?
@@ -1036,11 +1051,11 @@ private struct DetailResultView: View {
     }
 }
 
-#Preview("DetailResultView") {
-    PreviewView {
-        DetailResultView(inquiry: $0)
-    }
-}
+//#Preview("DetailResultView") {
+//    PreviewView {
+//        DetailResultView(inquiry: $0)
+//    }
+//}
 
 private struct LandInfoView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -1065,16 +1080,16 @@ private struct LandInfoView: View {
     }
 }
 
-#Preview("LandInfo") {
-    LandInfoView(land: LandIndustrialFactory(
-        name: "land",
-        area: 10,
-        landUser: ._1,
-        endDate: "2001",
-        landSe: ._1,
-        roadCondition: ._1
-    ))
-}
+//#Preview("LandInfo") {
+//    LandInfoView(land: LandIndustrialFactory(
+//        name: "land",
+//        area: 10,
+//        landUser: ._1,
+//        endDate: "2001",
+//        landSe: ._1,
+//        roadCondition: ._1
+//    ))
+//}
 
 private struct LandCreateView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -1197,11 +1212,11 @@ private struct LandCreateView: View {
     }
 }
 
-#Preview("CreateLand") {
-    PreviewView {
-        LandCreateView(inquiry: $0)
-    }
-}
+//#Preview("CreateLand") {
+//    PreviewView {
+//        LandCreateView(inquiry: $0)
+//    }
+//}
 
 private struct LandListView: View {
     @Binding var inquiry: Inquiry?
@@ -1251,7 +1266,7 @@ private struct LandListView: View {
             Spacer()
             if idx != 0 {
                 Button {
-                    inquiry?.removeLand(at: idx)
+                    inquiry?.removeLand(at: idx-1)
                 } label: {
                     Image.index.removeIcon
                 }
@@ -1266,10 +1281,227 @@ private struct LandListView: View {
     }
 }
 
-#Preview("LandList") {
+//#Preview("LandList") {
+//    NavigationView {
+//        PreviewView {
+//            LandListView(inquiry: $0)
+//        }
+//    }
+//}
+
+private struct BuildInfoView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    let build: BuildIndustrialFactory
+    
+    var body: some View {
+        VStack {
+            ListItem(title: "建筑物", content: build.name ?? "")
+            ListItem(title: "建筑面积", content: "\(build.area ?? 0)m²")
+            ListItem(title: "建成年份", content: build.completionDate ?? "")
+            ListItem(title: "建筑结构", content: build.structure?.label ?? "")
+            ListItem(title: "厂房层高", content: build.height ?? "")
+        }
+        .sectionStyle()
+        .frame(maxHeight: .infinity, alignment: .top)
+        .background(Color.view.background)
+        .setupNavigationBar(title: "建筑物信息详情") {
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+}
+
+#Preview("BuildInfo") {
+    BuildInfoView(build: BuildIndustrialFactory(
+        name: "建筑物",
+        area: 100,
+        completionDate: "2001",
+        structure: ._2,
+        height: "10"
+    ))
+}
+
+private struct BuildCreateView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Binding var inquiry: Inquiry?
+    
+    @State private var newBuild = BuildIndustrialFactory()
+    
+    private var name: Binding<String> {Binding(
+        get: { newBuild.name ?? "" },
+        set: { newBuild.name = $0 }
+    )}
+    
+    private var area: Binding<String> {Binding(
+        get: {
+            if let area = newBuild.area {
+                return "\(area)"
+            } else {
+                return ""
+            }
+        },
+        set: { newBuild.area = Double($0) }
+    )}
+    
+    private var height: Binding<String> {Binding(
+        get: { newBuild.height ?? "" },
+        set: { newBuild.height = $0 }
+    )}
+
+    private var date: Binding<Date> { Binding(
+        get: { newBuild.completionDate?.toDate() ?? Date() },
+        set: { newBuild.completionDate = $0.toString() }
+    )}
+
+    var body: some View {
+        VStack {
+            VStack(spacing: 0) {
+                FlexibleListItem(title: "建筑物") {
+                    TextField("请输入", text: name)
+                        .multilineTextAlignment(.trailing)
+                }
+                FlexibleListItem(title: "建筑面积") {
+                    HStack {
+                        TextField("请输入", text: area)
+                            .multilineTextAlignment(.trailing)
+                            .keyboardType(.numberPad)
+                        Text("m²")
+                    }
+                }
+                FlexibleListItem(title: "建成年份") {
+                    Text(newBuild.completionDate ?? "请输入")
+                        .foregroundColor(
+                            newBuild.completionDate == nil ?
+                            Color.text.grayCD :
+                                    .text.gray6
+                        )
+                        .overlay(
+                            DatePicker("date", selection: date)
+                                .datePickerStyle(.compact)
+                                .blendMode(.destinationOver)
+                        )
+                }
+                FlexibleListItem(title: "建筑结构") {
+                    Menu {
+                        ForEach(DictType.BuildingStructure.allCases, id: \.self) { item in
+                            Button {
+                                newBuild.structure = item
+                            } label: {
+                                Text(item.label)
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text(newBuild.structure?.label ?? "请选择")
+                                .foregroundColor(
+                                    newBuild.structure == nil ?
+                                    Color.text.grayCD :
+                                            .text.gray6
+                                )
+                            Image.main.arrowIconRight
+                        }
+                    }
+                }
+                FlexibleListItem(title: "厂房层高") {
+                    TextField("请输入", text: height)
+                        .multilineTextAlignment(.trailing)
+                        .keyboardType(.numberPad)
+                }
+            }
+            .sectionStyle()
+            Spacer()
+            Button {
+                inquiry?.addBuilding(newBuild)
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Text("保存")
+                    .customText(size: 16, color: .white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 40)
+                    .background(Color.main)
+                    .cornerRadius(8)
+            }
+            .padding(.horizontal, 12)
+        }
+        .background(Color.view.background)
+        .setupNavigationBar(title: "新建建筑信息") {
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+}
+
+#Preview("BuildCreate") {
+    PreviewView {
+        BuildCreateView(inquiry: $0)
+    }
+}
+
+private struct BuildListView: View {
+    @Binding var inquiry: Inquiry?
+    
+    var body: some View {
+        VStack {
+            Text("建筑物信息")
+                .headerText()
+            Spacer().frame(height: 20)
+            VStack {
+                ForEach(Array(zip(items.indices, items)), id: \.0) { idx, item in
+                    itemView(for: item, idx: idx)
+                    Divider()
+                }
+                NavigationLink {
+                    BuildCreateView(inquiry: $inquiry)
+                } label: {
+                    HStack {
+                        Image.index.addIcon
+                        Text("新增土地信息")
+                            .customText(size: 14, color: .text.gray3)
+                    }
+                    .frame(height: 36)
+                }
+            }
+        }
+        .sectionStyle()
+    }
+    
+    private var items: [BuildIndustrialFactory] {
+        var out = [BuildIndustrialFactory(name: "建筑物")]
+        if let l = inquiry?.buildingList {
+            out += l
+        }
+        return out
+    }
+    
+    private func itemView(for item: BuildIndustrialFactory, idx: Int) -> some View {
+        HStack {
+            Text("\(idx+1)")
+                .customText(size: 14, color: .text.gray6)
+            Spacer().frame(width: 50)
+            Text(item.name ?? "")
+            Spacer().frame(width: 50)
+            Text("\(item.area ?? 0)m²")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer()
+            if idx != 0 {
+                Button {
+                    inquiry?.removeBuilding(at: idx-1)
+                } label: {
+                    Image.index.removeIcon
+                }
+            }
+            NavigationLink {
+                BuildInfoView(build: item)
+            } label: {
+                Text("查看详情")
+                    .customText(size: 14, color: .main)
+            }
+        }
+    }
+}
+
+#Preview("BuildList") {
     NavigationView {
         PreviewView {
-            LandListView(inquiry: $0)
+            BuildListView(inquiry: $0)
         }
     }
 }
@@ -1319,12 +1551,12 @@ private struct InfoFixView: View {
     }
 }
 
-#Preview("InfoFixView") {
-    PreviewView {
-        InfoFixView(inquiry: $0)
-    }
-    .setEstateType(.commApartment)
-}
+//#Preview("InfoFixView") {
+//    PreviewView {
+//        InfoFixView(inquiry: $0)
+//    }
+//    .setEstateType(.commApartment)
+//}
 
 private struct HeaderTextModifier: ViewModifier {
     func body(content: Content) -> some View {
@@ -1399,46 +1631,46 @@ private struct Divider: View {
 }
 
 // MARK: - preview
-#Preview {
-    NavigationView {
-        RoomDetailView(
-            familyRoomName: "宝石1幢1单元RF301",
-            areaCode: 300106,
-            estateType: "singleApartment",
-            buildingId: 1,
-            floor: "1-1"
-        )
-        .environmentObject(
-            EstateService()
-                .setRoomDetail(.mock)
-        )
-        .environmentObject(AccountService())
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-#Preview("online") {
-    Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiR3Uza1VDRlp0WENiUnNQbnZFbzR6bHdSbmdQNXFQQmoiLCJ1c2VySWQiOjQwfQ.vWHDeE0OHg2ldyTlnCDSFN9p67IoqQyU1jhzZncRIEo")
-    Task {
-        await DictType.getDict()
-    }
-    return NavigationView {
-        RoomDetailView(
-            familyRoomName: "路段1号101",
-            areaCode: 300106,
-            estateType: "shopStreet",
-            buildingId: 1,
-            floor: "1-1"
-        )
-        .environmentObject( EstateService() )
-        .environmentObject(AccountService())
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-#Preview("ResultView") {
-    ResultView(inquiry: .empty, detailExtened: .constant(true))
-}
+//#Preview {
+//    NavigationView {
+//        RoomDetailView(
+//            familyRoomName: "宝石1幢1单元RF301",
+//            areaCode: 300106,
+//            estateType: "singleApartment",
+//            buildingId: 1,
+//            floor: "1-1"
+//        )
+//        .environmentObject(
+//            EstateService()
+//                .setRoomDetail(.mock)
+//        )
+//        .environmentObject(AccountService())
+//        .navigationBarTitleDisplayMode(.inline)
+//    }
+//}
+//
+//#Preview("online") {
+//    Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiR3Uza1VDRlp0WENiUnNQbnZFbzR6bHdSbmdQNXFQQmoiLCJ1c2VySWQiOjQwfQ.vWHDeE0OHg2ldyTlnCDSFN9p67IoqQyU1jhzZncRIEo")
+//    Task {
+//        await DictType.getDict()
+//    }
+//    return NavigationView {
+//        RoomDetailView(
+//            familyRoomName: "路段1号101",
+//            areaCode: 300106,
+//            estateType: "shopStreet",
+//            buildingId: 1,
+//            floor: "1-1"
+//        )
+//        .environmentObject( EstateService() )
+//        .environmentObject(AccountService())
+//        .navigationBarTitleDisplayMode(.inline)
+//    }
+//}
+//
+//#Preview("ResultView") {
+//    ResultView(inquiry: .empty, detailExtened: .constant(true))
+//}
 
 private struct PreviewView<Content: View>: View {
     @State var inquiry: Inquiry? = .empty
@@ -1454,58 +1686,6 @@ private struct PreviewView<Content: View>: View {
         _ = inquiry?.setEstateType(type)
         return self
     }
-}
-
-
-/*
- */
-private struct TestData {
-    var textList: [String] = []
-}
-
-private struct TestView: View {
-    @State private var inquiry: Inquiry = .empty
-    
-    private var list: [AuxiliaryRoom] {
-        inquiry.auxiliaryRoomList
-    }
-    
-    var body: some View {
-        NavigationView {
-            VStack {
-                List(Array(zip(list.indices, list)), id: \.0) { _, room in
-                    Text(room.name)
-                }
-                NavigationLink {
-                    TestAddView(inquiry: $inquiry)
-                } label: {
-                    Text("add")
-                }
-            }
-        }
-    }
-}
-
-private struct TestAddView: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-
-    @Binding var inquiry: Inquiry
-    @State private var room = AuxiliaryRoom.new()
-    
-    var body: some View {
-        Button("add") {
-            room.propertyAttribute = .appendages(subType: .attic)
-            room.commonHas = .has
-            room.unit = "m"
-            room.area = 100
-            inquiry.addAuxiliaryRoom(room)
-            presentationMode.wrappedValue.dismiss()
-        }
-    }
-}
-
-#Preview {
-    TestView()
 }
 
 // MARK: - preview end

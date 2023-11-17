@@ -398,7 +398,7 @@ struct Inquiry {
     }
     
     mutating func removeItem(at idx: Int, ofList key: String) {
-        guard var l = networkInquiry[key] as? [[String: String]],
+        guard var l = networkInquiry[key] as? [[String: Any]],
                 l.count > idx
         else { return }
         l.remove(at: idx)
@@ -460,6 +460,14 @@ struct Inquiry {
                 networkInquiry.removeValue(forKey: "fvStyle")
             }
         }
+    }
+    
+    var landTotalPrice: String? {
+        stringValue(of: "fvLandTotalPrice")
+    }
+    
+    var buildTotalPrice: String? {
+        stringValue(of: "fvBuildTotalPrice")
     }
     
     var estateTypeString: String? { stringValue(of: "fvEstateType") }
