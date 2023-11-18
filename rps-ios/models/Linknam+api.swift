@@ -271,48 +271,48 @@ extension Linkman {
     }
     
     struct DCBuilding: Codable {
-        let fvHouseProperty: String?
-        let fvBuildingStructure: String?
-        let fiLandUpperCount: Int?
-        let fvHousingUse: String?
-        let fvLandingroomLandSe: String?
-        let fvLandUser: String?
-        let fdCompletionDate: String?
-        let fvEstateType: String?
-        let fvBuildDirection: String?
+        var fvHouseProperty: String?
+        var fvBuildingStructure: String?
+        var fiLandUpperCount: Int?
+        var fvHousingUse: String?
+        var fvLandingroomLandSe: String?
+        var fvLandUser: String?
+        var fdCompletionDate: String?
+        var fvEstateType: String?
+        var fvBuildDirection: String?
     }
     
     struct DCCompound: Codable {
-        let fvLandUser: String?
-        let fvCompletionDate: String?
-        let fvLandLevel: String?
+        var fvLandUser: String?
+        var fvCompletionDate: String?
+        var fvLandLevel: String?
     }
     
     struct NetworkRoomDetail: Codable {
-        let fvFamilyRoomName: String?
-        let fvProvinceName: String?
-        let fvCityName: String?
-        let fvAreaName: String?
-        let fvSubdistrictName: String?
-        let fvEstateType: String?
-        let estateTypeLabel: String?
-        let fvLandUser: String?
-        let fdCompletionDate: String?
-        let fvBuildingStructure: String?
-        let fvOrientation: String?
-        let fvFloorHeight: String?
-        let fvInFloor: String?
-        let fvHouseProperty: String?
-        let fvHousingUse: String?
-        let fvPosition: String?
-        let fvLandingroomPosition: String?
-        let fvShopPosition: String?
-        let wuYeFenLei: String?
-        let fiLandUpperCount: Int?
-        let fvLandingroomLandSe: String?
+        var fvFamilyRoomName: String?
+        var fvProvinceName: String?
+        var fvCityName: String?
+        var fvAreaName: String?
+        var fvSubdistrictName: String?
+        var fvEstateType: String?
+        var estateTypeLabel: String?
+        var fvLandUser: String?
+        var fdCompletionDate: String?
+        var fvBuildingStructure: String?
+        var fvOrientation: String?
+        var fvFloorHeight: String?
+        var fvInFloor: String?
+        var fvHouseProperty: String?
+        var fvHousingUse: String?
+        var fvPosition: String?
+        var fvLandingroomPosition: String?
+        var fvShopPosition: String?
+        var wuYeFenLei: String?
+        var fiLandUpperCount: Int?
+        var fvLandingroomLandSe: String?
 
-        let dcBuilding: DCBuilding
-        let dcCompound: DCCompound
+        var dcBuilding: DCBuilding
+        var dcCompound: DCCompound
     }
     
     typealias RoomDetailResponse = NetworkRoomDetail

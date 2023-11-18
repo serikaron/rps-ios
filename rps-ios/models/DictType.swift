@@ -12,7 +12,7 @@ enum DictType: String {
     typealias SubDict = [String: String]
     typealias MainDict = [String: SubDict]
     
-    case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPositon, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages
+    case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPosition, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages
     case common_has, fv_land_se, fv_temporary_road_conditions
     
     var typeName: String {
@@ -25,7 +25,7 @@ enum DictType: String {
         case .housingUse: return "fv_housing_use"
         case .landingroomLandSe: return "fv_landingroom_land_se"
         case .position: return "fv_position"
-        case .noRoomPositon: return "no_room_position"
+        case .noRoomPosition: return "no_room_position"
         case .shopPosition: return "fv_shop_position"
         case .landingroomPosition: return "fv_landingroom_position"
         case .buildDirection: return "fv_build_direction"
@@ -388,4 +388,211 @@ extension DictType {
 
         var label: String { DictType.buildingStructure.label(of: dictKey) ?? "" }
     }
+    
+    enum Position: CaseIterable {
+        case _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            case "7": self = ._7
+            case "8": self = ._8
+            case "9": self = ._9
+            case "10": self = ._10
+            case "11": self = ._11
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            case ._7: return "7"
+            case ._8: return "8"
+            case ._9: return "9"
+            case ._10: return "10"
+            case ._11: return "11"
+            }
+        }
+
+        var label: String { DictType.position.label(of: dictKey) ?? "" }
+    }
+    
+    enum NoRoomPosition: CaseIterable {
+        case _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            case "7": self = ._7
+            case "8": self = ._8
+            case "9": self = ._9
+            case "10": self = ._10
+            case "11": self = ._11
+            case "12": self = ._12
+            case "13": self = ._13
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            case ._7: return "7"
+            case ._8: return "8"
+            case ._9: return "9"
+            case ._10: return "10"
+            case ._11: return "11"
+            case ._12: return "12"
+            case ._13: return "13"
+            }
+        }
+
+        var label: String { DictType.noRoomPosition.label(of: dictKey) ?? "" }
+    }
+    
+    enum LandingroomPosition: CaseIterable {
+        case _1, _2, _3, _4, _5
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            }
+        }
+
+        var label: String { DictType.landingroomPosition.label(of: dictKey) ?? "" }
+    }
+    
+    enum ShopPosition: CaseIterable {
+        case _1, _2, _3, _4, _5, _6
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            }
+        }
+
+        var label: String { DictType.shopPosition.label(of: dictKey) ?? "" }
+    }
+    
+    enum Orientation: CaseIterable {
+        case _1, _2, _3, _4, _5, _6, _7, _8, _9
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            case "7": self = ._7
+            case "8": self = ._8
+            case "9": self = ._9
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            case ._7: return "7"
+            case ._8: return "8"
+            case ._9: return "9"
+            }
+        }
+
+        var label: String { DictType.orientation.label(of: dictKey) ?? "" }
+    }
+    
+    enum BuildDirection: CaseIterable {
+        case _1, _2, _3, _4, _5, _6, _7, _8
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            case "7": self = ._7
+            case "8": self = ._8
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            case ._7: return "7"
+            case ._8: return "8"
+            }
+        }
+
+        var label: String { DictType.buildDirection.label(of: dictKey) ?? "" }
+    }
+
 }

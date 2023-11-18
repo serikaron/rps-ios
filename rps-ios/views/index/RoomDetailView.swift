@@ -12,7 +12,6 @@ struct RoomDetailView: View {
     @EnvironmentObject var estateService: EstateService
     @EnvironmentObject var accountService: AccountService
     
-    private var roomDetail: RoomDetail { estateService.roomDetail }
     
     let familyRoomName: String
     let areaCode: Int
@@ -21,11 +20,13 @@ struct RoomDetailView: View {
     let floor: String
     
     @State private var inquiry: Inquiry?
+    @State private var roomDetail: RoomDetail = .empty
     
     @State private var initialized: Bool = false
     @State private var hasInquiryResult: Bool = false
     @State private var detailExtened: Bool = false
     @State private var hasDetailResult: Bool = false
+    @State private var isInfoFixShown: Bool = false
     
     var body: some View {
         ZStack {
@@ -79,6 +80,9 @@ struct RoomDetailView: View {
                     hasDetailResult: $hasDetailResult
                 )
             }
+            if isInfoFixShown {
+                InfoFixView(inquiry: $inquiry, roomDetail: $roomDetail, isInfoFixShown: $isInfoFixShown)
+            }
         }
         .setupNavigationBar(title: "系统询价详情") {
             presentationMode.wrappedValue.dismiss()
@@ -87,7 +91,7 @@ struct RoomDetailView: View {
             Task {
                 guard !initialized else { return }
                 
-                await estateService.getRoomDetail(
+                roomDetail = await estateService.getRoomDetail(
                     estateType: estateType,
                     areaCode: areaCode,
                     familyRoomName: familyRoomName,
@@ -130,7 +134,10 @@ struct RoomDetailView: View {
     }
     
     private var tabView: some View {
-        RoomInfoView(floor: floor)
+        RoomInfoView(
+            floor: floor, roomDetail: roomDetail,
+            isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
+        )
     }
     
     @State private var mapShowing: Bool = true
@@ -239,13 +246,14 @@ private struct RoomDetailTabView: View {
 }
 
 private struct RoomInfoView: View {
-    @EnvironmentObject var estateService: EstateService
-    
     let floor: String
     
-    private var roomDetail: RoomDetail { estateService.roomDetail }
+    let roomDetail: RoomDetail
     private var estateType: DictType.EstateType? { roomDetail.estateType }
 //    private var estateType: EstateType? { EstateType.shopStreet }
+    
+    @Binding var isInfoFixShown: Bool
+    @Binding var hasDetailResult: Bool
     
     var body: some View {
         VStack {
@@ -253,18 +261,23 @@ private struct RoomInfoView: View {
                 Text("基本信息")
                     .customText(size: 16, color: .text.gray3, weight: .medium)
                 Spacer()
-                Text("基本信息纠错")
-                    .customText(size: 14, color: .white)
-                    .frame(height: 30)
-                    .padding(.horizontal, 10)
-                    .background(Color.main)
-                    .cornerRadius(15)
+                if !hasDetailResult {
+                    Text("基本信息纠错")
+                        .customText(size: 14, color: .white)
+                        .frame(height: 30)
+                        .padding(.horizontal, 10)
+                        .background(Color.main)
+                        .cornerRadius(15)
+                        .onTapGesture {
+                            isInfoFixShown = true
+                        }
+                }
             }
             Spacer().frame(height: 17)
             HStack {
                 Text("产权地址")
                     .customText(size: 14, color: .text.gray6)
-                Text(estateService.roomDetail.address)
+                Text(roomDetail.address)
                     .customText(size: 14, color: .text.gray3)
                 Spacer()
             }
@@ -328,7 +341,7 @@ private struct RoomInfoView: View {
     private func value(for item: RoomInfoItem) -> String {
         switch item {
         case .estateType: return roomDetail.estateTypeText
-        case .landUser: return roomDetail.landUser
+        case .landUser: return roomDetail.landUser?.label ?? nilText
         case .completionDate: return roomDetail.completionDate
         case .position: return roomDetail.position
         case .structure: return roomDetail.structure
@@ -382,6 +395,8 @@ private struct RoomInfoView: View {
 //            ]
         }
     }
+    
+    private let nilText = "无"
 }
 
 private struct OverlayView: View {
@@ -1310,15 +1325,15 @@ private struct BuildInfoView: View {
     }
 }
 
-#Preview("BuildInfo") {
-    BuildInfoView(build: BuildIndustrialFactory(
-        name: "建筑物",
-        area: 100,
-        completionDate: "2001",
-        structure: ._2,
-        height: "10"
-    ))
-}
+//#Preview("BuildInfo") {
+//    BuildInfoView(build: BuildIndustrialFactory(
+//        name: "建筑物",
+//        area: 100,
+//        completionDate: "2001",
+//        structure: ._2,
+//        height: "10"
+//    ))
+//}
 
 private struct BuildCreateView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -1429,11 +1444,11 @@ private struct BuildCreateView: View {
     }
 }
 
-#Preview("BuildCreate") {
-    PreviewView {
-        BuildCreateView(inquiry: $0)
-    }
-}
+//#Preview("BuildCreate") {
+//    PreviewView {
+//        BuildCreateView(inquiry: $0)
+//    }
+//}
 
 private struct BuildListView: View {
     @Binding var inquiry: Inquiry?
@@ -1498,24 +1513,44 @@ private struct BuildListView: View {
     }
 }
 
-#Preview("BuildList") {
-    NavigationView {
-        PreviewView {
-            BuildListView(inquiry: $0)
-        }
-    }
-}
+//#Preview("BuildList") {
+//    NavigationView {
+//        PreviewView {
+//            BuildListView(inquiry: $0)
+//        }
+//    }
+//}
 
 private struct InfoFixView: View {
     @Binding var inquiry: Inquiry?
+    @Binding var roomDetail: RoomDetail
+    
+    @Binding var isInfoFixShown: Bool
+    
+    private func setup() {
+        items.forEach { setData(for: $0) }
+    }
+    
+    private struct Data {
+        var landUser: DictType.LandUser?
+        var position: Position?
+        var facing: Facing?
+        var height: String = ""
+        var floor1: String = ""
+        var floor2: String = ""
+        var completionDate: String = ""
+    }
+    
+    @State private var data: Data = Data()
     
     var body: some View {
-        VStack {
+        VStack(spacing: 24) {
             Text("基本信息纠错")
                 .frame(maxWidth: .infinity, alignment: .center)
                 .headerText()
                 .overlay(
                     Button {
+                        isInfoFixShown = false
                     } label: {
                         Image.index.close
                             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -1526,37 +1561,436 @@ private struct InfoFixView: View {
                     itemView(for: item)
                 }
             }
+            HStack {
+                Text("取消")
+                    .customText(size: 16, color: .main)
+                    .frame(width: 130, height: 40)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.main, lineWidth: 1)
+                    )
+                    .onTapGesture {
+                        isInfoFixShown = false
+                    }
+                Spacer()
+                Text("确定")
+                    .customText(size: 16, color: .white)
+                    .frame(width: 130, height: 40)
+                    .background(Color.main)
+                    .cornerRadius(8)
+                    .onTapGesture {
+                        save()
+                        isInfoFixShown = false
+                    }
+            }
+            
         }
         .sectionStyle()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black.opacity(0.6))
+        .ignoresSafeArea()
+        .onAppear {
+            setup()
+        }
     }
     
     private func itemView(for item: Item) -> some View {
         HStack {
-            
+            Text(item.title)
+                .customText(size: 12, color: .text.gray3)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .frame(width: 80)
+            content(for: item)
         }
+        .frame(height: 28)
     }
     
     private enum Item {
-        case landUser
+        case landUser, position, facing, height, floor, completionDate
         
         var title: String {
             switch self {
             case .landUser: return "使用权类型"
+            case .position: return "所在部位"
+            case .facing: return "建筑朝向"
+            case .height: return "地上总层"
+            case .floor: return "所在层"
+            case .completionDate: return "建成年份"
             }
         }
     }
     
+    private func content(for item: Item) -> some View {
+        switch item {
+        case .landUser:
+            return landUserMenu.earseToAnyView()
+        case .position:
+            return positionMenu.earseToAnyView()
+        case .facing:
+            return facingMenu.earseToAnyView()
+        case .height:
+            return heightInput.earseToAnyView()
+        case .floor:
+            return floorInput.earseToAnyView()
+        case .completionDate:
+            return completionDatePicker.earseToAnyView()
+        }
+    }
+    
+    private func setData(for item: Item) {
+        switch item {
+        case .landUser:
+            data.landUser = roomDetail.landUser
+        case .position:
+            switch roomDetail.positionType {
+            case .position:
+                data.position = .position(DictType.Position(rawValue: roomDetail.position))
+            case .noRoomPosition:
+                data.position = .noRoomPosition(DictType.NoRoomPosition(rawValue: roomDetail.position))
+            case .landingroomPosition:
+                data.position = .landingroomPosition(DictType.LandingroomPosition(rawValue: roomDetail.position))
+            case .shopPosition:
+                data.position = .shopPosition(DictType.ShopPosition(rawValue: roomDetail.position))
+            }
+        case .facing:
+            switch roomDetail.facingType {
+            case .orientation:
+                data.facing = .orientation(DictType.Orientation(rawValue: roomDetail.facing))
+            case .buildDirection:
+                data.facing = .buildDirection(DictType.BuildDirection(rawValue: roomDetail.facing))
+            default:
+                data.facing = nil
+            }
+        case .height:
+            data.height = roomDetail.height
+        case .floor:
+            if let floor = roomDetail.floor {
+               let l = floor.components(separatedBy: "-")
+                if l.count == 2 {
+                    data.floor1 = l[0]
+                    data.floor2 = l[1]
+                }
+            }
+        case .completionDate:
+            data.completionDate = roomDetail.completionDate
+        }
+    }
+    
+    private func save(for item: Item) {
+        switch item {
+        case .landUser:
+            inquiry?.landUser = data.landUser
+            roomDetail.landUser = data.landUser
+        case .position:
+            switch data.position {
+            case .position(let position):
+                inquiry?.position = position?.dictKey
+                if let p = position {
+                    roomDetail.position = p.dictKey
+                }
+            case .noRoomPosition(let noRoomPosition):
+                inquiry?.position = noRoomPosition?.dictKey
+                if let p = noRoomPosition {
+                    roomDetail.position = p.dictKey
+                }
+
+            case .landingroomPosition(let landingroomPosition):
+                inquiry?.position = landingroomPosition?.dictKey
+                if let p = landingroomPosition {
+                    roomDetail.position = p.dictKey
+                }
+
+            case .shopPosition(let shopPosition):
+                inquiry?.position = shopPosition?.dictKey
+                if let p = shopPosition {
+                    roomDetail.position = p.dictKey
+                }
+            case .none: break
+            }
+        case .facing:
+            switch data.facing {
+            case .orientation(let orientation):
+                inquiry?.facing = orientation?.dictKey
+                if let f = orientation {
+                    roomDetail.facing = f.dictKey
+                }
+            case .buildDirection(let buildDirection):
+                inquiry?.facing = buildDirection?.dictKey
+                if let f = buildDirection {
+                    roomDetail.facing = f.dictKey
+                }
+            case .none: break
+            }
+        case .height:
+            inquiry?.height = data.height
+            roomDetail.height = data.height
+        case .floor:
+            guard !data.floor1.isEmpty,
+                  !data.floor2.isEmpty
+            else { break }
+            
+            let floor = "\(data.floor1)-\(data.floor2)"
+            inquiry?.floor = floor
+            roomDetail.floor = floor
+        case .completionDate:
+            inquiry?.completionDate = data.completionDate
+            roomDetail.completionDate = data.completionDate
+        }
+    }
+    
+    private func save() { items.forEach { save(for: $0) } }
+    
     private var items: [Item] {
-        [.landUser]
+        switch roomDetail.estateType {
+        case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .industrialSmallGarden:
+            return [.landUser, .position, .facing, .height, .floor]
+            
+        case .landingRoom:
+            return [.landUser, .position, .facing, .height, .floor, .completionDate]
+            
+        case .shopStreet:
+            return [.landUser, .height, .completionDate]
+            
+        case .industrialFactory:
+            fallthrough
+        case .none:
+            return []
+        }
+    }
+    
+    private var landUserMenu: some View {
+        Menu {
+            ForEach(DictType.LandUser.allCases, id: \.self) { i in
+                print("landUserMenu key:\(i.dictKey) label:\(i.label)")
+                return Button {
+                    data.landUser = i
+                } label: {
+                    Text(i.label)
+                }
+            }
+        } label: {
+            Text(data.landUser?.label ?? "请选择\(Item.landUser.title)")
+                .foregroundColor(
+                    data.landUser == nil ?
+                        .text.grayCD : .text.gray6
+                )
+                .fixViewLabelStyle()
+        }
+    }
+    
+    private enum Position {
+        case position(DictType.Position?)
+        case noRoomPosition(DictType.NoRoomPosition?)
+        case landingroomPosition(DictType.LandingroomPosition?)
+        case shopPosition(DictType.ShopPosition?)
+    }
+    
+    private var positionMenu: some View {
+        let placeholder = "请选择\(Item.position.title)"
+        switch data.position {
+        case .position(let position):
+            return Menu {
+                ForEach(DictType.Position.allCases, id: \.self) { i in
+                    Button {
+                        data.position = .position(i)
+                    } label: {
+                        Text(i.label)
+                    }
+                }
+            } label: {
+                Text(position?.label ?? placeholder)
+                    .foregroundColor(
+                        position == nil ?
+                            .text.grayCD : .text.gray6
+                    )
+                    .fixViewLabelStyle()
+            }
+            .earseToAnyView()
+        case .noRoomPosition(let noRoomPosition):
+            return Menu {
+                ForEach(DictType.NoRoomPosition.allCases, id: \.self) { i in
+                    Button {
+                        data.position = .noRoomPosition(i)
+                    } label: {
+                        Text(i.label)
+                    }
+                }
+            } label: {
+                Text(noRoomPosition?.label ?? placeholder)
+                    .foregroundColor(
+                        noRoomPosition == nil ?
+                            .text.grayCD : .text.gray6
+                    )
+                    .fixViewLabelStyle()
+            }
+            .earseToAnyView()
+        case .landingroomPosition(let landingroomPosition):
+            return Menu {
+                ForEach(DictType.LandingroomPosition.allCases, id: \.self) { i in
+                    Button {
+                        data.position = .landingroomPosition(i)
+                    } label: {
+                        Text(i.label)
+                    }
+                }
+            } label: {
+                Text(landingroomPosition?.label ?? placeholder)
+                    .foregroundColor(
+                        landingroomPosition == nil ?
+                            .text.grayCD : .text.gray6
+                    )
+                    .fixViewLabelStyle()
+            }
+            .earseToAnyView()
+        case .shopPosition(let shopPosition):
+            return Menu {
+                ForEach(DictType.ShopPosition.allCases, id: \.self) { i in
+                    Button {
+                        data.position = .shopPosition(i)
+                    } label: {
+                        Text(i.label)
+                    }
+                }
+            } label: {
+                Text(shopPosition?.label ?? placeholder)
+                    .foregroundColor(
+                        shopPosition == nil ?
+                            .text.grayCD : .text.gray6
+                    )
+                    .fixViewLabelStyle()
+            }
+            .earseToAnyView()
+        case .none: return EmptyView().earseToAnyView()
+        }
+    }
+    
+    private enum Facing {
+        case orientation(DictType.Orientation?)
+        case buildDirection(DictType.BuildDirection?)
+    }
+    
+    private var facingMenu: some View {
+        let placeholder = "请选择\(Item.facing.title)"
+        switch data.facing {
+        case .orientation(let orientation):
+            return Menu {
+                ForEach(DictType.Orientation.allCases, id: \.self) { i in
+                    Button {
+                        data.facing = .orientation(i)
+                    } label: {
+                        return Text(i.label)
+                    }
+                }
+            } label: {
+                Text(orientation?.label ?? placeholder)
+                    .foregroundColor(
+                        orientation == nil ?
+                            .text.grayCD : .text.gray6
+                    )
+                    .fixViewLabelStyle()
+            }
+            .earseToAnyView()
+        case .buildDirection(let buildDirection):
+            return Menu {
+                ForEach(DictType.BuildDirection.allCases, id: \.self) { i in
+                    Button {
+                        data.facing = .buildDirection(i)
+                    } label: {
+                        Text(i.label)
+                    }
+                }
+            } label: {
+                Text(buildDirection?.label ?? placeholder)
+                    .foregroundColor(
+                        buildDirection == nil ?
+                            .text.grayCD : .text.gray6
+                    )
+                    .fixViewLabelStyle()
+            }
+            .earseToAnyView()
+        case .none: return EmptyView().earseToAnyView()
+        }
+    }
+    
+    private var heightInput: some View {
+        TextField("", text: $data.height)
+            .foregroundColor(.text.gray3)
+            .fixViewLabelStyle(showArrow: false)
+            .keyboardType(.numberPad)
+    }
+
+    private var floorInput: some View {
+        HStack {
+            TextField("", text: $data.floor1)
+                .foregroundColor(.text.gray3)
+                .fixViewLabelStyle(showArrow: false)
+                .keyboardType(.numberPad)
+            TextField("", text: $data.floor2)
+                .foregroundColor(.text.gray3)
+                .fixViewLabelStyle(showArrow: false)
+                .keyboardType(.numberPad)
+        }
+    }
+    
+    private var date: Binding<Date> {Binding(
+        get: { data.completionDate.toDate() ?? Date() },
+        set: { data.completionDate = $0.toString() }
+    )}
+    
+    private var completionDatePicker: some View {
+        HStack {
+            Image.main.calendarIcon
+            Text(data.completionDate.isEmpty || data.completionDate == "无" ? "请选择\(Item.completionDate.title)" : data.completionDate)
+        }
+        .overlay (
+            DatePicker("date", selection: date, in: ...Date(), displayedComponents: [.date])
+                .blendMode(.destinationOver)
+        )
+        .foregroundColor(
+            data.completionDate.isEmpty || data.completionDate == "无" ?
+                .text.grayCD : .text.gray3
+        )
+        .fixViewLabelStyle()
     }
 }
 
-//#Preview("InfoFixView") {
-//    PreviewView {
-//        InfoFixView(inquiry: $0)
-//    }
-//    .setEstateType(.commApartment)
-//}
+private struct InfoFixPreviewView: View {
+    @State var inquiry: Inquiry?
+    @State var detail: RoomDetail
+    
+    init(estateType: DictType.EstateType) {
+        self.inquiry = Self.inquiry(with: estateType)
+        self.detail = Self.detail(with: estateType)
+    }
+    
+    var body: some View {
+        InfoFixView(inquiry: $inquiry, roomDetail: $detail, isInfoFixShown: .constant(true))
+    }
+    
+    static private func inquiry(with estateType: DictType.EstateType) -> Inquiry {
+        var out = Inquiry.empty
+        out.estateType = estateType
+        return out
+    }
+    
+    static private func detail(with estateType: DictType.EstateType) -> RoomDetail {
+        var out = RoomDetail.empty
+        out.estateType = estateType
+        return out
+    }
+}
+
+#Preview("InfoFixView") {
+    InfoFixPreviewView(estateType: .commApartment)
+}
 
 private struct HeaderTextModifier: ViewModifier {
     func body(content: Content) -> some View {
@@ -1630,6 +2064,33 @@ private struct Divider: View {
     }
 }
 
+private struct FixViewItemLabelModifier: ViewModifier {
+    let showArrow: Bool
+    
+    func body(content: Content) -> some View {
+        content
+            .customText(size: 12, color: .text.grayCD)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxHeight: .infinity)
+            .padding(.horizontal, 8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.hex("#F2F2F2"), lineWidth: 1.0)
+            )
+            .overlay(
+                Image.main.arrowIconDown
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing, 8)
+                    .opacity(showArrow ? 1 : 0)
+            )
+    }
+}
+private extension View {
+    func fixViewLabelStyle(showArrow: Bool = true) -> some View {
+        modifier(FixViewItemLabelModifier(showArrow: showArrow))
+    }
+}
+
 // MARK: - preview
 //#Preview {
 //    NavigationView {
@@ -1690,13 +2151,6 @@ private struct PreviewView<Content: View>: View {
 
 // MARK: - preview end
 
-private extension EstateService {
-    func setRoomDetail(_ roomDetail: RoomDetail) -> EstateService {
-        self.roomDetail = roomDetail
-        return self
-    }
-}
-
 private extension Inquiry {
     mutating func prepareAuxiliaryRoomList() -> Inquiry {
         addAuxiliaryRoom(.fixedRoom(with: 200))
@@ -1729,5 +2183,4 @@ private extension AuxiliaryRoom {
         "\(area ?? 0)\(unit ?? "")"
     }
 }
-
 

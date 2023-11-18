@@ -11,6 +11,7 @@ extension Image {
     enum main {
         static var searchIcon: Image { return Image("search-icon") }
         static var arrowIcon: Image { return Image("arrow-icon") }
+        static var arrowIconDown: Image { return Image("arrow-icon-down") }
         static var arrowIconRight: Image { return Image("arrow-icon-right") }
         static var indexTabIcon: Image { return Image("index-tab") }
         static var recordTabIcon: Image { return Image("record-tab") }
@@ -21,6 +22,7 @@ extension Image {
         static var csTabIconSelected: Image { return Image("cs-tab-selected") }
         static var meTabIconSelected: Image { return Image("me-tab-selected") }
         static var placeholder: Image { return Image("image-placeholder") }
+        static var calendarIcon: Image { return Image("calendar-icon") }
     }
     
     enum index {
