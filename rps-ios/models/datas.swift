@@ -514,6 +514,10 @@ struct Inquiry {
         networkInquiry["fvTotalPriceBeforeAdjustment"] as? String ?? ""
     }
     
+    var compoundId: Int? {
+        networkInquiry["fiCompoundId"] as? Int
+    }
+    
     var date: String {
         get { networkInquiry["fvValuationDate"] as? String ?? "" }
         set(value) {
@@ -784,4 +788,15 @@ struct BuildIndustrialFactory {
     var completionDate: String?
     var structure: DictType.BuildingStructure?
     var height: String?
+}
+
+struct ReferenceCase {
+    let source: String
+    let date: String
+    let address: String
+    let decorate: String
+    let floor: String
+    let price: String
+    let totalPrice: String
+    let area: String
 }

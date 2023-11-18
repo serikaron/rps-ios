@@ -196,6 +196,30 @@ class EstateService: ObservableObject {
             return .empty
         }
     }
+    
+    
+    func getCaseList(compoundId: Int, estateType: String, price: Double) async -> [ReferenceCase] {
+        if isPreview { return ReferenceCase.moclList }
+        
+        do {
+            let rsp = try await Linkman.shared.getRoomCases(compoundId: compoundId, estateType: estateType, price: price)
+            return rsp.map { c in
+                ReferenceCase(
+                    source: c.fiTradeType == nil ? "" :
+                        DictType.TradeType(rawValue: "\(c.fiTradeType!)")?.label ?? "",
+                    date: c.fvCaseTime ?? "",
+                    address: c.fvCaseAddress ?? "",
+                    decorate: DictType.Decoration(rawValue: c.fvDecoration)?.label ?? "",
+                    floor: c.fvInFloor ?? "",
+                    price: c.fbPrice == nil ? "" : "\(c.fbPrice!)",
+                    totalPrice: c.fbTotalPrice == nil ? "" : "\(c.fbTotalPrice! / 10000)",
+                    area: c.fbArea == nil ? "" : "\(c.fbArea!)")
+            }
+        } catch {
+            print("getCaseList FAILED: \(error)")
+            return []
+        }
+    }
 }
 
 extension SearchResult {

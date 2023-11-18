@@ -128,16 +128,22 @@ struct RoomDetailView: View {
             Color.hex("#CDCDCD")
                 .frame(height: 1)
             Spacer().frame(height: 16)
-            tabView
+            tabContent
         }
         .sectionStyle()
     }
     
-    private var tabView: some View {
-        RoomInfoView(
-            floor: floor, roomDetail: roomDetail,
-            isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
-        )
+    private var tabContent: some View {
+        switch selectedTab {
+        case .inquiryDetail:
+            RoomInfoView(
+                floor: floor, roomDetail: roomDetail,
+                isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
+            )
+            .earseToAnyView()
+        case .reference:
+            ReferenceCaseView(inquiry: inquiry).earseToAnyView()
+        }
     }
     
     @State private var mapShowing: Bool = true
@@ -1962,6 +1968,7 @@ private struct InfoFixView: View {
     }
 }
 
+/*
 private struct InfoFixPreviewView: View {
     @State var inquiry: Inquiry?
     @State var detail: RoomDetail
@@ -1990,6 +1997,94 @@ private struct InfoFixPreviewView: View {
 
 #Preview("InfoFixView") {
     InfoFixPreviewView(estateType: .commApartment)
+}
+ */
+
+private struct ReferenceCaseView: View {
+    @EnvironmentObject var estateService: EstateService
+    
+    let inquiry: Inquiry?
+    @State private var caseList: [ReferenceCase] = []
+    
+    var body: some View {
+        ScrollView(.horizontal) {
+            VStack(spacing: 10) {
+                view(for: headerItem, isHeader: true)
+                ForEach(Array(zip(caseList.indices, caseList)), id: \.0) { _, item in
+                    view(for: item, isHeader: false)
+                }
+            }
+            .customText(size: 14, color: .text.gray3)
+            .padding(.bottom, 20)
+            .onAppear {
+                Task {
+                    caseList = await estateService.getCaseList(
+                        compoundId: inquiry?.compoundId ?? 0,
+                        estateType: inquiry?.estateTypeString ?? "",
+                        price: Double(inquiry?.price ?? "") ?? 0
+                    )
+                }
+            }
+        }
+    }
+    
+    private func view(for item: ReferenceCase, isHeader: Bool) -> some View {
+        HStack(spacing: 4) {
+            Text(item.source)
+                .lineLimit(2)
+                .frame(width: 53, height: 40)
+                .background(isHeader ? headerBgColor : .white)
+            Text(item.date)
+                .frame(width: 53, height: 40)
+                .lineLimit(2)
+                .background(isHeader ? headerBgColor : .white)
+            Text(item.address)
+                .lineLimit(2)
+                .frame(width: 149, height: 40)
+                .background(isHeader ? headerBgColor : .white)
+            Text(item.decorate)
+                .lineLimit(2)
+                .frame(width: 53, height: 40)
+                .background(isHeader ? headerBgColor : .white)
+            Text(item.floor)
+                .lineLimit(2)
+                .frame(width: 53, height: 40)
+                .background(isHeader ? headerBgColor : .white)
+            Text(item.price)
+                .lineLimit(2)
+                .frame(width: 53, height: 40)
+                .background(isHeader ? headerBgColor : .white)
+            Text(item.totalPrice)
+                .lineLimit(2)
+                .frame(width: 53, height: 40)
+                .background(isHeader ? headerBgColor : .white)
+            Text(item.area)
+                .lineLimit(2)
+                .frame(width: 53, height: 40)
+                .background(isHeader ? headerBgColor : .white)
+        }
+    }
+    
+    private var headerItem: ReferenceCase {
+        ReferenceCase(
+            source: "来源",
+            date: "案例日期",
+            address: "地址",
+            decorate: "装修",
+            floor: "楼层区间",
+            price: "单价(元)",
+            totalPrice: "总价(万元)",
+            area: "面积(m²)")
+    }
+    
+    private var headerBgColor: Color {
+        .hex("#D8E5FF")
+    }
+}
+
+#Preview("ReferenceCase") {
+    ReferenceCaseView(inquiry: .empty)
+        .environmentObject(EstateService.preview)
 }
 
 private struct HeaderTextModifier: ViewModifier {

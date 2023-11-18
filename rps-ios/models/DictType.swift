@@ -13,7 +13,7 @@ enum DictType: String {
     typealias MainDict = [String: SubDict]
     
     case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPosition, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages
-    case common_has, fv_land_se, fv_temporary_road_conditions
+    case common_has, fv_land_se, fv_temporary_road_conditions, fi_trade_type, fv_decoration
     
     var typeName: String {
         switch self {
@@ -593,6 +593,60 @@ extension DictType {
         }
 
         var label: String { DictType.buildDirection.label(of: dictKey) ?? "" }
+    }
+    
+    enum TradeType: CaseIterable {
+        case _1, _2, _3
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            }
+        }
+
+        var label: String { DictType.fi_trade_type.label(of: dictKey) ?? "" }
+    }
+    
+    enum Decoration: CaseIterable {
+        case _1, _2, _3, _4, _5, _6, _7
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            case "7": self = ._7
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            case ._7: return "7"
+            }
+        }
+
+        var label: String { DictType.fv_decoration.label(of: dictKey) ?? "" }
     }
 
 }

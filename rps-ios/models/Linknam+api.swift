@@ -412,6 +412,32 @@ extension Linkman {
         
         return out
     }
+    
+    struct RoomCase: Codable {
+        let fiTradeType: Int?
+        let fvCaseTime: String?
+        let fvCaseAddress: String?
+        let fvDecoration: String?
+        let fbPrice: Double?
+        let fbTotalPrice: Double?
+        let fbArea: Double?
+        let fvInFloor: String?
+    }
+    
+    typealias RoomCasesResponse = [RoomCase]
+    
+    func getRoomCases(compoundId: Int, estateType: String, price: Double) async throws -> RoomCasesResponse {
+        try await Request()
+            .with(\.path, setTo: "/cases/rps/CcCase/listRoomMatchCases")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: [
+                "fiCompoundId": compoundId,
+                "fvEstateType": estateType,
+                "fbPrice": price
+            ])
+            .make()
+            .response() as RoomCasesResponse
+    }
 }
 
 
