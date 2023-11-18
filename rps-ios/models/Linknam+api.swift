@@ -310,9 +310,15 @@ extension Linkman {
         var wuYeFenLei: String?
         var fiLandUpperCount: Int?
         var fvLandingroomLandSe: String?
+        var buildingImageList: [RoomDetailImage]
+        var compoundImageList: [RoomDetailImage]
 
         var dcBuilding: DCBuilding
         var dcCompound: DCCompound
+    }
+    
+    struct RoomDetailImage: Codable {
+        let fvUrl: String?
     }
     
     typealias RoomDetailResponse = NetworkRoomDetail
@@ -438,6 +444,20 @@ extension Linkman {
             .make()
             .response() as RoomCasesResponse
     }
+    
+    struct NetworkBanner: Codable {
+        let fvOssUrl: String?
+    }
+    
+    typealias BannersResponse = [NetworkBanner]
+    
+    func getBanners() async throws -> BannersResponse {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/banner/list")
+            .with(\.method, setTo: .GET)
+            .make()
+            .response() as BannersResponse
+    }
 }
 
 
@@ -500,6 +520,8 @@ extension Linkman.NetworkRoomDetail {
             wuYeFenLei: "",
             fiLandUpperCount: 0,
             fvLandingroomLandSe: "",
+            buildingImageList: [],
+            compoundImageList: [],
             dcBuilding: .empty, dcCompound: .empty)
     }
 }

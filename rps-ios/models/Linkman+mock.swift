@@ -201,6 +201,8 @@ extension Linkman.NetworkRoomDetail {
             wuYeFenLei: "",
             fiLandUpperCount: 0,
             fvLandingroomLandSe: "",
+            buildingImageList: [],
+            compoundImageList: [],
             dcBuilding: .mock,
             dcCompound: .mock
         )

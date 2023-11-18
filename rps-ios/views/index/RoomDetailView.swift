@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SBPAsyncImage
 
 struct RoomDetailView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -36,7 +37,7 @@ struct RoomDetailView: View {
             VStack(spacing: 0) {
                 ScrollView {
                     ZStack(alignment: .top) {
-                        Color.gray
+                        BannerView(roomDetail: $roomDetail)
                             .frame(height: 252)
                             .frame(maxHeight: .infinity, alignment: .top)
                         VStack(spacing: 10) {
@@ -134,15 +135,17 @@ struct RoomDetailView: View {
     }
     
     private var tabContent: some View {
-        switch selectedTab {
-        case .inquiryDetail:
-            RoomInfoView(
-                floor: floor, roomDetail: roomDetail,
-                isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
-            )
-            .earseToAnyView()
-        case .reference:
-            ReferenceCaseView(inquiry: inquiry).earseToAnyView()
+        Group {
+            switch selectedTab {
+            case .inquiryDetail:
+                RoomInfoView(
+                    floor: floor, roomDetail: roomDetail,
+                    isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
+                )
+                .earseToAnyView()
+            case .reference:
+                ReferenceCaseView(inquiry: inquiry).earseToAnyView()
+            }
         }
     }
     
@@ -2085,6 +2088,38 @@ private struct ReferenceCaseView: View {
 #Preview("ReferenceCase") {
     ReferenceCaseView(inquiry: .empty)
         .environmentObject(EstateService.preview)
+}
+
+private struct BannerView: View {
+    @State private var selected: Int = 1
+    
+    @Binding var roomDetail: RoomDetail
+    
+    private var imageURLs: [URL] {
+        roomDetail.imageList.compactMap { URL(string: $0) }
+    }
+    
+    var body: some View {
+        TabView {
+            if imageURLs.isEmpty {
+                Image.main.placeholder
+            } else {
+                ForEach(imageURLs, id: \.self) { bannerURL in
+                    BackportAsyncImage(url: bannerURL) { image in
+                        image.resizable()
+                            .scaledToFill()
+                            .clipped()
+                    } placeholder: {
+                        Image.main.placeholder
+                    }
+                }
+            }
+        }
+    }
+}
+
+#Preview("banner") {
+    BannerView(roomDetail: .constant(.empty))
 }
 
 private struct HeaderTextModifier: ViewModifier {

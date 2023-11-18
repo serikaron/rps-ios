@@ -7,6 +7,7 @@
 
 import SwiftUI
 import DGCharts
+import SBPAsyncImage
 
 struct IndexView: View {
     @EnvironmentObject var accountService: AccountService
@@ -31,7 +32,7 @@ struct IndexView: View {
         ZStack {
             Color.view.background
             VStack(alignment: .center, spacing: 0) {
-                Color.black
+                BannerView()
                     .frame(height: 150)
                     .cornerRadius(8)
                 Spacer().frame(height: 10)
@@ -289,4 +290,35 @@ private struct ChartView: UIViewRepresentable {
     IndexView()
         .environmentObject(AccountService())
 //    ChartView()
+}
+
+private struct BannerView: View {
+    @State private var selected: Int = 1
+    @State private var banners: [Banner] = []
+    
+    private var bannerURLs: [URL] {
+        banners.compactMap { URL(string: $0.ossUrl) }
+    }
+    
+    var body: some View {
+        TabView {
+            if bannerURLs.isEmpty {
+                Image.main.placeholder
+            } else {
+                ForEach(bannerURLs, id: \.self) { bannerURL in
+                    BackportAsyncImage(url: bannerURL) { image in
+                        image.resizable()
+                            .scaledToFill()
+                            .clipped()
+                    } placeholder: {
+                        Image.main.placeholder
+                    }
+                }
+            }
+        }
+    }
+}
+
+#Preview("banner") {
+    BannerView()
 }

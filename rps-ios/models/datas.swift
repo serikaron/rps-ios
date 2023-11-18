@@ -453,6 +453,12 @@ struct RoomDetail {
         else { return nilText }
         return DictType.landingroomLandSe.label(of: lrs) ?? nilText
     }
+    
+    var imageList: [String] {
+        networkRoomDetail.buildingImageList.compactMap { $0.fvUrl }
+        +
+        networkRoomDetail.compoundImageList.compactMap { $0.fvUrl }
+    }
 }
 
 struct Inquiry {
