@@ -256,7 +256,7 @@ extension DictType {
         var label: String { DictType.levelDecorate.label(of: dictKey) ?? "" }
     }
 
-    enum EstateType: String {
+    enum EstateType: String, CaseIterable {
         case commApartment, singleApartment, villa, office, landingRoom, shopStreet, industrialSmallGarden, industrialFactory
         
         init?(_ value: String?) {

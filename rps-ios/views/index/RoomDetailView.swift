@@ -38,6 +38,7 @@ struct RoomDetailView: View {
                 ScrollView {
                     ZStack(alignment: .top) {
                         BannerView(roomDetail: $roomDetail)
+                        Color.gray
                             .frame(height: 252)
                             .frame(maxHeight: .infinity, alignment: .top)
                         VStack(spacing: 10) {

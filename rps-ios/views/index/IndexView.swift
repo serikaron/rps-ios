@@ -13,18 +13,50 @@ struct IndexView: View {
     @EnvironmentObject var accountService: AccountService
     
     @State private var noticeList = [Notice]()
+    @State private var curves: [Curve] = []
+    @State private var isChoisesShown = false
+    @State private var chartCurveType = ChartCurveType.district(startTime: nil, endTime: nil)
+    @State private var estateType = DictType.EstateType.commApartment
+    
     var body: some View {
-        NavigationView {
-            content
-                .navigationTitle("首页")
-                .navigationBarTitleDisplayMode(.inline)
-//                .ignoresSafeArea(edges: .bottom)
-                .onAppear {
-                    Task {
-                        noticeList = await Notice.list(pageNum: 1, pageSize: 10, orgId: accountService.account?.orgId ?? 0)
+        ZStack {
+            NavigationView {
+                content
+                    .navigationTitle("首页")
+                    .navigationBarTitleDisplayMode(.inline)
+                //                .ignoresSafeArea(edges: .bottom)
+                    .onAppear {
+                        Task {
+                            noticeList = await Notice.list(pageNum: 1, pageSize: 10, orgId: accountService.account?.orgId ?? 0)
+                        }
                     }
-                }
-                    
+                
+            }
+            if isChoisesShown {
+                Color.white.opacity(0.01)
+                    .onTapGesture {
+                        isChoisesShown = false
+                    }
+                ChartChoisesView(selectedCurve: $chartCurveType)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    .padding(.bottom, 40)
+                    .padding(.trailing, 40)
+            }
+        }
+        .onChange(of: estateType) { newValue in
+            Task {
+                curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
+            }
+        }
+        .onChange(of: chartCurveType) { newValue in
+            Task {
+                curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
+            }
+        }
+        .onAppear {
+            Task {
+                curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
+            }
         }
     }
     
@@ -176,11 +208,10 @@ struct IndexView: View {
         }
     }
     
-    @State private var selectedTab: ChartTab = .apartment
     private var searchResult: some View {
         VStack {
-            ChartTabView(selected: $selectedTab)
-            ChartView()
+            ChartTabView(selected: $estateType)
+            ChartView(curves: $curves)
             HStack {
                 HStack {
                     Image.index.pointIcon
@@ -188,10 +219,14 @@ struct IndexView: View {
                         .customText(size: 14, color: .text.gray3)
                 }
                 Spacer()
-                HStack {
-                    Image.index.editIcon
-                    Text("编辑指标")
-                        .customText(size: 14, color: .main)
+                Button {
+                    isChoisesShown = true
+                } label: {
+                    HStack {
+                        Image.index.editIcon
+                        Text("编辑指标")
+                            .customText(size: 14, color: .main)
+                    }
                 }
             }
         }
@@ -204,35 +239,31 @@ struct IndexView: View {
     }
 }
 
-private enum ChartTab: CaseIterable {
-    case apartment, office, villa, store
-    
-    var text: String {
-        switch self {
-        case .apartment: return "普通公寓"
-        case .office: return "写字楼"
-        case .villa: return "排屋别墅"
-        case .store: return "沿街商铺"
-        }
-    }
+#Preview {
+    IndexView()
+        .environmentObject(AccountService())
 }
 
 private struct ChartTabView: View {
-    @Binding var selected: ChartTab
+    @Binding var selected: DictType.EstateType
     
     var body: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 35) {
-                ForEach(ChartTab.allCases, id: \.hashValue) { tab in
-                    if tab == selected {
-                        VStack {
-                            Text(tab.text).customText(size: 14, color: .main)
-                            Color.main.frame(width: 20, height: 3)
-                        }
-                    } else {
-                        VStack {
-                            Text(tab.text).customText(size: 14, color: .text.gray3)
-                            Spacer()
+                ForEach(DictType.EstateType.allCases, id: \.self) { tab in
+                    Button {
+                        selected = tab
+                    } label: {
+                        if tab == selected {
+                            VStack {
+                                Text(tab.label).customText(size: 14, color: .main)
+                                Color.main.frame(width: 20, height: 3)
+                            }
+                        } else {
+                            VStack {
+                                Text(tab.label).customText(size: 14, color: .text.gray3)
+                                Spacer()
+                            }
                         }
                     }
                 }
@@ -243,54 +274,6 @@ private struct ChartTabView: View {
     }
 }
 
-private struct ChartView: UIViewRepresentable {
-    func makeUIView(context: Context) -> DGCharts.LineChartView {
-        let chart = LineChartView()
-        let data = LineChartData()
-        let dataSet = LineChartDataSet(entries: [
-            ChartDataEntry(x: 1, y: 1),
-            ChartDataEntry(x: 2, y: 2),
-            ChartDataEntry(x: 3, y: 1),
-            ChartDataEntry(x: 4, y: 2),
-        ], label: "abc")
-        dataSet.mode = .cubicBezier
-        dataSet.drawValuesEnabled = false
-        dataSet.drawCirclesEnabled = false
-        let colors = [Color.main.cgColor, Color.main.opacity(0).cgColor] as CFArray
-        let locations:[CGFloat] = [1.0, 0.0]
-        let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: locations)
-        if gradient == nil {
-            dataSet.fill = ColorFill(color: .magenta)
-        } else {
-            dataSet.fill = LinearGradientFill(gradient: gradient!, angle: 90)
-        }
-        dataSet.drawFilledEnabled = true
-        dataSet.colors = [Color.main.uiColor]
-        data.dataSets = [dataSet]
-        chart.data = data
-        chart.leftAxis.drawLabelsEnabled = false
-        chart.leftAxis.drawGridLinesEnabled = false
-        chart.leftAxis.axisLineDashLengths = [5, 5, 0]
-        chart.rightAxis.enabled = false
-        chart.xAxis.drawAxisLineEnabled = false
-        chart.xAxis.labelPosition = .bottom
-        chart.xAxis.labelCount = dataSet.count-1
-        chart.xAxis.gridLineDashLengths = [5, 5, 0]
-        chart.legend.enabled = false
-        return chart
-    }
-    
-    func updateUIView(_ uiView: UIViewType, context: Context) {
-    }
-    
-    typealias UIViewType = LineChartView
-}
-
-#Preview {
-    IndexView()
-        .environmentObject(AccountService())
-//    ChartView()
-}
 
 private struct BannerView: View {
     @State private var selected: Int = 1
@@ -319,6 +302,309 @@ private struct BannerView: View {
     }
 }
 
-#Preview("banner") {
-    BannerView()
+//#Preview("banner") {
+//    BannerView()
+//}
+
+private enum ChartCurveType: Equatable {
+    case district(startTime: String?, endTime: String?),
+         combined(startTime: String?, endTime: String?),
+         districtAndCombined(startTime: String?, endTime: String?)
+    
+    static var allCases: [ChartCurveType] {
+        [
+            district(startTime: nil, endTime: nil),
+            combined(startTime: nil, endTime: nil),
+            districtAndCombined(startTime: nil, endTime: nil)
+        ]
+    }
+    
+    var text: String {
+        switch self {
+        case .district:
+            return "区县曲线"
+        case .combined:
+            return "合并曲线"
+        case .districtAndCombined:
+            return "区县曲线及合并曲线"
+        }
+    }
+    
+    var time: (startTime: String, endTime: String) {
+        switch self {
+        case .district(let startTime, let endTime):
+            return unwrapTime(startTime: startTime, endTime: endTime)
+        case .combined(let startTime, let endTime):
+            return unwrapTime(startTime: startTime, endTime: endTime)
+        case .districtAndCombined(let startTime, let endTime):
+            return unwrapTime(startTime: startTime, endTime: endTime)
+        }
+    }
+    
+    func filled(startTime: String?, endTime: String?) -> ChartCurveType {
+        switch self {
+        case .district:
+            return .district(startTime: startTime, endTime: endTime)
+        case .combined:
+            return .combined(startTime: startTime, endTime: endTime)
+        case .districtAndCombined:
+            return .districtAndCombined(startTime: startTime, endTime: endTime)
+        }
+    }
+    
+    func getCurve(unitId: Int, estateType: String) async -> [Curve] {
+        switch self {
+        case .district(let startTime, let endTime):
+            let (s, e) = unwrapTime(startTime: startTime, endTime: endTime)
+            return [await Curve.districtCurve(unitId: unitId, startTime: s, endTime: e, estateType: estateType)]
+        case .combined(let startTime, let endTime):
+            let (s, e) = unwrapTime(startTime: startTime, endTime: endTime)
+            return [await Curve.combinedCurve(unitId: unitId, startTime: s, endTime: e, estateType: estateType)]
+        case .districtAndCombined(let startTime, let endTime):
+            let (s, e) = unwrapTime(startTime: startTime, endTime: endTime)
+            return [
+                await Curve.districtCurve(unitId: unitId, startTime: s, endTime: e, estateType: estateType),
+                await Curve.combinedCurve(unitId: unitId, startTime: s, endTime: e, estateType: estateType)
+            ]
+        }
+    }
+    
+    private func unwrapTime(startTime: String?, endTime: String?) -> (startTime: String, endTime: String) {
+        switch (startTime, endTime) {
+        case (.some(let s), .none):
+            guard let date = s.toDate(format: "YYYY-MM")
+            else { return defaultTime }
+            
+            var dc = DateComponents()
+            dc.month = 11
+            if let end = Calendar.current.date(byAdding: dc, to: date) {
+                return (startTime: date.toString(format: "YYYY-MM"),
+                        endTime: end.toString(format: "YYYY-MM"))
+            } else {
+                return (startTime: date.toString(format: "YYYY-MM"),
+                        endTime: date.toString(format: "YYYY-MM"))
+            }
+        case (.none, .some(let e)):
+            guard let date = e.toDate(format: "YYYY-MM")
+            else { return defaultTime }
+            
+            var dc = DateComponents()
+            dc.month = -11
+            if let start = Calendar.current.date(byAdding: dc, to: date) {
+                return (startTime: date.toString(format: "YYYY-MM"),
+                        endTime: start.toString(format: "YYYY-MM"))
+            } else {
+                return (startTime: date.toString(format: "YYYY-MM"),
+                        endTime: date.toString(format: "YYYY-MM"))
+            }
+        case (.none, .none): return defaultTime
+        case (.some(let s), .some(let e)): return (s, e)
+        }
+    }
+    
+    private var defaultTime: (startTime: String, endTime: String) {
+        let endDate = Date()
+        var dc = DateComponents()
+        dc.month = -11
+        if let startDate = Calendar.current.date(byAdding: dc, to: endDate) {
+            return (startTime: startDate.toString(format: "YYYY-MM"),
+                    endTime: endDate.toString(format: "YYYY-MM"))
+        } else {
+            return (startTime: endDate.toString(format: "YYYY-MM"),
+                    endTime: endDate.toString(format: "YYYY-MM"))
+        }
+    }
+}
+
+private struct ChartChoisesView: View {
+    @Binding var selectedCurve: ChartCurveType
+    
+    @State private var startTimePickerShown = false
+    @State private var endTimePickerShown = false
+    
+    @State private var startTime: String?
+    @State private var endTime: String?
+    @State private var curve: ChartCurveType
+    
+    init(selectedCurve: Binding<ChartCurveType>) {
+        self._selectedCurve = selectedCurve
+        self.curve = selectedCurve.wrappedValue
+    }
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Color.main
+                    .frame(width: 6, height: 16)
+                    .cornerRadius(8)
+                Menu {
+                    ForEach(ChartCurveType.allCases, id: \.text) { type in
+                        Button {
+                            switch type {
+                            case .district:
+                                curve = .district(startTime: startTime, endTime: endTime)
+                            case .combined:
+                                curve = .combined(startTime: startTime, endTime: endTime)
+                            case .districtAndCombined:
+                                curve = .districtAndCombined(startTime: startTime, endTime: endTime)
+                            }
+                        } label: {
+                            Text(type.text)
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Text(selectedCurve.text)
+                            .customText(size: 14, color: .text.gray3)
+                        Image.main.arrowIconDown
+                    }
+                }
+                Spacer()
+            }
+            Spacer().frame(height: 20)
+            Button {
+                startTimePickerShown = true
+            } label: {
+                HStack {
+                    Image.main.calendarIcon
+                    Text(startTime ?? "开始日期")
+                        .customText(size: 14, color: startTime == nil ? .text.grayCD : .text.gray3)
+                }
+                .padding(7)
+                .frame(width: 119)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 4)
+                        .stroke(Color.hex("#F2F2F2"), lineWidth: 1)
+                )
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .alwaysPopover(isPresented: $startTimePickerShown) {
+                YearMonthPicker(dateString: $startTime, shown: $startTimePickerShown)
+            }
+            Spacer().frame(height: 10)
+            Button {
+                endTimePickerShown = true
+            } label: {
+                HStack {
+                    Image.main.calendarIcon
+                    Text(endTime ?? "结束日期")
+                        .customText(size: 14, color: endTime == nil ? .text.grayCD : .text.gray3)
+                }
+                .padding(7)
+                .frame(width: 119)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 4)
+                        .stroke(Color.hex("#F2F2F2"), lineWidth: 1)
+                )
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .alwaysPopover(isPresented: $endTimePickerShown) {
+                YearMonthPicker(dateString: $endTime, shown: $endTimePickerShown)
+            }
+        }
+        .padding(20)
+        .frame(width: 232)
+        .background(Color.white)
+        .cornerRadius(8)
+        .shadow(radius: 10)
+        .onDisappear {
+            print("disappear")
+            selectedCurve = curve.filled(startTime: startTime, endTime: endTime)
+        }
+        .onAppear {
+            (startTime, endTime) = selectedCurve.time
+        }
+    }
+}
+
+#Preview("ChartChoises") {
+    ChartChoisesView(selectedCurve: .constant(.combined(startTime: nil, endTime: nil)))
+}
+
+private struct YearMonthPicker: View {
+    @Binding var dateString: String?
+    @Binding var shown: Bool
+    
+    @State private var year: String
+    
+    private let months = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
+    
+    private let orgYear: String
+    private let orgMonth: Int
+    
+    init(dateString: Binding<String?>, shown: Binding<Bool>) {
+        self._dateString = dateString
+        self._shown = shown
+        
+        if let date = dateString.wrappedValue?.toDate(format: "YYYY-MM") {
+            self.orgYear = date.toString(format: "YYYY")
+            self.year = date.toString(format: "YYYY")
+            
+            let month = date.toString(format: "MM")
+            self.orgMonth = Int(month) ?? 0
+        } else {
+            self.year = Date().toString(format: "YYYY")
+            self.orgYear = ""
+            self.orgMonth = 0
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Image.main.arrowIcon
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .onTapGesture {
+                        guard var y = Int(year) else { return }
+                        y -= 1
+                        y = max(1000, y)
+                        year = "\(y)"
+                    }
+                TextField("", text: $year)
+                    .customText(size: 16, color: .text.gray3)
+                    .frame(width: 100)
+                    .multilineTextAlignment(.center)
+                Image.main.arrowIcon
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .rotationEffect(Angle(degrees: 180))
+                    .onTapGesture {
+                        guard var y = Int(year) else { return }
+                        y += 1
+                        y = min(3000, y)
+                        year = "\(y)"
+                    }
+            }
+            VStack(spacing: 0) {
+                ForEach(1...3, id: \.self) { row in
+                    HStack {
+                        ForEach((row-1)*4+1...row*4, id: \.self) { i in
+                            Button {
+                                dateString = "\(year)-\(String(format: "%02d", i))"
+                                shown = false
+                            } label: {
+                                Text(months[i-1])
+                                    .customText(size: 16, color: textColor(month: i))
+                                    .frame(width: 60, height: 60)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(20)
+        .background(Color.white)
+        .cornerRadius(8)
+        .shadow(radius: 10)
+    }
+    
+    private func textColor(month: Int) -> Color {
+        guard year == orgYear else { return .text.gray3 }
+        return month == orgMonth ? .main : .text.gray3
+    }
+}
+
+#Preview("YearMonthPicker") {
+    YearMonthPicker(dateString: .constant("2016-01"), shown: .constant(false))
 }

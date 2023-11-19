@@ -11,6 +11,7 @@ import Combine
 struct Account {
     let id: Int
     let orgId: Int
+    let unitId: Int
 }
 
 @MainActor
@@ -55,7 +56,8 @@ class AccountService: ObservableObject {
         let rsp = try await Linkman.shared.getInfo()
         account = Account(
             id: rsp.user.id,
-            orgId: rsp.user.fiOrgId
+            orgId: rsp.user.fiOrgId,
+            unitId: rsp.user.fiUnitId
         )
     }
     

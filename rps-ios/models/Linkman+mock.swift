@@ -11,7 +11,8 @@ extension Linkman.GetInfoResponse {
     static var mock: Linkman.GetInfoResponse {
         return Linkman.GetInfoResponse(user: Linkman.NetworkUser(
             id: 0,
-            fiOrgId: 0
+            fiOrgId: 0,
+            fiUnitId: 0
         ))
     }
 }
@@ -278,5 +279,14 @@ extension ReferenceCase {
                 totalPrice: "20000",
                 area: "200")
         ]
+    }
+}
+
+extension Curve {
+    static var mock: Curve {
+        Curve(name: "测试",
+              values: (0..<12).map { _ in Double.random(in: 0...1) },
+              xAxisLabels: (1...12).map { "23-\(String(format: "%02d", $0))" }
+        )
     }
 }

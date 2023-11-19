@@ -19,9 +19,16 @@ extension String: LocalizedError {
 
 extension String {
     func toDate(format: String = "YYYY-MM-dd") -> Date? {
-        let f = DateFormatter()
-        f.dateFormat = format
-        return f.date(from: self)
+        if format == "YYYY-MM" {
+            let f = DateFormatter()
+            f.dateFormat = "YYYY-MM-dd"
+            let s = "\(self)-01"
+            return f.date(from: s)
+        } else {
+            let f = DateFormatter()
+            f.dateFormat = format
+            return f.date(from: self)
+        }
     }
     
     func base64Decoded() throws -> String {

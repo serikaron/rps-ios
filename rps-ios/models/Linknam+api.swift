@@ -25,6 +25,7 @@ extension Linkman {
     struct NetworkUser: Codable {
         let id: Int
         let fiOrgId: Int
+        let fiUnitId: Int
     }
     
     struct GetInfoResponse: Codable {
@@ -457,6 +458,119 @@ extension Linkman {
             .with(\.method, setTo: .GET)
             .make()
             .response() as BannersResponse
+    }
+    
+    struct AuthArea: Codable {
+        let fiAreaCode: Int?
+    }
+    
+    typealias AuthAreaListResponse = [AuthArea]
+    
+    func getAuthAreaList(unitId: Int) async throws -> AuthAreaListResponse {
+        try await Request()
+            .with(\.path, setTo: "/account/rps/account/clientUser/getRpsAuthAreaList")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: ["fiUnitId": "\(unitId)"])
+            .make()
+            .response() as AuthAreaListResponse
+    }
+    
+    struct CurveData: Codable {
+        let verticalShaft: [Double]
+        let horizontalAxis: [String]
+        
+        init(from dict: [String: Any]) {
+            if let vsList = dict["verticalShaft"] as? [Any] {
+                self.verticalShaft = vsList.map { vs in
+                    if let i = vs as? Int {
+                        return Double(i)
+                    }
+                    if let d = vs as? Double {
+                        return d
+                    }
+                    if let s = vs as? String {
+                        return Double(s) ?? 0
+                    }
+                    return 0
+                }
+            } else {
+                self.verticalShaft = []
+            }
+            
+            if let haList = dict["horizontalAxis"] as? [String] {
+                self.horizontalAxis = haList
+            } else {
+                self.horizontalAxis = []
+            }
+        }
+    }
+    
+    struct DistrictCurve: Codable {
+        let code: String
+        let value: CurveData
+        
+        init(from dict: [String: Any]) {
+            self.code = dict["code"] as? String ?? ""
+            if let valueDict = dict["value"] as? [String: Any] {
+                self.value = CurveData(from: valueDict)
+            } else {
+                self.value = CurveData(from: [:])
+            }
+        }
+    }
+    
+    typealias CurveResponse = [DistrictCurve]
+    
+    func getCurve(startTime: String, endTime: String, estateType: String, districtId: [Int]) async throws -> CurveResponse {
+        let req = try await Request()
+            .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/districtAndCountyCurve")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: [
+                "startTime": startTime,
+                "endTime": endTime,
+                "fvEstateType": estateType,
+                "fiDistrictId": districtId
+            ])
+            .make()
+        
+        guard let response = req._response else {
+            throw "response not exits"
+        }
+        
+        guard let responseDict = try JSONSerialization.jsonObject(with: response) as? [String: Any],
+              let data = responseDict["data"] as? [[String: Any]]
+        else {
+            throw "mismatch data type"
+        }
+        
+        return data.compactMap { DistrictCurve(from: $0) }
+    }
+    
+    typealias CombinedCurveResponse = CurveData
+    
+    func getCombinedCurve(startTime: String, endTime: String, estateType: String, districtId: [Int]) async throws -> CombinedCurveResponse {
+        let req = try await Request()
+            .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/districtAndCombinedCountyCurve")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: [
+                "startTime": startTime,
+                "endTime": endTime,
+                "fvEstateType": estateType,
+                "fiDistrictId": districtId
+            ])
+            .make()
+        
+        guard let response = req._response else {
+            throw "response not exits"
+        }
+        
+        guard let responseDict = try JSONSerialization.jsonObject(with: response) as? [String: Any],
+              let data = responseDict["data"] as? [String: Any]
+        else {
+            throw "mismatch data type"
+        }
+
+        return CombinedCurveResponse(from: data)
     }
 }
 

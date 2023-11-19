@@ -25,13 +25,16 @@ extension UserDefaults {
     static var account: Account? {
         get {
             let orgId = UserDefaults.rps.integer(forKey: "account.orgId")
-            return Account(id: 0, orgId: orgId)
+            let unitId = UserDefaults.rps.integer(forKey: "account.unitId")
+            return Account(id: 0, orgId: orgId, unitId: unitId)
         }
         set(account) {
             if account == nil {
                 UserDefaults.rps.removeObject(forKey: "account.orgId")
+                UserDefaults.rps.removeObject(forKey: "account.unitId")
             } else {
                 UserDefaults.rps.setValue(account!.orgId, forKey: "account.orgId")
+                UserDefaults.rps.setValue(account!.unitId, forKey: "account.unitId")
             }
         }
     }
