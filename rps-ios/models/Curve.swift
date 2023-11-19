@@ -40,10 +40,38 @@ struct Curve {
             let curveRsp = try await Linkman.shared.getCombinedCurve(startTime: startTime, endTime: endTime, estateType: estateType, districtId: districtId)
             return Curve(
                 name: "多区合并价格",
-                values: curveRsp.verticalShaft.map { Double($0) ?? 0 },
+                values: curveRsp.verticalShaft.map { Double($0) },
                 xAxisLabels: curveRsp.horizontalAxis)
         } catch {
             print("get combinedCurve FAILED!!! \(error)")
+            return .empty
+        }
+    }
+    
+    static func compoundCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
+        do {
+            let rsp = try await Linkman.shared.getCompoundCurve(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType)
+            return Curve(
+                name: "",
+                values: rsp.map { $0.price ?? 0 },
+                xAxisLabels: rsp.map { $0.evaluateTime ?? "" }
+            )
+        } catch {
+            print("compoundCurve FAILED!!! \(error)")
+            return .empty
+        }
+    }
+    
+    static func baseDistrictCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
+        do {
+            let rsp = try await Linkman.shared.getBaseDistrictCurve(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType)
+            return Curve(
+                name: "",
+                values: rsp.map { $0.price ?? 0 },
+                xAxisLabels: rsp.map { $0.evaluateTime ?? "" }
+            )
+        } catch {
+            print("compoundCurve FAILED!!! \(error)")
             return .empty
         }
     }

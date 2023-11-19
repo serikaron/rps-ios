@@ -38,49 +38,23 @@ struct RoomDetailView: View {
                 ScrollView {
                     ZStack(alignment: .top) {
                         BannerView(roomDetail: $roomDetail)
-                        Color.gray
                             .frame(height: 252)
                             .frame(maxHeight: .infinity, alignment: .top)
                         VStack(spacing: 10) {
                             Spacer().frame(height: 219)
-                            content
-                            mapView
-                            if inquiry?.estateType == .industrialFactory {
-                                LandListView(inquiry: $inquiry)
-                                BuildListView(inquiry: $inquiry)
-                                if hasInquiryResult {
-                                    ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
-                                    if !hasDetailResult {
-                                        actionView
-                                    }
-                                }
-                            } else {
-                                if hasInquiryResult {
-                                    ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
-                                    if !hasDetailResult {
-                                        actionView
-                                    }
-                                }
-                            }
-                            if detailExtened {
-                                DecorateView(inquiry: $inquiry)
-                                AuxiliaryRoomListView(inquiry: $inquiry)
-                                ResultAdjustView(inquiry: $inquiry)
-                            }
-                            if hasDetailResult {
-                                DetailResultView(inquiry: $inquiry)
-                                actionView
-                            }
+                            upperView
                             Spacer().frame(height: 20)
                         }
                     }
                 }
-                OverlayView(
-                    inquiry: $inquiry,
-                    hasInquiryResult: $hasInquiryResult,
-                    detailExtened: $detailExtened,
-                    hasDetailResult: $hasDetailResult
-                )
+                if selectedTab == .inquiryDetail {
+                    OverlayView(
+                        inquiry: $inquiry,
+                        hasInquiryResult: $hasInquiryResult,
+                        detailExtened: $detailExtened,
+                        hasDetailResult: $hasDetailResult
+                    )
+                }
             }
             if isInfoFixShown {
                 InfoFixView(inquiry: $inquiry, roomDetail: $roomDetail, isInfoFixShown: $isInfoFixShown)
@@ -108,7 +82,7 @@ struct RoomDetailView: View {
     
     @State private var selectedTab: RoomDetailTab = .inquiryDetail
     
-    private var content: some View {
+    private var upperView: some View {
         VStack(spacing: 0) {
             if hasInquiryResult {
                 HStack(spacing: 20) {
@@ -139,13 +113,48 @@ struct RoomDetailView: View {
         Group {
             switch selectedTab {
             case .inquiryDetail:
-                RoomInfoView(
-                    floor: floor, roomDetail: roomDetail,
-                    isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
-                )
+                inquiryDetailPage
                 .earseToAnyView()
             case .reference:
                 ReferenceCaseView(inquiry: inquiry).earseToAnyView()
+            case .chart:
+                ChartPage(inquiry: $inquiry, roomDetail: $roomDetail)
+            }
+        }
+    }
+    
+    private var inquiryDetailPage: some View {
+        VStack {
+            RoomInfoView(
+                floor: floor, roomDetail: roomDetail,
+                isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
+            )
+            mapView
+            if inquiry?.estateType == .industrialFactory {
+                LandListView(inquiry: $inquiry)
+                BuildListView(inquiry: $inquiry)
+                if hasInquiryResult {
+                    ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
+                    if !hasDetailResult {
+                        actionView
+                    }
+                }
+            } else {
+                if hasInquiryResult {
+                    ResultView(inquiry: inquiry!, detailExtened: $detailExtened)
+                    if !hasDetailResult {
+                        actionView
+                    }
+                }
+            }
+            if detailExtened {
+                DecorateView(inquiry: $inquiry)
+                AuxiliaryRoomListView(inquiry: $inquiry)
+                ResultAdjustView(inquiry: $inquiry)
+            }
+            if hasDetailResult {
+                DetailResultView(inquiry: $inquiry)
+                actionView
             }
         }
     }
@@ -219,13 +228,50 @@ struct RoomDetailView: View {
     
 }
 
+#Preview {
+    NavigationView {
+        RoomDetailView(
+            familyRoomName: "宝石1幢1单元RF301",
+            areaCode: 300106,
+            estateType: "singleApartment",
+            buildingId: 1,
+            floor: "1-1"
+        )
+        .environmentObject(
+            EstateService()
+        )
+        .environmentObject(AccountService())
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+//
+//#Preview("online") {
+//    Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiR3Uza1VDRlp0WENiUnNQbnZFbzR6bHdSbmdQNXFQQmoiLCJ1c2VySWQiOjQwfQ.vWHDeE0OHg2ldyTlnCDSFN9p67IoqQyU1jhzZncRIEo")
+//    Task {
+//        await DictType.getDict()
+//    }
+//    return NavigationView {
+//        RoomDetailView(
+//            familyRoomName: "路段1号101",
+//            areaCode: 300106,
+//            estateType: "shopStreet",
+//            buildingId: 1,
+//            floor: "1-1"
+//        )
+//        .environmentObject( EstateService() )
+//        .environmentObject(AccountService())
+//        .navigationBarTitleDisplayMode(.inline)
+//    }
+//}
+
 private enum RoomDetailTab: CaseIterable {
-    case inquiryDetail, reference
+    case inquiryDetail, reference, chart
     
     var title: String {
         switch self {
         case .inquiryDetail: return "估价详情"
         case .reference: return "参考案例"
+        case .chart: return "价格走势"
         }
     }
 }
@@ -2123,6 +2169,129 @@ private struct BannerView: View {
     BannerView(roomDetail: .constant(.empty))
 }
 
+private struct ChartPage: View {
+    @Binding var inquiry: Inquiry?
+    @Binding var roomDetail: RoomDetail
+    @EnvironmentObject var estateService: EstateService
+    
+    @State private var basePrice: Double = 0
+    @State private var startTime: String?
+    @State private var endTime: String?
+    @State private var startTimePickerShown = false
+    @State private var endTimePickerShown = false
+    @State private var compoundCurve: [Curve] = []
+    @State private var districtCurve: [Curve] = []
+
+    var body: some View {
+        VStack(spacing: 0) {
+            topView
+            Spacer().frame(height: 30)
+            VStack {
+                HStack {
+                    Text("\(roomDetail.compoundName)走势图").headerText()
+                    Spacer()
+                    Image.index.pointIcon
+                    Text("价格走势")
+                        .customText(size: 14, color: .text.gray3)
+                }
+                ChartView(curves: $compoundCurve)
+                    .frame(height: 157)
+            }
+            .sectionStyle()
+            Spacer().frame(height: 10)
+            VStack {
+                HStack {
+                    Text("\(roomDetail.areaName)走势图").headerText()
+                    Spacer()
+                    Image.index.pointIcon
+                    Text("价格走势")
+                        .customText(size: 14, color: .text.gray3)
+                }
+                ChartView(curves: $districtCurve)
+                    .frame(height: 157)
+            }
+            .sectionStyle()
+        }
+        .onAppear {
+            let today = Date()
+            var dc = DateComponents()
+            dc.month = -11
+            let date = Calendar.current.date(byAdding: dc, to: today)
+            endTime = today.toString(format: "YYYY-MM")
+            startTime = date?.toString(format: "YYYY-MM") ?? endTime
+            Task {
+                basePrice = await estateService.getBaseCompoundPrice(compoundId: roomDetail.compoundId, estateType: roomDetail.estateType?.dictKey ?? "")
+            }
+            getCurve()
+        }
+        .onChange(of: startTime) { _ in
+            getCurve()
+        }
+        .onChange(of: endTime) { _ in
+            getCurve()
+        }
+    }
+    
+    private var topView: some View {
+        VStack(spacing: 0) {
+            Text("\(roomDetail.compoundName)\(Date().toString(format: "YYYY-MM"))月基准价")
+                .headerText()
+            Spacer().frame(height: 16)
+            HStack {
+                Text("类型")
+                    .customText(size: 14, color: .text.gray6)
+                Text(roomDetail.estateType?.label ?? "")
+                    .customText(size: 14, color: .text.gray3)
+                Spacer()
+                Text("物业分类")
+                    .customText(size: 14, color: .text.gray6)
+                Text(roomDetail.wuYeFenLei)
+                    .customText(size: 14, color: .text.gray3)
+                Spacer()
+                Text("基准价")
+                    .customText(size: 14, color: .text.gray6)
+                Text("\(basePrice)/m²")
+                    .customText(size: 14, color: .text.gray3)
+            }
+            Spacer().frame(height: 16)
+            HStack(spacing: 13) {
+                YearMonthButton(placeholder: "开始日期", isShown: $startTimePickerShown, time: $startTime)
+                Text("-").customText(size: 16, color: .text.gray3)
+                YearMonthButton(placeholder: "结束日期", isShown: $endTimePickerShown, time: $endTime)
+                Spacer()
+            }
+        }
+        .sectionStyle(vPadding: 0)
+    }
+    
+    private func getCurve() {
+        Task {
+            let s = startTime ?? Date().toString(format: "YYYY-MM")
+            let e = endTime ?? s
+            compoundCurve = [await Curve.compoundCurve(compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
+            districtCurve = [await Curve.baseDistrictCurve(compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
+        }
+    }
+}
+
+#Preview("ChartPage") {
+    PreviewView { inquiry, roomDetail in
+        ChartPage(inquiry: inquiry, roomDetail: roomDetail)
+            .onAppear {
+                roomDetail.wrappedValue.compoundName = "杭州市壹号院"
+                roomDetail.wrappedValue.estateType = DictType.EstateType.commApartment
+                roomDetail.wrappedValue.wuYeFenLei = "多层"
+                roomDetail.wrappedValue.compoundId = 2
+                roomDetail.wrappedValue.areaName = "西湖区"
+            }
+            .frame(maxHeight: .infinity)
+            .background(Color.black)
+    }
+    .environmentObject(EstateService.preview)
+}
+
+// MARK: -
+
 private struct HeaderTextModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -2144,9 +2313,11 @@ private extension View {
 }
 
 private struct SectionStyleModifier: ViewModifier {
+    let vPadding: Double
+    
     func body(content: Content) -> some View {
         content
-            .padding(.vertical, 20)
+            .padding(.vertical, vPadding)
             .padding(.horizontal, 16)
             .background(Color.white)
             .cornerRadius(8)
@@ -2154,8 +2325,8 @@ private struct SectionStyleModifier: ViewModifier {
     }
 }
 private extension View {
-    func sectionStyle() -> some View {
-        modifier(SectionStyleModifier())
+    func sectionStyle(vPadding: Double = 20) -> some View {
+        modifier(SectionStyleModifier(vPadding: vPadding))
     }
 }
 
@@ -2222,43 +2393,6 @@ private extension View {
     }
 }
 
-// MARK: - preview
-//#Preview {
-//    NavigationView {
-//        RoomDetailView(
-//            familyRoomName: "宝石1幢1单元RF301",
-//            areaCode: 300106,
-//            estateType: "singleApartment",
-//            buildingId: 1,
-//            floor: "1-1"
-//        )
-//        .environmentObject(
-//            EstateService()
-//                .setRoomDetail(.mock)
-//        )
-//        .environmentObject(AccountService())
-//        .navigationBarTitleDisplayMode(.inline)
-//    }
-//}
-//
-//#Preview("online") {
-//    Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiR3Uza1VDRlp0WENiUnNQbnZFbzR6bHdSbmdQNXFQQmoiLCJ1c2VySWQiOjQwfQ.vWHDeE0OHg2ldyTlnCDSFN9p67IoqQyU1jhzZncRIEo")
-//    Task {
-//        await DictType.getDict()
-//    }
-//    return NavigationView {
-//        RoomDetailView(
-//            familyRoomName: "路段1号101",
-//            areaCode: 300106,
-//            estateType: "shopStreet",
-//            buildingId: 1,
-//            floor: "1-1"
-//        )
-//        .environmentObject( EstateService() )
-//        .environmentObject(AccountService())
-//        .navigationBarTitleDisplayMode(.inline)
-//    }
-//}
 //
 //#Preview("ResultView") {
 //    ResultView(inquiry: .empty, detailExtened: .constant(true))
@@ -2266,11 +2400,13 @@ private extension View {
 
 private struct PreviewView<Content: View>: View {
     @State var inquiry: Inquiry? = .empty
-    let content: (_ inquiry: Binding<Inquiry?>) -> Content
+    @State var roomDetail: RoomDetail = .empty
+    
+    let content: (_ inquiry: Binding<Inquiry?>, _ roomDetail: Binding<RoomDetail>) -> Content
     
     var body: some View {
         NavigationView {
-            content($inquiry)
+            content($inquiry, $roomDetail)
         }
     }
     
@@ -2279,8 +2415,6 @@ private struct PreviewView<Content: View>: View {
         return self
     }
 }
-
-// MARK: - preview end
 
 private extension Inquiry {
     mutating func prepareAuxiliaryRoomList() -> Inquiry {

@@ -78,6 +78,10 @@ struct RoomDetail {
         "\(networkRoomDetail.fvSubdistrictName ?? "")" +
         "\(networkRoomDetail.fvFamilyRoomName ?? "")"
     }
+    var compoundName: String { 
+        get { networkRoomDetail.fvCompoundName ?? "" }
+        set(value) { networkRoomDetail.fvCompoundName = value}
+    }
     var estateTypeText: String {
         switch estateType {
         case .commApartment:
@@ -452,6 +456,18 @@ struct RoomDetail {
                 dcBuilding.fvLandingroomLandSe
         else { return nilText }
         return DictType.landingroomLandSe.label(of: lrs) ?? nilText
+    }
+    var wuYeFenLei: String {
+        get { networkRoomDetail.wuYeFenLei ?? "" }
+        set(value) { networkRoomDetail.wuYeFenLei = value }
+    }
+    var compoundId: Int {
+        get { networkRoomDetail.fiCompoundId ?? 0 }
+        set(value) { networkRoomDetail.fiCompoundId = value }
+    }
+    var areaName: String {
+        get { networkRoomDetail.fvAreaName ?? "" }
+        set(value) { networkRoomDetail.fvAreaName = value }
     }
     
     var imageList: [String] {

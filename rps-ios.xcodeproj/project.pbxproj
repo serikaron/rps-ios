@@ -19,6 +19,7 @@
 		72D8101A2B09207C0035355A /* Curve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D810192B09207C0035355A /* Curve.swift */; };
 		72D8101C2B0924530035355A /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D8101B2B0924530035355A /* ChartView.swift */; };
 		72D8101E2B09E7EA0035355A /* AlwaysPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D8101D2B09E7EA0035355A /* AlwaysPopover.swift */; };
+		72D810232B0A73950035355A /* YearMonthPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D810222B0A73950035355A /* YearMonthPicker.swift */; };
 		72DFCEE92AFA00F50001831F /* rps_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCEE82AFA00F50001831F /* rps_iosApp.swift */; };
 		72DFCEEB2AFA00F50001831F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCEEA2AFA00F50001831F /* ContentView.swift */; };
 		72DFCEED2AFA00F60001831F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72DFCEEC2AFA00F60001831F /* Assets.xcassets */; };
@@ -74,6 +75,7 @@
 		72D810192B09207C0035355A /* Curve.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Curve.swift; sourceTree = "<group>"; };
 		72D8101B2B0924530035355A /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		72D8101D2B09E7EA0035355A /* AlwaysPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlwaysPopover.swift; sourceTree = "<group>"; };
+		72D810222B0A73950035355A /* YearMonthPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearMonthPicker.swift; sourceTree = "<group>"; };
 		72DFCEE52AFA00F50001831F /* rps-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rps-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		72DFCEE82AFA00F50001831F /* rps_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rps_iosApp.swift; sourceTree = "<group>"; };
 		72DFCEEA2AFA00F50001831F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 				72C004772B0078D50084D3FA /* FloorsView.swift */,
 				728D964B2B020CA900E1ACC4 /* RoomDetailView.swift */,
 				72D8101B2B0924530035355A /* ChartView.swift */,
+				72D810222B0A73950035355A /* YearMonthPicker.swift */,
 			);
 			path = index;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 				72D8101C2B0924530035355A /* ChartView.swift in Sources */,
 				72DFCEFD2AFA09770001831F /* IndexView.swift in Sources */,
 				72F9BF8E2AFD044C0040C6D2 /* Notice.swift in Sources */,
+				72D810232B0A73950035355A /* YearMonthPicker.swift in Sources */,
 				72D8101E2B09E7EA0035355A /* AlwaysPopover.swift in Sources */,
 				72DFCF042AFA18620001831F /* images+.swift in Sources */,
 				72DFCF0F2AFC72A80001831F /* OnboardingView.swift in Sources */,

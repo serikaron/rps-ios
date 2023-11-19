@@ -311,6 +311,9 @@ extension Linkman {
         var wuYeFenLei: String?
         var fiLandUpperCount: Int?
         var fvLandingroomLandSe: String?
+        var fvCompoundName: String?
+        var fiCompoundId: Int?
+        
         var buildingImageList: [RoomDetailImage]
         var compoundImageList: [RoomDetailImage]
 
@@ -571,6 +574,41 @@ extension Linkman {
         }
 
         return CombinedCurveResponse(from: data)
+    }
+    
+    struct CompoundCurveData: Codable {
+        let evaluateTime: String?
+        let price: Double?
+    }
+    
+    typealias CompoundCurveResponse = [CompoundCurveData]
+    
+    func getCompoundCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async throws -> CompoundCurveResponse {
+        try await Request()
+            .with(\.path, setTo: "/pricing/pcBaseCompoundPrice/getCompoundCommuntyCharts")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "fvCompoundId": "\(compoundId)",
+                "fdEvaluateTimeStart": startTime,
+                "fdEvaluateTimeEnd": endTime,
+                "fvEstateType": estateType
+            ])
+            .make()
+            .response() as CompoundCurveResponse
+    }
+    
+    func getBaseDistrictCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async throws -> CompoundCurveResponse {
+        try await Request()
+            .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getPcBasePriceDistrictLineChart")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: [
+                "fvCompoundId": "\(compoundId)",
+                "fdEvaluateTimeStart": startTime,
+                "fdEvaluateTimeEnd": endTime,
+                "fvEstateType": estateType
+            ])
+            .make()
+            .response() as CompoundCurveResponse
     }
 }
 
