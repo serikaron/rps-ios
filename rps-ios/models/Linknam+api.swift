@@ -281,12 +281,30 @@ extension Linkman {
         var fdCompletionDate: String?
         var fvEstateType: String?
         var fvBuildDirection: String?
+        var fvSpecialCircumstances: String?
     }
     
     struct DCCompound: Codable {
         var fvLandUser: String?
         var fvCompletionDate: String?
         var fvLandLevel: String?
+        var fvSpecialCircumstances: String?
+        var fvHouseProperty: String?
+        var fvDeveloper: String?
+        var fvConstruction: String?
+        var fvSaleCompany: String?
+        var fvSaleAddress: String?
+        var fvSalePhoneno: String?
+        var fvSaleTime: String?
+        var fvCityName: String?
+        var fvAreaName: String?
+        var fvSubdistrictName: String?
+        var fvCompoundName: String?
+        var fbLandArea: Double?
+        var fvToEast: String?
+        var fvToWest: String?
+        var fvToSouth: String?
+        var fvToNorth: String?
     }
     
     struct NetworkRoomDetail: Codable {
@@ -313,6 +331,16 @@ extension Linkman {
         var fvLandingroomLandSe: String?
         var fvCompoundName: String?
         var fiCompoundId: Int?
+        var fvSpecialCircumstances: String?
+        var fvTypeOfHouse: String?
+        var fvDaylighting: String?
+        var fvNoise: String?
+        var fvdecoration: String?
+        var fv_landscape: String?
+        var fv_garden: String?
+        var fv_terrace: String?
+        var fv_attic: String?
+        var fv_basement: String?
         
         var buildingImageList: [RoomDetailImage]
         var compoundImageList: [RoomDetailImage]

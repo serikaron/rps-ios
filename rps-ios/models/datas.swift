@@ -64,6 +64,7 @@ struct RoomDetail {
         set(value) { networkRoomDetail.fvEstateType = value?.dictKey }
     }
     var estateTypeString: String? { networkRoomDetail.fvEstateType }
+    var estateTypeLabel: String { estateType?.label ?? "" }
     
     private var dcBuilding: Linkman.DCBuilding { networkRoomDetail.dcBuilding }
     private var dcCompound: Linkman.DCCompound { networkRoomDetail.dcCompound }
@@ -469,6 +470,37 @@ struct RoomDetail {
         get { networkRoomDetail.fvAreaName ?? "" }
         set(value) { networkRoomDetail.fvAreaName = value }
     }
+    var specialCircumstances: String { networkRoomDetail.fvSpecialCircumstances ?? "" }
+    var buildingSpecialCircumstances: String { dcBuilding.fvSpecialCircumstances ?? "" }
+    var compoundSpecialCircumstances: String { dcCompound.fvSpecialCircumstances ?? "" }
+    var typeOfHouse: String { DictType.fv_type_of_house.label(of: networkRoomDetail.fvTypeOfHouse ?? "") ?? "" }
+    var daylighting: String { DictType.fv_daylighting.label(of: networkRoomDetail.fvDaylighting ?? "" ) ?? "" }
+    var noise: String { DictType.fv_noise.label(of: networkRoomDetail.fvNoise ?? "" ) ?? "" }
+    var decoration: String { DictType.fv_decoration.label(of: networkRoomDetail.fvdecoration ?? "" ) ?? "" }
+    var landscape: String { DictType.fv_landscape.label(of: networkRoomDetail.fv_landscape ?? "" ) ?? "" }
+    var garden: String { DictType.fv_garden.label(of: networkRoomDetail.fv_garden ?? "" ) ?? "" }
+    var terrace: String { DictType.fv_terrace.label(of: networkRoomDetail.fv_terrace ?? "" ) ?? "" }
+    var attic: String { DictType.fv_attic.label(of: networkRoomDetail.fv_attic ?? "" ) ?? "" }
+    var basement: String { DictType.fv_basement.label(of: networkRoomDetail.fv_basement ?? "" ) ?? "" }
+    var compoundProperty: String { DictType.houseProperty.label(of: dcCompound.fvHouseProperty ?? "") ?? "" }
+    var compoundCompletionDate: String { dcCompound.fvCompletionDate ?? "" }
+    var compoundDeveloper: String { dcCompound.fvDeveloper ?? "" }
+    var compoundConstruction: String { dcCompound.fvConstruction ?? "" }
+    var compoundSaleCompany: String { dcCompound.fvSaleCompany ?? "" }
+    var compoundSaleAddress: String { dcCompound.fvSaleAddress ?? "" }
+    var compoundSalePhoneno: String { dcCompound.fvSalePhoneno ?? "" }
+    var compoundSaleTime: String { dcCompound.fvSaleTime ?? "" }
+    var compoundCityName: String { dcCompound.fvCityName ?? "" }
+    var compoundAreaName: String { dcCompound.fvAreaName ?? "" }
+    var compoundSubdistrictName: String { dcCompound.fvSubdistrictName ?? "" }
+    var compoundCompoundName: String { dcCompound.fvCompoundName ?? "" }
+    var compoundLandAreaString: String { "\(dcCompound.fbLandArea ?? 0)" }
+    var compoundLandUserLabel: String { DictType.landUser.label(of: dcCompound.fvLandUser ?? "") ?? "" }
+    var compoundLandLevelLabel: String { DictType.landUser.label(of: dcCompound.fvLandLevel ?? "") ?? "" }
+    var compoundToEast: String { dcCompound.fvToEast ?? "" }
+    var compoundToWest: String { dcCompound.fvToWest ?? "" }
+    var compoundToSouth: String { dcCompound.fvToSouth ?? "" }
+    var compoundToNorth: String { dcCompound.fvToNorth ?? "" }
     
     var imageList: [String] {
         networkRoomDetail.buildingImageList.compactMap { $0.fvUrl }
