@@ -460,6 +460,8 @@ extension Linkman {
         let fbTotalPrice: Double?
         let fbArea: Double?
         let fvInFloor: String?
+        let fvCompoundMatchAddress: String?
+        let fiTotalFloor: Int?
     }
     
     typealias RoomCasesResponse = [RoomCase]

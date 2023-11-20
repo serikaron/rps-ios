@@ -119,6 +119,8 @@ struct RoomDetailView: View {
                 ReferenceCaseView(inquiry: inquiry).earseToAnyView()
             case .chart:
                 ChartPage(inquiry: $inquiry, roomDetail: $roomDetail)
+            case .estateDetail:
+                EstateDetailView(detail: $roomDetail)
             }
         }
     }
@@ -265,13 +267,14 @@ struct RoomDetailView: View {
 //}
 
 private enum RoomDetailTab: CaseIterable {
-    case inquiryDetail, reference, chart
+    case inquiryDetail, reference, chart, estateDetail
     
     var title: String {
         switch self {
         case .inquiryDetail: return "估价详情"
         case .reference: return "参考案例"
         case .chart: return "价格走势"
+        case .estateDetail: return "房产详情"
         }
     }
 }
@@ -2080,51 +2083,39 @@ private struct ReferenceCaseView: View {
     
     private func view(for item: ReferenceCase, isHeader: Bool) -> some View {
         HStack(spacing: 4) {
-            Text(item.source)
-                .lineLimit(2)
-                .frame(width: 53, height: 40)
-                .background(isHeader ? headerBgColor : .white)
-            Text(item.date)
-                .frame(width: 53, height: 40)
-                .lineLimit(2)
-                .background(isHeader ? headerBgColor : .white)
-            Text(item.address)
-                .lineLimit(2)
-                .frame(width: 149, height: 40)
-                .background(isHeader ? headerBgColor : .white)
-            Text(item.decorate)
-                .lineLimit(2)
-                .frame(width: 53, height: 40)
-                .background(isHeader ? headerBgColor : .white)
-            Text(item.floor)
-                .lineLimit(2)
-                .frame(width: 53, height: 40)
-                .background(isHeader ? headerBgColor : .white)
-            Text(item.price)
-                .lineLimit(2)
-                .frame(width: 53, height: 40)
-                .background(isHeader ? headerBgColor : .white)
-            Text(item.totalPrice)
-                .lineLimit(2)
-                .frame(width: 53, height: 40)
-                .background(isHeader ? headerBgColor : .white)
-            Text(item.area)
-                .lineLimit(2)
-                .frame(width: 53, height: 40)
-                .background(isHeader ? headerBgColor : .white)
+            caseText(item.compoundAddress, isHeader: isHeader)
+            caseText(item.caseAddress, isHeader: isHeader)
+            caseText(item.tradeType, isHeader: isHeader)
+            caseText(item.area, isHeader: isHeader)
+            caseText(item.date, isHeader: isHeader)
+            caseText(item.totalPrice, isHeader: isHeader)
+            caseText(item.floor, isHeader: isHeader)
+            caseText(item.price, isHeader: isHeader)
+            caseText(item.totalPrice, isHeader: isHeader)
+            caseText(item.decorate, isHeader: isHeader)
         }
+    }
+    
+    private func caseText(_ text: String, isHeader: Bool) -> some View {
+        Text(text)
+            .lineLimit(2)
+            .frame(width: 53, height: 40)
+            .background(isHeader ? headerBgColor : .white)
     }
     
     private var headerItem: ReferenceCase {
         ReferenceCase(
-            source: "来源",
+            tradeType: "交易种类",
             date: "案例日期",
-            address: "地址",
+            caseAddress: "案例地址",
             decorate: "装修",
             floor: "楼层区间",
-            price: "单价(元)",
-            totalPrice: "总价(万元)",
-            area: "面积(m²)")
+            price: "案例单价(万元)",
+            totalPrice: "案例总价(万元)",
+            area: "面积(m²)",
+            compoundAddress: "小区地址",
+            totalFloor: "总楼层"
+        )
     }
     
     private var headerBgColor: Color {

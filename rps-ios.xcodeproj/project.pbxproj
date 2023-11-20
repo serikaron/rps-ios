@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		722DA22D2B0AFD0500C0A3DF /* AddInquiryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA22C2B0AFD0500C0A3DF /* AddInquiryView.swift */; };
 		728697E72AFF1F0500CA31C5 /* DictType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E62AFF1F0500CA31C5 /* DictType.swift */; };
 		728697E92AFF209B00CA31C5 /* Linkman+mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E82AFF209B00CA31C5 /* Linkman+mock.swift */; };
 		728697F12AFF24BE00CA31C5 /* rps_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697F02AFF24BE00CA31C5 /* rps_iosTests.swift */; };
@@ -62,6 +63,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		722DA22C2B0AFD0500C0A3DF /* AddInquiryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddInquiryView.swift; sourceTree = "<group>"; };
 		728697E62AFF1F0500CA31C5 /* DictType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictType.swift; sourceTree = "<group>"; };
 		728697E82AFF209B00CA31C5 /* Linkman+mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linkman+mock.swift"; sourceTree = "<group>"; };
 		728697EE2AFF24BE00CA31C5 /* rps-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rps-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -198,6 +200,7 @@
 				728D964B2B020CA900E1ACC4 /* RoomDetailView.swift */,
 				72D8101B2B0924530035355A /* ChartView.swift */,
 				72D810222B0A73950035355A /* YearMonthPicker.swift */,
+				722DA22C2B0AFD0500C0A3DF /* AddInquiryView.swift */,
 			);
 			path = index;
 			sourceTree = "<group>";
@@ -384,6 +387,7 @@
 				72F9BF902AFDC7F70040C6D2 /* FuzzySearchView.swift in Sources */,
 				72DFCF062AFA234D0001831F /* DividerView.swift in Sources */,
 				72DFCF162AFC8DD90001831F /* UserDefaults+RPS.swift in Sources */,
+				722DA22D2B0AFD0500C0A3DF /* AddInquiryView.swift in Sources */,
 				72D8101A2B09207C0035355A /* Curve.swift in Sources */,
 				72F9BF962AFDE1C40040C6D2 /* EstateService.swift in Sources */,
 				72C004782B0078D50084D3FA /* FloorsView.swift in Sources */,

@@ -239,45 +239,57 @@ extension Linkman.DCCompound {
 extension ReferenceCase {
     static func mock(num: Int) -> ReferenceCase {
         ReferenceCase(
-            source: "source\(num)",
+            tradeType: "tradeType\(num)",
             date: "2001",
-            address: "address\(num)",
+            caseAddress: "caseAddress\(num)",
             decorate: "decorate\(num)",
             floor: "floor\(num)",
             price: "\(num * 10000)",
             totalPrice: "\(num * 10000)",
-            area: "\(num * 100)")
+            area: "\(num * 100)",
+            compoundAddress: "compoundAddress\(num)",
+            totalFloor: "\(num)"
+        )
     }
     
     static var moclList: [ReferenceCase] {
         [
             ReferenceCase(
-                source: "法拍",
+                tradeType: "法拍",
                 date: "2023-02-11",
-                address: "杭州市余杭区良渚街道博园西路8号",
+                caseAddress: "杭州市余杭区良渚街道博园西路8号",
                 decorate: "毛坯",
                 floor: "高层",
                 price: "20000",
                 totalPrice: "20000",
-                area: "200"),
+                area: "200",
+                compoundAddress: "杭州市余杭区良渚街道博园西路8号",
+                totalFloor: "100"
+            ),
             ReferenceCase(
-                source: "挂牌",
+                tradeType: "挂牌",
                 date: "2023-02-11",
-                address: "浙江省杭州市余杭区行宫塘新苑西区",
+                caseAddress: "浙江省杭州市余杭区行宫塘新苑西区",
                 decorate: "中层",
                 floor: "精装",
                 price: "20000",
                 totalPrice: "20000",
-                area: "200"),
+                area: "200",
+                compoundAddress: "杭州市余杭区良渚街道博园西路8号",
+                totalFloor: "100"
+            ),
             ReferenceCase(
-                source: "成交",
+                tradeType: "成交",
                 date: "2023-02-11",
-                address: "杭州市拱墅区莫干山 路与广业街交汇处",
+                caseAddress: "杭州市拱墅区莫干山 路与广业街交汇处",
                 decorate: "简装",
                 floor: "底层",
                 price: "20000",
                 totalPrice: "20000",
-                area: "200")
+                area: "200",
+                compoundAddress: "杭州市余杭区良渚街道博园西路8号",
+                totalFloor: "100"
+            )
         ]
     }
 }

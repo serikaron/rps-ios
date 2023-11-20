@@ -205,15 +205,18 @@ class EstateService: ObservableObject {
             let rsp = try await Linkman.shared.getRoomCases(compoundId: compoundId, estateType: estateType, price: price)
             return rsp.map { c in
                 ReferenceCase(
-                    source: c.fiTradeType == nil ? "" :
+                    tradeType: c.fiTradeType == nil ? "" :
                         DictType.TradeType(rawValue: "\(c.fiTradeType!)")?.label ?? "",
                     date: c.fvCaseTime ?? "",
-                    address: c.fvCaseAddress ?? "",
+                    caseAddress: c.fvCaseAddress ?? "",
                     decorate: DictType.Decoration(rawValue: c.fvDecoration)?.label ?? "",
                     floor: c.fvInFloor ?? "",
-                    price: c.fbPrice == nil ? "" : "\(c.fbPrice!)",
+                    price: c.fbPrice == nil ? "" : "\(c.fbPrice! / 10000)",
                     totalPrice: c.fbTotalPrice == nil ? "" : "\(c.fbTotalPrice! / 10000)",
-                    area: c.fbArea == nil ? "" : "\(c.fbArea!)")
+                    area: c.fbArea == nil ? "" : "\(c.fbArea!)",
+                    compoundAddress: c.fvCompoundMatchAddress ?? "",
+                    totalFloor: c.fiTotalFloor == nil ? "0" : "\(c.fiTotalFloor!)"
+                )
             }
         } catch {
             print("getCaseList FAILED: \(error)")

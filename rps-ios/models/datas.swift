@@ -845,12 +845,20 @@ struct BuildIndustrialFactory {
 }
 
 struct ReferenceCase {
-    let source: String
+    let tradeType: String
     let date: String
-    let address: String
+    let caseAddress: String
     let decorate: String
     let floor: String
     let price: String
     let totalPrice: String
     let area: String
+    let compoundAddress: String
+    let totalFloor: String
+}
+
+struct AreaTree {
+    let code: Int
+    let name: String
+    let children: [AreaTree]
 }
