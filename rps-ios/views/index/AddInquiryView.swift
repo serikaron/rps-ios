@@ -14,7 +14,7 @@ struct AddInquiryView: View {
     let inquiry: Inquiry?
     
     @State private var sheet: InquirySheet = .empty
-    @State private var areaTree: AreaTree = .mock
+    @State private var areaTree = AreaTree(code: "", name: "", children: [])
     
     private var landArea: Binding<String> {Binding(
         get: { 
@@ -94,6 +94,10 @@ struct AddInquiryView: View {
                 sheet.endFloor = Int(l[1])
             }
             sheet.valuationDate = inquiry.valuationDate ?? ""
+            
+            Task {
+                areaTree = await AreaTree.root
+            }
         }
     }
     
@@ -199,7 +203,6 @@ struct AddInquiryView: View {
     private var descriptionSection: some View {
         SectionView(title: "业务描述") {
             TextEditor(text: $sheet.description)
-                .background(Color.red)
                 .frame(height: 100)
         }
     }
@@ -207,7 +210,6 @@ struct AddInquiryView: View {
     private var commentSection: some View {
         SectionView(title: "备注说明") {
             TextEditor(text: $sheet.comment)
-                .background(Color.red)
                 .frame(height: 100)
         }
     }
@@ -400,7 +402,7 @@ struct AddInquiryView: View {
         .environmentObject(EstateService.preview)
 }
 
-private struct ImageListView: View {
+struct ImageListView: View {
     @Binding var images: [RpsImage]
     
     @State private var imageInfo = ImagePicker.ImageInfo(image: UIImage(), imageURL: "")

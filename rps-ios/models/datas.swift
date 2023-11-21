@@ -70,7 +70,7 @@ struct RoomDetail {
     private var dcBuilding: Linkman.DCBuilding { networkRoomDetail.dcBuilding }
     private var dcCompound: Linkman.DCCompound { networkRoomDetail.dcCompound }
     
-    private var hasRoom: Bool { roomCount > 0 }
+    var hasRoom: Bool { roomCount > 0 }
     
     var roomName: String { networkRoomDetail.fvFamilyRoomName ?? "" }
     var address: String {
@@ -502,6 +502,22 @@ struct RoomDetail {
     var compoundToWest: String { dcCompound.fvToWest ?? "" }
     var compoundToSouth: String { dcCompound.fvToSouth ?? "" }
     var compoundToNorth: String { dcCompound.fvToNorth ?? "" }
+    var compoundBusLine: String { dcCompound.fvBusLineName ?? "" }
+    var compoundFastBus: String { dcCompound.fvFastBus ?? "" }
+    var compoundSubway: String { dcCompound.fvSubwayName ?? "" }
+    var compoundVegeMarket: String { dcCompound.fvVegeMarket ?? "" }
+    var compoundBusinessSet: String { dcCompound.fvBusinessSet ?? "" }
+    var compoundHospital: String { dcCompound.fvHospital ?? "" }
+    var compoundFinaceOrg: String { dcCompound.fvFinaceOrg ?? "" }
+    var compoundStadium: String { dcCompound.fvStadium ?? "" }
+    var compoundRelaxSquare: String { dcCompound.fvRelaxSquare ?? ""}
+    var compoundKindergarten: String { dcCompound.fvKindergarten ?? ""}
+    var compoundPrimarySchool: String { dcCompound.fvPrimarySchool ?? "" }
+    var compoundMiddleSchool: String { dcCompound.fvMiddleSchool ?? "" }
+    
+    var buildingLevelDecorate: DictType.LevelDecorate? {
+        DictType.LevelDecorate(rawValue: dcBuilding.fvLevelDecorateFk ?? "" )
+    }
     
     var imageList: [String] {
         networkRoomDetail.buildingImageList.compactMap { $0.fvUrl }
@@ -808,6 +824,12 @@ struct Inquiry {
         DictType.BuildingStructure(rawValue: stringValue(of: "fvBuildingStructure"))
     }
     var valuationDate: String? { stringValue(of: "fvValuationDate") }
+    var housingUse: DictType.HousingUse? {
+        DictType.HousingUse(rawValue: stringValue(of: "fvHousingUse"))
+    }
+    var landSe: DictType.LandSe? {
+        DictType.LandSe(rawValue: stringValue(of: "fvLandSe"))
+    }
 }
 
 struct AuxiliaryRoom {
@@ -934,4 +956,61 @@ struct InquirySheet {
             images: []
         )
     }
+}
+
+struct ReportSheet {
+    var certificateAddress: String = ""
+    var estateType: DictType.EstateType? = nil
+    var clientName: String = ""
+    var phone: String = ""
+    var purpose: DictType.ValuationPurpose? = nil
+    
+    var provinceCode: Int = 0
+    var cityCode: Int = 0
+    var areaCode: Int = 0
+    var provinceName: String = ""
+    var cityName: String = ""
+    var areaName: String = ""
+    var address: String = ""
+    var buildingArea: Double? = nil
+    var buildingYear: Int? = nil
+    var structure: DictType.BuildingStructure? = nil
+    var landArea: Double? = nil
+    var beginFloor: Int? = nil
+    var endFloor: Int? = nil
+    var valuationDate: String = ""
+    var price: Int? = nil
+    var totalPrice: Int? = nil
+    var owner: String = ""
+    var ownerNumber: String = ""
+    var housingUse: DictType.HousingUse? = nil
+    var facing: DictType.BuildDirection? = nil
+    var landSe: DictType.LandSe? = nil
+    var landUser: DictType.LandUser? = nil
+    var landEndDate: String = ""
+    var landNumber: String = ""
+    var northTo: String = ""
+    var southTo: String = ""
+    var eastTo: String = ""
+    var westTo: String = ""
+    var traffic: String = ""
+    var publicFacilities: String = ""
+    var decoration: DictType.Decoration? = nil
+    var levelDecorate: DictType.LevelDecorate? = nil
+    var buildingNewDegree: Double? = nil
+    var houseTransferee: String = ""
+    var houseTransferAmount: Int? = nil
+    var propertyCoOwnershipSituation: DictType.CoOwnershipSituation? = nil
+    var propertyCoOwnership: String = ""
+    var jointOwnershipCertificateNumber: String = ""
+    var spatialLayout: DictType.SpatialLayout? = nil
+    var houseUse: String = ""
+    var compensation: String = ""
+    var bkLander: String = ""
+    var bkLandType: String = ""
+    var organ: String = ""
+    var organDept: String = ""
+    var bankBranchCode: String = ""
+    var comment: String = ""
+    var images: [RpsImage] = []
 }

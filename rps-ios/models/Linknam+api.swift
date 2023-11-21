@@ -27,6 +27,10 @@ extension Linkman {
         let id: Int
         let fiOrgId: Int
         let fiUnitId: Int
+        let fvClientNickName: String
+        let fiCellphone: String
+        let fvPlaceUnit: String
+        let fvPlaceOrganization: String
     }
     
     struct GetInfoResponse: Codable {
@@ -283,6 +287,7 @@ extension Linkman {
         var fvEstateType: String?
         var fvBuildDirection: String?
         var fvSpecialCircumstances: String?
+        var fvLevelDecorateFk: String?
     }
     
     struct DCCompound: Codable {
@@ -306,6 +311,18 @@ extension Linkman {
         var fvToWest: String?
         var fvToSouth: String?
         var fvToNorth: String?
+        var fvBusLineName: String?
+        var fvFastBus: String?
+        var fvSubwayName: String?
+        var fvVegeMarket: String?
+        var fvBusinessSet: String?
+        var fvHospital: String?
+        var fvFinaceOrg: String?
+        var fvStadium: String?
+        var fvRelaxSquare: String?
+        var fvKindergarten: String?
+        var fvPrimarySchool: String?
+        var fvMiddleSchool: String?
     }
     
     struct NetworkRoomDetail: Codable {
@@ -666,6 +683,30 @@ extension Linkman {
             .with(\.method, setTo: .POST)
             .with(\.body, setTo: inquiryDict)
             .make()
+    }
+    
+    func addReport(reportDict: [String: Any]) async throws {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/complexReport/add")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: reportDict)
+            .make()
+    }
+    
+    struct NetworkArea: Codable {
+        let id: String
+        let label: String
+        let children: [NetworkArea]
+    }
+    
+    typealias AreaTreeResponse = NetworkArea
+    
+    func getAreaTree() async throws -> AreaTreeResponse {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/rdsArea/getAllAreaTree")
+            .with(\.method, setTo: .GET)
+            .make()
+            .response() as AreaTreeResponse
     }
 }
 

@@ -13,7 +13,7 @@ enum DictType: String {
     typealias MainDict = [String: SubDict]
     
     case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPosition, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages
-    case common_has, fv_land_se, fv_temporary_road_conditions, fi_trade_type, fv_decoration, fv_type_of_house, fv_daylighting, fv_noise, fv_landscape, fv_garden, fv_terrace, fv_attic, fv_basement, valuation_purpose
+    case common_has, fv_land_se, fv_temporary_road_conditions, fi_trade_type, fv_decoration, fv_type_of_house, fv_daylighting, fv_noise, fv_landscape, fv_garden, fv_terrace, fv_attic, fv_basement, valuation_purpose, fv_co_ownership_situation, fv_report_spatial_layout
     
     var typeName: String {
         switch self {
@@ -114,6 +114,10 @@ extension DictType {
 //        pickValue(type: "fv_estate_type", key: key)
 //    }
 //}
+
+protocol HasLabel {
+    var label: String { get }
+}
 
 extension DictType {
     enum PropertyAttribute: Hashable {
@@ -224,7 +228,7 @@ extension DictType {
         }
     }
 
-    enum LevelDecorate: CaseIterable {
+    enum LevelDecorate: CaseIterable, HasLabel {
         case raw, simple, medium, heigh, grand
         
         init?(rawValue: String?) {
@@ -256,7 +260,7 @@ extension DictType {
         var label: String { DictType.levelDecorate.label(of: dictKey) ?? "" }
     }
 
-    enum EstateType: String, CaseIterable {
+    enum EstateType: String, CaseIterable, HasLabel {
         case commApartment, singleApartment, villa, office, landingRoom, shopStreet, industrialSmallGarden, industrialFactory
         
         init?(_ value: String?) {
@@ -277,7 +281,7 @@ extension DictType {
         var label: String { DictType.estate.label(of: dictKey) ?? "" }
     }
 
-    enum LandUser: CaseIterable {
+    enum LandUser: CaseIterable, HasLabel {
         case _1, _2, _3
         
         init?(rawValue: String?) {
@@ -300,7 +304,7 @@ extension DictType {
         var label: String { DictType.landUser.label(of: dictKey) ?? "" }
     }
     
-    enum LandSe: CaseIterable {
+    enum LandSe: CaseIterable, HasLabel {
         case _1, _2, _3, _4, _5
         
         init?(rawValue: String?) {
@@ -356,7 +360,7 @@ extension DictType {
         var label: String { DictType.fv_temporary_road_conditions.label(of: dictKey) ?? "" }
     }
     
-    enum BuildingStructure: CaseIterable {
+    enum BuildingStructure: CaseIterable, HasLabel {
         case _1, _2, _3, _4, _5, _6, _7, _8
         
         init?(rawValue: String?) {
@@ -527,7 +531,7 @@ extension DictType {
         var label: String { DictType.shopPosition.label(of: dictKey) ?? "" }
     }
     
-    enum Orientation: CaseIterable {
+    enum Orientation: CaseIterable, HasLabel {
         case _1, _2, _3, _4, _5, _6, _7, _8, _9
         
         init?(rawValue: String?) {
@@ -562,7 +566,7 @@ extension DictType {
         var label: String { DictType.orientation.label(of: dictKey) ?? "" }
     }
     
-    enum BuildDirection: CaseIterable {
+    enum BuildDirection: CaseIterable, HasLabel {
         case _1, _2, _3, _4, _5, _6, _7, _8
         
         init?(rawValue: String?) {
@@ -618,7 +622,7 @@ extension DictType {
         var label: String { DictType.fi_trade_type.label(of: dictKey) ?? "" }
     }
     
-    enum Decoration: CaseIterable {
+    enum Decoration: CaseIterable, HasLabel {
         case _1, _2, _3, _4, _5, _6, _7
         
         init?(rawValue: String?) {
@@ -649,10 +653,89 @@ extension DictType {
         var label: String { DictType.fv_decoration.label(of: dictKey) ?? "" }
     }
 
-    enum ValuationPurpose: String, CaseIterable {
+    enum ValuationPurpose: String, CaseIterable, HasLabel {
         case mortgageLoanLoanValuation, realEstateInsuranceValuation, realEstateDemolitionAndResettlementValuation, valuationOfCompensationForRealEstateDemolition, realEstateSegmentationAndConsolidationValuation, realEstateTransactionTaxValuation, realEstateDisputeValuation, realEstateFeasibilityStudy, realEstateAuctionLowPriceValuation, realEstateJudicialAppraisalIncludingDecorationValuation, realEstateJudicialAppraisalAndValuation, realEstateReplacementValuation, valuationOfRealEstateTransferPrice, realEstateTransferAndLoanValuation, realEstateRentalPriceValuation, otherPurposesOfRealEstateValuationAndEquityValuation
         
         var dictKey: String { rawValue }
         var label: String { DictType.valuation_purpose.label(of: dictKey) ?? "" }
+    }
+    
+    enum HousingUse: String, CaseIterable, HasLabel {
+        case _1, _2, _3, _4, _5, _6
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            }
+        }
+
+        var label: String { DictType.housingUse.label(of: dictKey) ?? "" }
+    }
+    
+    enum CoOwnershipSituation: String, CaseIterable, HasLabel {
+        case _1, _2, _3
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            }
+        }
+
+        var label: String { DictType.fv_co_ownership_situation.label(of: dictKey) ?? "" }
+    }
+    
+    enum SpatialLayout: CaseIterable, HasLabel {
+        case _1, _2, _3, _4, _5
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "合理": self = ._1
+            case "较合理": self = ._2
+            case "一般": self = ._3
+            case "较差": self = ._4
+            case "差": self = ._5
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "合理"
+            case ._2: return "较合理"
+            case ._3: return "一般"
+            case ._4: return "较差"
+            case ._5: return "差"
+            }
+        }
+
+        var label: String { DictType.fv_report_spatial_layout.label(of: dictKey) ?? "" }
     }
 }

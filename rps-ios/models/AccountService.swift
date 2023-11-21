@@ -12,6 +12,10 @@ struct Account {
     let id: Int
     let orgId: Int
     let unitId: Int
+    let nickname: String
+    let phone: String
+    let placeOrganization: String
+    let placeUnit: String
 }
 
 @MainActor
@@ -57,7 +61,11 @@ class AccountService: ObservableObject {
         account = Account(
             id: rsp.user.id,
             orgId: rsp.user.fiOrgId,
-            unitId: rsp.user.fiUnitId
+            unitId: rsp.user.fiUnitId,
+            nickname: rsp.user.fvClientNickName,
+            phone: rsp.user.fiCellphone,
+            placeOrganization: rsp.user.fvPlaceOrganization,
+            placeUnit: rsp.user.fvPlaceUnit
         )
     }
     

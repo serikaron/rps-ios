@@ -11,6 +11,7 @@
 		722DA22F2B0B029C00C0A3DF /* AreaTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA22E2B0B029C00C0A3DF /* AreaTree.swift */; };
 		722DA2312B0B05E600C0A3DF /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2302B0B05E600C0A3DF /* SectionView.swift */; };
 		722DA2332B0B4F3000C0A3DF /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2322B0B4F3000C0A3DF /* ImagePicker.swift */; };
+		722DA2352B0C865B00C0A3DF /* AddReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2342B0C865B00C0A3DF /* AddReportView.swift */; };
 		728697E72AFF1F0500CA31C5 /* DictType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E62AFF1F0500CA31C5 /* DictType.swift */; };
 		728697E92AFF209B00CA31C5 /* Linkman+mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E82AFF209B00CA31C5 /* Linkman+mock.swift */; };
 		728697F12AFF24BE00CA31C5 /* rps_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697F02AFF24BE00CA31C5 /* rps_iosTests.swift */; };
@@ -70,6 +71,7 @@
 		722DA22E2B0B029C00C0A3DF /* AreaTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTree.swift; sourceTree = "<group>"; };
 		722DA2302B0B05E600C0A3DF /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		722DA2322B0B4F3000C0A3DF /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		722DA2342B0C865B00C0A3DF /* AddReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReportView.swift; sourceTree = "<group>"; };
 		728697E62AFF1F0500CA31C5 /* DictType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictType.swift; sourceTree = "<group>"; };
 		728697E82AFF209B00CA31C5 /* Linkman+mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linkman+mock.swift"; sourceTree = "<group>"; };
 		728697EE2AFF24BE00CA31C5 /* rps-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rps-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -207,6 +209,7 @@
 				72D8101B2B0924530035355A /* ChartView.swift */,
 				72D810222B0A73950035355A /* YearMonthPicker.swift */,
 				722DA22C2B0AFD0500C0A3DF /* AddInquiryView.swift */,
+				722DA2342B0C865B00C0A3DF /* AddReportView.swift */,
 			);
 			path = index;
 			sourceTree = "<group>";
@@ -388,6 +391,7 @@
 				72DFCF0F2AFC72A80001831F /* OnboardingView.swift in Sources */,
 				72A9644E2AFF9060006E503A /* datas.swift in Sources */,
 				72DFCF022AFA130E0001831F /* view+.swift in Sources */,
+				722DA2352B0C865B00C0A3DF /* AddReportView.swift in Sources */,
 				722DA2312B0B05E600C0A3DF /* SectionView.swift in Sources */,
 				72DFCEFA2AFA03BA0001831F /* MainView.swift in Sources */,
 				722DA22F2B0B029C00C0A3DF /* AreaTree.swift in Sources */,
@@ -606,6 +610,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -641,6 +646,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.7;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

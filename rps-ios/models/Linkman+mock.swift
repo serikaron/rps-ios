@@ -12,7 +12,11 @@ extension Linkman.GetInfoResponse {
         return Linkman.GetInfoResponse(user: Linkman.NetworkUser(
             id: 0,
             fiOrgId: 0,
-            fiUnitId: 0
+            fiUnitId: 0,
+            fvClientNickName: "",
+            fiCellphone: "",
+            fvPlaceUnit: "",
+            fvPlaceOrganization: ""
         ))
     }
 }
