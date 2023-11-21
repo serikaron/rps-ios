@@ -206,7 +206,11 @@ struct RoomDetailView: View {
                     actionItem(title: "估价师询价")
                 }
                 Spacer()
-                actionItem(title: "委托报告")
+                NavigationLink {
+                    AddReportView(inquiry: inquiry, detail: roomDetail)
+                } label: {
+                    actionItem(title: "委托报告")
+                }
             }
             HStack {
                 actionItem(title: "价格反馈")

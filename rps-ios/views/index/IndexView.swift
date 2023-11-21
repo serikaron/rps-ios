@@ -113,7 +113,11 @@ struct IndexView: View {
                 actionButtonView(title: "估价师询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
             }
             Spacer()
-            actionButtonView(title: "新建委托", subTitle: "New commission", icon: .index.commissionIcon)
+            NavigationLink {
+                AddReportView(inquiry: nil, detail: nil)
+            } label: {
+                actionButtonView(title: "新建委托", subTitle: "New commission", icon: .index.commissionIcon)
+            }
         }
     }
     
