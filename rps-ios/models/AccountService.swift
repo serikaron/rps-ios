@@ -63,7 +63,7 @@ class AccountService: ObservableObject {
             orgId: rsp.user.fiOrgId,
             unitId: rsp.user.fiUnitId,
             nickname: rsp.user.fvClientNickName,
-            phone: rsp.user.fiCellphone,
+            phone: "\(rsp.user.fiCellphone)",
             placeOrganization: rsp.user.fvPlaceOrganization,
             placeUnit: rsp.user.fvPlaceUnit
         )

@@ -98,7 +98,7 @@ private enum Page: CaseIterable {
     var page: some View {
         switch self {
         case .index: return IndexView().earseToAnyView()
-        case .record: return Text("记录中心").earseToAnyView()
+        case .record: return RecordsCenterView().earseToAnyView()
         }
     }
 }

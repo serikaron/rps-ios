@@ -28,7 +28,7 @@ extension Linkman {
         let fiOrgId: Int
         let fiUnitId: Int
         let fvClientNickName: String
-        let fiCellphone: String
+        let fiCellphone: Int
         let fvPlaceUnit: String
         let fvPlaceOrganization: String
     }

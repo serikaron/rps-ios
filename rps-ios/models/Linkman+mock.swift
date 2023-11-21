@@ -14,7 +14,7 @@ extension Linkman.GetInfoResponse {
             fiOrgId: 0,
             fiUnitId: 0,
             fvClientNickName: "",
-            fiCellphone: "",
+            fiCellphone: 0,
             fvPlaceUnit: "",
             fvPlaceOrganization: ""
         ))

@@ -51,4 +51,8 @@ extension Image {
         static var selectedIcon: Image { return Image("onboarding-selected") }
         static var deselectedIcon: Image { return Image("onboarding-deselected") }
     }
+    
+    enum records {
+        static var more: Image { return Image("records-more") }
+    }
 }

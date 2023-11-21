@@ -12,6 +12,7 @@
 		722DA2312B0B05E600C0A3DF /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2302B0B05E600C0A3DF /* SectionView.swift */; };
 		722DA2332B0B4F3000C0A3DF /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2322B0B4F3000C0A3DF /* ImagePicker.swift */; };
 		722DA2352B0C865B00C0A3DF /* AddReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2342B0C865B00C0A3DF /* AddReportView.swift */; };
+		722DA2382B0CE82300C0A3DF /* RecordsCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2372B0CE82300C0A3DF /* RecordsCenterView.swift */; };
 		728697E72AFF1F0500CA31C5 /* DictType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E62AFF1F0500CA31C5 /* DictType.swift */; };
 		728697E92AFF209B00CA31C5 /* Linkman+mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E82AFF209B00CA31C5 /* Linkman+mock.swift */; };
 		728697F12AFF24BE00CA31C5 /* rps_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697F02AFF24BE00CA31C5 /* rps_iosTests.swift */; };
@@ -72,6 +73,7 @@
 		722DA2302B0B05E600C0A3DF /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		722DA2322B0B4F3000C0A3DF /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		722DA2342B0C865B00C0A3DF /* AddReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReportView.swift; sourceTree = "<group>"; };
+		722DA2372B0CE82300C0A3DF /* RecordsCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsCenterView.swift; sourceTree = "<group>"; };
 		728697E62AFF1F0500CA31C5 /* DictType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictType.swift; sourceTree = "<group>"; };
 		728697E82AFF209B00CA31C5 /* Linkman+mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linkman+mock.swift"; sourceTree = "<group>"; };
 		728697EE2AFF24BE00CA31C5 /* rps-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rps-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -137,6 +139,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		722DA2362B0CE7EA00C0A3DF /* RecordsCenter */ = {
+			isa = PBXGroup;
+			children = (
+				722DA2372B0CE82300C0A3DF /* RecordsCenterView.swift */,
+			);
+			path = RecordsCenter;
+			sourceTree = "<group>";
+		};
 		728697EF2AFF24BE00CA31C5 /* rps-iosTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -191,6 +201,7 @@
 				72DFCF0D2AFC70AC0001831F /* Onboarding */,
 				72DFCEFE2AFA0AAD0001831F /* common */,
 				72DFCEFB2AFA09610001831F /* index */,
+				722DA2362B0CE7EA00C0A3DF /* RecordsCenter */,
 				72DFCEF92AFA03BA0001831F /* MainView.swift */,
 			);
 			path = views;
@@ -408,6 +419,7 @@
 				72F9BF962AFDE1C40040C6D2 /* EstateService.swift in Sources */,
 				72C004782B0078D50084D3FA /* FloorsView.swift in Sources */,
 				72F9BF9A2AFE63080040C6D2 /* SearchInputView.swift in Sources */,
+				722DA2382B0CE82300C0A3DF /* RecordsCenterView.swift in Sources */,
 				72DFCF202AFCBA400001831F /* string+.swift in Sources */,
 				72DFCF142AFC8CC30001831F /* AccountService.swift in Sources */,
 				72DFCF1E2AFCB9690001831F /* ErrorService.swift in Sources */,
