@@ -38,6 +38,7 @@ extension Image {
         static var mapIcon: Image { return Image("index-map-icon") }
         static var removeIcon: Image { return Image("index-remove-icon") }
         static var addIcon: Image { return Image("index-add-icon") }
+        static var addButton: Image { return Image("index-add-button") }
     }
     
     enum onboarding {

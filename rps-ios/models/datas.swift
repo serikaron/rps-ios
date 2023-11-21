@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct Building: Codable {
     let id: Int
@@ -795,6 +796,18 @@ struct Inquiry {
         get { stringValue(of: "fdCompleteTime") }
         set(value) { setString(value, of: "fdCompleteTime") }
     }
+    
+    var address: String? { stringValue(of: "fvPropertyRightAddr") }
+    var buildingArea: Double? {
+        networkInquiry["fbBuildingArea"] as? Double
+    }
+    var contact: String? { stringValue(of: "fvContact") }
+    var phone: String? { stringValue(of: "fvContactPhone") }
+    var buildingYear: String? { stringValue(of: "fvBuildingYear") }
+    var structure: DictType.BuildingStructure? {
+        DictType.BuildingStructure(rawValue: stringValue(of: "fvBuildingStructure"))
+    }
+    var valuationDate: String? { stringValue(of: "fvValuationDate") }
 }
 
 struct AuxiliaryRoom {
@@ -857,8 +870,68 @@ struct ReferenceCase {
     let totalFloor: String
 }
 
-struct AreaTree {
-    let code: Int
-    let name: String
-    let children: [AreaTree]
+struct RpsImage {
+    let image: UIImage
+    let filename: String
+}
+
+struct InquirySheet {
+    var provinceCode: Int
+    var cityCode: Int
+    var areaCode: Int
+    var provinceName: String
+    var cityName: String
+    var areaName: String
+    var address: String
+    var estateType: DictType.EstateType?
+    var purpose: DictType.ValuationPurpose?
+    var buildingArea: Double?
+    var structure: DictType.BuildingStructure?
+    var contact: String
+    var phone: String
+    var valuationDate: String
+    
+    var landArea: Double?
+    var buildingYear: String
+    var upperFloor: Double?
+    var underFloor: Double?
+    var beginFloor: Int?
+    var endFloor: Int?
+    var telephone: String
+    var custodian: String
+    
+    var description: String
+    var comment: String
+    
+    var images: [RpsImage]
+    
+    static var empty: Self {
+        InquirySheet(
+            provinceCode: 0,
+            cityCode: 0,
+            areaCode: 0,
+            provinceName: "",
+            cityName: "",
+            areaName: "",
+            address: "",
+            estateType: nil,
+            purpose: nil,
+            buildingArea: nil,
+            structure: nil,
+            contact: "",
+            phone: "",
+            valuationDate: "",
+            landArea: nil,
+            buildingYear: "",
+            upperFloor: nil,
+            underFloor: nil,
+            beginFloor: nil,
+            endFloor: nil,
+            telephone: "",
+            custodian: "",
+            description: "",
+            comment: "",
+            images: []
+        )
+    }
 }

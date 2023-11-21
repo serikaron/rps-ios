@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension Linkman {
     struct LoginResponse: Codable {
@@ -639,6 +640,32 @@ extension Linkman {
             ])
             .make()
             .response() as CompoundCurveResponse
+    }
+    
+    struct UploadResponse: Codable {
+        let ossId: String?
+        let originalName: String?
+        let fileName: String?
+        let createTime: String?
+        let url: String?
+        let fileSuffix: String?
+    }
+    
+    func upload(image: UIImage, filename: String) async throws -> UploadResponse {
+        try await Request()
+            .with(\.path, setTo: "/resource/rps/oss/upload")
+            .with(\.method, setTo: .POST)
+            .uploadInfo(filename: filename, data: image.pngData()!)
+            .make()
+            .response() as UploadResponse
+    }
+    
+    func addInquiry(inquiryDict: [String: Any]) async throws {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/mkInquiry/add")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: inquiryDict)
+            .make()
     }
 }
 

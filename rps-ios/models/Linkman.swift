@@ -25,7 +25,7 @@ class Linkman{
     var showLog = false
 }
 
-private extension Linkman {
+extension Linkman {
     func log(request: URLRequest){
         let urlString = request.url?.absoluteString ?? ""
         let components = NSURLComponents(string: urlString)
@@ -118,7 +118,9 @@ private extension Linkman {
             if let token = Box.shared.tokenSubject.value {
                 req.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             }
-            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            if request._uploadData == nil {
+                req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            }
             req.setValue("ios", forHTTPHeaderField: "ss")
             if let extraHeader = request.headers {
                 extraHeader.forEach { header in
@@ -130,7 +132,10 @@ private extension Linkman {
                 log(request: req)
             }
             
-            let (data, response) = try await URLSession.shared.data(for: req)
+            let (data, response) =
+            request._uploadData == nil ?
+            try await URLSession.shared.data(for: req) :
+            try await URLSession.shared.upload(for: req, from: request._uploadData!)
             
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw "not an http response"
@@ -182,6 +187,7 @@ class Request: Withable {
     var query: [String: String?]?
     var body: JSONDict?
     var headers: [String: String]?
+    fileprivate var _uploadData: Data?
 
     var queryItems: [URLQueryItem] {
         guard let query = query else { return [] }
@@ -218,6 +224,28 @@ class Request: Withable {
         case (.none, .none):
             throw "response data not exists"
         }
+    }
+    
+    func uploadInfo(filename: String, data: Data, boundary: String = UUID().uuidString) -> Self {
+        if headers == nil {
+            headers = [:]
+        }
+        headers!["Content-Type"] = "multipart/form-data; boundary=\(boundary)"
+        
+        var data = Data()
+        
+        // Add the image data to the raw http request data
+        data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
+        let paramName = "file"
+        data.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+        data.append("Content-Type: image/png\r\n\r\n".data(using: .utf8)!)
+        data.append(data)
+        
+        data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        
+        _uploadData = data
+        
+        return self
     }
 }
 

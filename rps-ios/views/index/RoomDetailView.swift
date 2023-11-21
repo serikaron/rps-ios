@@ -200,7 +200,11 @@ struct RoomDetailView: View {
             HStack {
                 actionItem(title: "获取报告单")
                 Spacer()
-                actionItem(title: "估价师询价")
+                NavigationLink {
+                    AddInquiryView(inquiry: inquiry)
+                } label: {
+                    actionItem(title: "估价师询价")
+                }
                 Spacer()
                 actionItem(title: "委托报告")
             }
@@ -2371,44 +2375,6 @@ private struct EstateDetailView: View {
 }
 
 // MARK: -
-
-private struct HeaderTextModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .customText(size: 16, color: .text.gray3, weight: .medium)
-            .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-private extension View {
-    func headerText() -> some View {
-        modifier(HeaderTextModifier())
-    }
-    func itemTitle() -> some View {
-        modifier(CustomText(size: 14, color: .text.gray3, weight: .regular))
-    }
-    
-    func itemContent() -> some View {
-        modifier(CustomText(size: 14, color: .text.gray6, weight: .regular))
-    }
-}
-
-private struct SectionStyleModifier: ViewModifier {
-    let vPadding: Double
-    
-    func body(content: Content) -> some View {
-        content
-            .padding(.vertical, vPadding)
-            .padding(.horizontal, 16)
-            .background(Color.white)
-            .cornerRadius(8)
-            .padding(.horizontal, 12)
-    }
-}
-private extension View {
-    func sectionStyle(vPadding: Double = 20) -> some View {
-        modifier(SectionStyleModifier(vPadding: vPadding))
-    }
-}
 
 private struct ListItem: View {
     let title: String

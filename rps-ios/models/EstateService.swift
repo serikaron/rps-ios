@@ -235,6 +235,89 @@ class EstateService: ObservableObject {
             return 0
         }
     }
+    
+    func addInquiry(sheet: InquirySheet, state: Int) async -> Bool {
+        guard let fvEstateType = sheet.estateType,
+              sheet.provinceCode != 0,
+              sheet.cityCode != 0,
+              sheet.areaCode != 0,
+              !sheet.address.isEmpty,
+              !sheet.contact.isEmpty,
+              !sheet.phone.isEmpty,
+              sheet.buildingArea != 0,
+              let fvValuationPurpose = sheet.purpose,
+              !sheet.valuationDate.isEmpty
+        else {
+            Box.sendError("请完成必填信息")
+            return false
+        }
+        
+        var dict = [String: Any]()
+        dict["fiState"] = state
+        
+        dict["fvEstateType"] = fvEstateType.dictKey
+        dict["fiProvinceCode"] = sheet.provinceCode
+        dict["fvProvinceName"] = sheet.provinceName
+        dict["fiCityCode"] = sheet.cityCode
+        dict["fvCityName"] = sheet.cityName
+        dict["fiAreaCode"] = sheet.areaCode
+        dict["fvAreaName"] = sheet.areaName
+        dict["fvPropertyRightAddr"] = sheet.address
+        dict["fvContact"] = sheet.contact
+        dict["fvContactPhone"] = sheet.phone
+        dict["fbBuildingArea"] = sheet.buildingArea
+        dict["fvValuationPurpose"] = fvValuationPurpose.dictKey
+        dict["fvValuationDate"] = sheet.valuationDate
+        
+        if let structure = sheet.structure {
+            dict["fvBuildingStructure"] = structure.dictKey
+        }
+        if let landArea = sheet.landArea {
+            dict["fbLandArea"] = landArea
+        }
+        if !sheet.buildingYear.isEmpty {
+            dict["fvBuildingYear"] = sheet.buildingYear
+        }
+        if let upperFloor = sheet.upperFloor {
+            dict["fiLandUpperCount"] = upperFloor
+        }
+        if let underFloor = sheet.underFloor {
+            dict["fiLandLowerCount"] = underFloor
+        }
+        if let beginFloor = sheet.beginFloor {
+            dict["fiBeginFloor"] = beginFloor
+        }
+        if let endFloor = sheet.endFloor {
+            dict["fiEndFloor"] = endFloor
+        }
+        if !sheet.telephone.isEmpty {
+            dict["fvFixedTelephone"] = sheet.telephone
+        }
+        if !sheet.custodian.isEmpty {
+            dict["fvBusinessCustodian"] = sheet.custodian
+        }
+        
+        do {
+            var imageList = [[String: Any]]()
+            for image in sheet.images {
+                let uploadRsp = try await Linkman.shared.upload(image: image.image, filename: image.filename)
+                var imageDict = [String: Any]()
+                imageDict["fvOssId"] = uploadRsp.ossId
+                imageDict["originalName"] = uploadRsp.originalName
+                imageDict["fdCreateTime"] = uploadRsp.createTime
+                imageDict["fvOssUrl"] = uploadRsp.url
+                imageDict["fileSuffix"] = uploadRsp.fileSuffix
+                imageList.append(imageDict)
+            }
+            dict["fileList"] = imageList
+            
+            try await Linkman.shared.addInquiry(inquiryDict: dict)
+            return true
+        } catch {
+            print("addInquiry FAILED!!! \(error)")
+            return false
+        }
+    }
 }
 
 extension SearchResult {
@@ -291,6 +374,13 @@ extension EstateService {
         out.exactSearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
         out.fuzzySearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
         out.buildings = (0..<10).map { _ in Building.mock }
+        return out
+    }
+}
+
+extension InquirySheet {
+    func toDict() -> [String: Any] {
+        var out = [String:Any]()
         return out
     }
 }

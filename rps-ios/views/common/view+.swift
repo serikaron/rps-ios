@@ -56,3 +56,43 @@ extension View {
     }
 }
 
+
+struct SectionStyleModifier: ViewModifier {
+    let vPadding: Double
+    
+    func body(content: Content) -> some View {
+        content
+            .padding(.vertical, vPadding)
+            .padding(.horizontal, 16)
+            .background(Color.white)
+            .cornerRadius(8)
+            .padding(.horizontal, 12)
+    }
+}
+extension View {
+    func sectionStyle(vPadding: Double = 20) -> some View {
+        modifier(SectionStyleModifier(vPadding: vPadding))
+    }
+}
+
+struct HeaderTextModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .customText(size: 16, color: .text.gray3, weight: .medium)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+extension View {
+    func headerText() -> some View {
+        modifier(HeaderTextModifier())
+    }
+    func itemTitle() -> some View {
+        modifier(CustomText(size: 14, color: .text.gray3, weight: .regular))
+    }
+    func itemContent() -> some View {
+        modifier(CustomText(size: 14, color: .text.gray6, weight: .regular))
+    }
+    func itemPlaceholder() -> some View {
+        modifier(CustomText(size: 14, color: .text.grayCD, weight: .regular))
+    }
+}

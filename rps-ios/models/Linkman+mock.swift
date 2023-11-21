@@ -302,3 +302,20 @@ extension Curve {
         )
     }
 }
+
+extension AreaTree {
+    static var mock: AreaTree {
+        AreaTree(code: "0", name: "", children: [
+            AreaTree(code: "320000", name: "江苏省", children: [
+                AreaTree(code: "320100", name: "南京市", children: [
+                    AreaTree(code: "320106", name: "鼓楼区", children: [])
+                ])
+            ]),
+            AreaTree(code: "330000", name: "浙江省", children: [
+                AreaTree(code: "330100", name: "杭州市", children: [
+                    AreaTree(code: "310005", name: "临平区", children: [])
+                ])
+            ])
+        ])
+    }
+}
