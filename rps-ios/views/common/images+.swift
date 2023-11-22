@@ -54,5 +54,8 @@ extension Image {
     
     enum records {
         static var more: Image { return Image("records-more") }
+        static var checked: Image { return Image("records-checked") }
+        static var add: Image { return Image("record-add") }
+        static var remove: Image { return Image("record-remove") }
     }
 }

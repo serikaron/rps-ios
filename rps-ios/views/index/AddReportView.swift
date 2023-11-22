@@ -232,7 +232,7 @@ struct AddReportView: View {
         } label: {
             Text(binding.wrappedValue == nil ? "请选择\(name)" : binding.wrappedValue?.label ?? "")
                 .customText(size: 14,
-                            color: sheet.estateType == nil ? .text.grayCD : .text.gray3)
+                            color: binding.wrappedValue == nil ? .text.grayCD : .text.gray3)
             Image.main.arrowIconRight
         }
     }
@@ -348,7 +348,7 @@ struct AddReportView: View {
             HStack {
                 Text(binding.wrappedValue.isEmpty ? "请选择\(title)" : binding.wrappedValue)
                     .customText(size: 14,
-                                color: sheet.valuationDate.isEmpty ? .text.grayCD : .text.gray3)
+                                color: binding.wrappedValue.isEmpty ? .text.grayCD : .text.gray3)
                 Image.main.arrowIconRight
             }
             .overlay(

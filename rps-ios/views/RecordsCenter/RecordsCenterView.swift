@@ -12,7 +12,8 @@ struct RecordsCenterView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var estateService: EstateService
     
-    @State private var param = SearchParam()
+    @State private var page = RecordPage.inquiry(SearchFilter())
+    @State private var param = SearchFilter()
     @State private var moreSheetShown = false
     @State private var maskAlpha: Double = .zero
     @State private var sheetOffset: Double = 300
@@ -31,12 +32,15 @@ struct RecordsCenterView: View {
                     .offset(x: 0, y: sheetOffset)
                     .ignoresSafeArea()
             }
-            .navigationTitle("询价记录")
+            .navigationTitle(page.viewTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Text("委托记录")
+                    Text(page.buttonTitle)
                         .customText(size: 14, color: .hex("#2A64D6"))
+                        .onTapGesture {
+                            (page, param) = page.toggle(filter: param)
+                        }
                 }
             }
             .onChange(of: moreSheetShown) { shown in
@@ -51,7 +55,7 @@ struct RecordsCenterView: View {
     private var content: some View {
         VStack(spacing: 0) {
             header
-            RecordListView()
+            RecordListView(page: $page, filter: $param)
         }
         .background(Color.view.background)
     }
@@ -142,29 +146,7 @@ struct RecordsCenterView: View {
     }
 }
 
-private enum RecordType: CaseIterable, HasLabel {
-    case personal, organize
-    
-    var label: String {
-        switch self {
-        case .organize: return "单位记录"
-        case .personal: return "个人记录"
-        }
-    }
-}
 
-private struct SearchParam {
-    var address: String = ""
-    var recordType: RecordType?
-    var estateType: DictType.EstateType?
-    var inquiryType: InquiryType?
-    var inquiryState: InquiryState?
-    var startDate: String = ""
-    var endDate: String = ""
-    var startPrice: String = ""
-    var endPrice: String = ""
-    var clientName: String = ""
-}
 
 #Preview("main") {
     RecordsCenterView()
@@ -172,7 +154,7 @@ private struct SearchParam {
 }
 
 private struct MoreFilterView: View {
-    @Binding var param: SearchParam
+    @Binding var param: SearchFilter
     @Binding var shown: Bool
     
     @State private var height: CGFloat = .zero
@@ -222,7 +204,7 @@ private struct MoreFilterView: View {
                             .stroke(Color.main, lineWidth: 1)
                     )
                     .onTapGesture {
-                        param = SearchParam()
+                        param = SearchFilter()
                         shown = false
                     }
                 Spacer()
@@ -279,7 +261,7 @@ private struct MoreFilterView: View {
 }
 
 #Preview("MoreFilter") {
-    MoreFilterView(param: .constant(SearchParam()), shown: .constant(false))
+    MoreFilterView(param: .constant(SearchFilter()), shown: .constant(false))
 }
 
 private struct RecordView: View {
@@ -312,7 +294,9 @@ private struct RecordView: View {
                     Text(record.address).headerText()
                     Spacer().frame(height: 4)
                     HStack {
-                        colorText(record.inquiryType.label)
+                        if let inquiryType = record.inquiryType {
+                            colorText(inquiryType.label)
+                        }
                         colorText(record.district)
                         colorText(record.estateType.label)
                     }
@@ -323,8 +307,13 @@ private struct RecordView: View {
                             Text(record.valuationDate)
                         }
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(record.inquiryState.label)
-                            Text(record.downloadState.label)
+                            switch record.page {
+                            case .inquiry:
+                                Text(record.inquiryState!.label)
+                            case .report:
+                                Text(record.reportState!.label)
+                            }
+                            Text(record.downloadState?.label ?? "")
                         }
                     }
                     .customText(size: 12, color: .text.gray6)
@@ -364,9 +353,22 @@ private struct RecordView: View {
     }
     
     private var buttonView: some View {
+        switch record.page {
+        case .inquiry:
+            return buttonViewInquiry.earseToAnyView()
+        case .report:
+            return buttonViewReport.earseToAnyView()
+        }
+    }
+    
+    private var buttonViewInquiry: some View {
         ScrollView(.horizontal) {
             HStack {
-                Button("获取报告单") {}
+                NavigationLink {
+                    ReportSheetView(type: record.inquiryType!.dictKey, estateType: record.estateType.dictKey)
+                } label: {
+                    Text("获到报告单")
+                }
                     .disabled(button1Disabled)
                 Button("重新估价") {}
                     .disabled(button2Disabled)
@@ -444,6 +446,67 @@ private struct RecordView: View {
         default: return true
         }
     }
+    
+    private var buttonViewReport: some View {
+        ScrollView(.horizontal) {
+            HStack {
+                Button("提交委托") {}
+                    .disabled(reportButton1Disabled)
+                Button("撤消询价") {}
+                    .disabled(reportButton2Disabled)
+                Button("查看结果") {}
+                    .disabled(reportButton3Disabled)
+                Button("客户咨询") {}
+                    .disabled(reportButton4Disabled)
+            }
+        }
+        .font(.system(size: 12))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 15)
+    }
+    
+    private var reportButton1Disabled: Bool {
+        switch record.reportState {
+        case ._0: fallthrough
+        case ._7:
+            return false
+        default: return true
+        }
+    }
+    
+    private var reportButton2Disabled: Bool {
+        switch record.reportState {
+        case ._1: fallthrough
+        case ._2: fallthrough
+        case ._3: fallthrough
+        case ._4: fallthrough
+        case ._5:
+            return false
+        default: return true
+        }
+    }
+    
+    private var reportButton3Disabled: Bool {
+        switch record.reportState {
+        case ._6:
+            return false
+        default: return true
+        }
+    }
+    
+    private var reportButton4Disabled: Bool {
+        switch record.reportState {
+        case ._1: fallthrough
+        case ._2: fallthrough
+        case ._3: fallthrough
+        case ._4: fallthrough
+        case ._5: fallthrough
+        case ._6: fallthrough
+        case ._7:
+            return false
+        default: return true
+        }
+    }
 }
 
 #Preview("Record") {
@@ -457,6 +520,8 @@ private struct RecordListView: View {
     @State private var pageNum = 0
     @State private var records: [Record] = []
     @State private var total = Int.max
+    @Binding var page: RecordPage
+    @Binding var filter: SearchFilter
     
     var body: some View {
         ScrollView {
@@ -475,17 +540,61 @@ private struct RecordListView: View {
         .onAppear {
             getRecord()
         }
+        .onChange(of: page) { newValue in
+            pageNum = 0
+            records = []
+            getRecord()
+        }
     }
     
     private func getRecord() {
         Task {
             guard records.count < total else { return }
             
-            let r = await estateService.getRecords(pageNum: pageNum + 1, pageSize: pageSize)
+            let r = await estateService.getRecords(pageNum: pageNum + 1, pageSize: pageSize, filter: filter, page: page)
             guard r.current == pageNum + 1 else { return }
             records.append(contentsOf: r.records)
             pageNum = r.current
             total = r.total
+        }
+    }
+}
+
+private extension RecordPage {
+    var viewTitle: String {
+        switch self {
+        case .inquiry:
+            return "询价记录"
+        case .report:
+            return "委托记录"
+        }
+    }
+    
+    var buttonTitle: String {
+        switch self {
+        case .report:
+            return "询价记录"
+        case .inquiry:
+            return "委托记录"
+        }
+    }
+    
+    func toggle(filter: SearchFilter) -> (RecordPage, SearchFilter) {
+        switch self {
+        case .inquiry(let outFiler):
+            return (RecordPage.report(filter), outFiler)
+        case .report(let outFilter):
+            return (RecordPage.inquiry(filter), outFilter)
+        }
+    }
+}
+
+extension RecordPage: Equatable {
+    static func == (lhs: RecordPage, rhs: RecordPage) -> Bool {
+        switch (lhs, rhs) {
+        case (.inquiry, .inquiry): return true
+        case (.report, .report): return true
+        default: return false
         }
     }
 }

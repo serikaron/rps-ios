@@ -1015,6 +1015,9 @@ struct ReportSheet {
     var images: [RpsImage] = []
 }
 
+enum RecordPage {
+    case inquiry(SearchFilter), report(SearchFilter)
+}
 
 enum InquiryType: CaseIterable, HasLabel {
     case system, manual
@@ -1023,6 +1026,13 @@ enum InquiryType: CaseIterable, HasLabel {
         switch self {
         case .system: return "系统询价"
         case .manual: return "人工询价"
+        }
+    }
+    
+    var dictKey: Int {
+        switch self {
+        case .system: return 1
+        case .manual: return 2
         }
     }
 }
@@ -1040,6 +1050,47 @@ enum InquiryState: CaseIterable, HasLabel {
         case ._5: return "已撤消"
         }
     }
+    
+    var dictKey: String {
+        switch self {
+        case ._0: return "0"
+        case ._1: return "1"
+        case ._2: return "2"
+        case ._3: return "3"
+        case ._4: return "4"
+        case ._5: return "5"
+        }
+    }
+}
+
+enum ReportState: CaseIterable, HasLabel {
+    case _0, _1, _2, _3, _4, _5, _6, _7
+    
+    var label: String {
+        switch self {
+        case ._0: return "待提交"
+        case ._1: return "待分配"
+        case ._2: return "待接受"
+        case ._3: return "受理中"
+        case ._4: return "审核中"
+        case ._5: return "盖章中"
+        case ._6: return "已完成"
+        case ._7: return "已撤消"
+        }
+    }
+    
+    var dictKey: String {
+        switch self {
+        case ._0: return "0"
+        case ._1: return "1"
+        case ._2: return "2"
+        case ._3: return "3"
+        case ._4: return "4"
+        case ._5: return "5"
+        case ._6: return "6"
+        case ._7: return "7"
+        }
+    }
 }
 
 enum DownloadState: CaseIterable {
@@ -1055,17 +1106,52 @@ enum DownloadState: CaseIterable {
     }
 }
 
+enum RecordType: CaseIterable, HasLabel {
+    case personal, organize
+    
+    var label: String {
+        switch self {
+        case .organize: return "单位记录"
+        case .personal: return "个人记录"
+        }
+    }
+    
+    var dictKty: String {
+        switch self {
+        case .personal:
+            return "0"
+        case .organize:
+            return "1"
+        }
+    }
+}
+
+struct SearchFilter {
+    var address: String = ""
+    var recordType: RecordType?
+    var estateType: DictType.EstateType?
+    var inquiryType: InquiryType?
+    var inquiryState: InquiryState?
+    var startDate: String = ""
+    var endDate: String = ""
+    var startPrice: String = ""
+    var endPrice: String = ""
+    var clientName: String = ""
+}
+
 struct Record: Identifiable {
+    let page: RecordPage
     let id: Int
     let imageURL: String
-    let inquiryType: InquiryType
+    let inquiryType: InquiryType?
     let district: String
     let estateType: DictType.EstateType
     let address: String
     let clientName: String
     let valuationDate: String
-    let inquiryState: InquiryState
-    let downloadState: DownloadState
+    let inquiryState: InquiryState?
+    let reportState: ReportState?
+    let downloadState: DownloadState?
     let totalPrice: String
     let price: String
     let area: String
@@ -1080,4 +1166,33 @@ struct RecordsResult {
     let total: Int
     let current: Int
     let records: [Record]
+}
+
+struct Template: Equatable {
+    let id: Int
+    let name: String
+}
+
+struct TemplateItem: Equatable {
+    let name: String
+}
+
+struct ConsultReportSheet {
+    var template: Template?
+    var bankManager: String = ""
+    var dept: String = ""
+    var clientName: String = ""
+    var landArea: Double?
+    var houseNum: String = ""
+    var landNum: String = ""
+    var houseArea: Double?
+    var quality: String = ""
+    var landEndDate: String = ""
+    var landUser: DictType.LandUser?
+    var landSe: DictType.LandSe?
+    var transferTo: String = ""
+    var item1: String = ""
+    var item2: String = ""
+    var comment: String = ""
+    var images: [RpsImage] = []
 }

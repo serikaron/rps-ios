@@ -327,6 +327,7 @@ extension AreaTree {
 extension Record {
     static var mock: Record {
         Record(
+            page: .inquiry(SearchFilter()),
             id: 0,
             imageURL: "",
             inquiryType: .manual,
@@ -336,6 +337,7 @@ extension Record {
             clientName: "郑为",
             valuationDate: "2023-02-02",
             inquiryState: ._0,
+            reportState: ._0,
             downloadState: ._1,
             totalPrice: "3149400", price: "39311", area: "80"
         )

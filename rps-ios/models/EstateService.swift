@@ -495,32 +495,79 @@ class EstateService: ObservableObject {
         }
     }
     
-    func getRecords(pageNum: Int, pageSize: Int) async -> RecordsResult {
+    func getRecords(pageNum: Int, pageSize: Int, filter: SearchFilter, page: RecordPage) async -> RecordsResult {
         if isPreview {
             return RecordsResult(total: 10, current: 1, records: [.mock])
         }
         
+        var dict = [String: String]()
+        if !filter.address.isEmpty {
+            dict["fvPropertyRightAddr"] = filter.address
+        }
+        if let type = filter.recordType {
+            dict["dataType"] = type.dictKty
+        }
+        if let estateType = filter.estateType {
+            dict["fvEstateType"] = estateType.dictKey
+        }
+        if let inquiryType = filter.inquiryType {
+            dict["fiType"] = "\(inquiryType.dictKey)"
+        }
+        if let inquiryState = filter.inquiryState {
+            dict["fiState"] = inquiryState.dictKey
+        }
+        if !filter.startDate.isEmpty {
+            dict["fvValuationDateStart"] = filter.startDate
+        }
+        if !filter.endDate.isEmpty {
+            dict["fvValuationDateEnd"] = filter.endDate
+        }
+        if !filter.startPrice.isEmpty {
+            dict["fvValuationTotalPriceStart"] = filter.startPrice
+        }
+        if !filter.endPrice.isEmpty {
+            dict["fvValuationTotalPriceEnd"] = filter.endPrice
+        }
+        if !filter.clientName.isEmpty {
+            dict["optName"] = filter.clientName
+        }
+        
+        dict["pageNum"] = "\(pageNum)"
+        dict["pageSize"] = "\(pageSize)"
+        
         do {
-            let rsp = try await Linkman.shared.getRecords(pageNum: pageNum, pageSize: pageSize)
+            let rsp = try await Linkman.shared.getRecords(path: page.path, query: dict)
             return RecordsResult(
                 total: rsp.total, current: rsp.current,
                 records: rsp.records.compactMap { r -> Record? in
-                    guard let inquiryType = InquiryType(rawValue: r.fiType),
-                          let estateType = DictType.EstateType(rawValue: r.fvEstateType ?? ""),
-                          let inquiryState = InquiryState(rawValue: r.fiState),
-                          let downloadState = DownloadState(rawValue: r.downloadState ?? 1)
+                    guard let estateType = DictType.EstateType(rawValue: r.fvEstateType ?? "")
                     else { return nil }
+                    
+                    var inquiryState: InquiryState?
+                    var reportState: ReportState?
+                    
+                    switch page {
+                    case .inquiry:
+                        inquiryState = InquiryState(rawValue: r.fiState)
+                        guard inquiryState != nil else { return nil }
+                    case .report:
+                        reportState = ReportState(rawValue: r.fiReportState)
+                        guard reportState != nil else { return nil }
+                    }
+                    
                     return Record(
+                        page: page,
                         id: r.id ?? 0,
                         imageURL: r.fvCoverImg ?? "",
-                        inquiryType: inquiryType,
+                        inquiryType: InquiryType(rawValue: r.fiType),
                         district: r.fvAreaName ?? "",
                         estateType: estateType,
                         address: r.fvPropertyRightAddr ?? "",
                         clientName: r.fvInquiryUserName ?? "",
                         valuationDate: r.fvValuationDate ?? "",
                         inquiryState: inquiryState,
-                        downloadState: downloadState,
+                        reportState: reportState,
+                        downloadState: DownloadState(rawValue: r.downloadState),
                         totalPrice: r.fvValuationTotalPrice ?? "",
                         price: r.fvValuationPrice ?? "",
                         area: r.fbBuildingArea == nil ? "" : "\(r.fbBuildingArea!)")
@@ -530,6 +577,38 @@ class EstateService: ObservableObject {
             return RecordsResult(total: 0, current: 0, records: [])
         }
     }
+    
+    func getTemplates(type: Int, estateType: String) async -> [Template] {
+        if isPreview {
+            return [Template(id: 1, name: "系统询价默认模板(普通公寓)")]
+        }
+        
+        do {
+            let rsp = try await Linkman.shared.getTemplateList(type: type, estateType: estateType)
+            return rsp.map {
+                Template(id: $0.id, name: $0.fvName)
+            }
+        } catch {
+            print("getTemplates FAILED!!! \(error)")
+            return []
+        }
+    }
+    
+    func getTemplate(id: Int) async -> [TemplateItem] {
+        if isPreview {
+            return [TemplateItem(name: "房产基本情况"), TemplateItem(name: "附属设施"), TemplateItem(name: "标题及报告首部")]
+        }
+        
+        do {
+            let rsp = try await Linkman.shared.getTemplate(id: id)
+            return rsp.templateModuleList.map { TemplateItem(name: $0.fvName) }
+        } catch {
+            print("getTemplate FAILED!!! \(error)")
+            return []
+        }
+    }
+    
+    
 }
 
 extension SearchResult {
@@ -621,6 +700,22 @@ private extension InquiryState {
     }
 }
 
+private extension ReportState {
+    init?(rawValue: Int?) {
+        switch rawValue {
+        case 0: self = ._0
+        case 1: self = ._1
+        case 2: self = ._2
+        case 3: self = ._3
+        case 4: self = ._4
+        case 5: self = ._5
+        case 6: self = ._6
+        case 7: self = ._7
+        default: return nil
+        }
+    }
+}
+
 private extension DownloadState {
     init?(rawValue: Int?) {
         switch rawValue {
@@ -629,6 +724,17 @@ private extension DownloadState {
         case 3: self = ._3
         case 4: self = ._4
         default: return nil
+        }
+    }
+}
+
+private extension RecordPage {
+    var path: String {
+        switch self {
+        case .inquiry:
+            return "/inquiry/rps/inquiry/page"
+        case .report:
+            return "/inquiry/rps/complexReport/page"
         }
     }
 }

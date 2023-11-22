@@ -719,6 +719,7 @@ extension Linkman {
         let fvInquiryUserName: String?
         let fvValuationDate: String?
         let fiState: Int?
+        let fiReportState: Int?
         let fvValuationPrice: String?
         let fvValuationTotalPrice: String?
         let downloadState: Int?
@@ -735,16 +736,48 @@ extension Linkman {
         let records: [NetworkRecord]
     }
     
-    func getRecords(pageNum: Int, pageSize: Int) async throws -> RecordsResponse {
+    func getRecords(path: String, query: [String: String]) async throws -> RecordsResponse {
         try await Request()
-            .with(\.path, setTo: "/inquiry/rps/inquiry/page")
+            .with(\.path, setTo: path)
             .with(\.method, setTo: .GET)
-            .with(\.query, setTo: [
-                "pageNum": "\(pageNum)",
-                "pageSize": "\(pageSize)"
-            ])
+            .with(\.query, setTo: query)
             .make()
             .response() as RecordsResponse
+    }
+    
+    struct NetworkTemplate: Codable {
+        let id: Int
+        let fvName: String
+    }
+    
+    typealias TemplateListResponse = [NetworkTemplate]
+    
+    func getTemplateList(type: Int, estateType: String) async throws -> TemplateListResponse {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/template/list")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "type": "\(type)",
+                "fvEstateType": estateType
+            ])
+            .make()
+            .response() as TemplateListResponse
+    }
+    
+    struct NetworkTemplateItem: Codable {
+        let fvName: String
+    }
+    
+    struct TemplateResponse: Codable {
+        let templateModuleList: [NetworkTemplateItem]
+    }
+    
+    func getTemplate(id: Int) async throws -> TemplateResponse {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/template/\(id)")
+            .with(\.method, setTo: .GET)
+            .make()
+            .response() as TemplateResponse
     }
 }
 

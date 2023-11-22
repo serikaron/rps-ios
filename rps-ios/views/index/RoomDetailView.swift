@@ -198,7 +198,11 @@ struct RoomDetailView: View {
     private var actionView: some View {
         VStack(spacing: 20) {
             HStack {
-                actionItem(title: "获取报告单")
+                NavigationLink {
+                    ReportSheetView(type: InquiryType.system.dictKey, estateType: estateType)
+                } label: {
+                    actionItem(title: "获取报告单")
+                }
                 Spacer()
                 NavigationLink {
                     AddInquiryView(inquiry: inquiry)
