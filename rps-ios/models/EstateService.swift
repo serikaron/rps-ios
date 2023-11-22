@@ -167,9 +167,9 @@ class EstateService: ObservableObject {
         }
     }
     
-    func createInquiry(buildingId: Int, estateType: String, areaCode: Int, searchAddr: String, orgId: Int) async -> Inquiry {
+    func createInquiry(buildingId: Int, estateType: String, areaCode: Int, searchAddr: String, orgId: Int, roomId: Int) async -> Inquiry {
         do {
-            let r = try await Linkman.shared.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: searchAddr, orgId: orgId)
+            let r = try await Linkman.shared.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: searchAddr, orgId: orgId, roomId: roomId)
             return Inquiry(networkInquiry: r)
         } catch {
             print("createInquiry FAILED: \(error)")
@@ -570,7 +570,10 @@ class EstateService: ObservableObject {
                         downloadState: DownloadState(rawValue: r.downloadState),
                         totalPrice: r.fvValuationTotalPrice ?? "",
                         price: r.fvValuationPrice ?? "",
-                        area: r.fbBuildingArea == nil ? "" : "\(r.fbBuildingArea!)")
+                        area: r.fbBuildingArea == nil ? "" : "\(r.fbBuildingArea!)",
+                        roomId: r.fiRoomId ?? "",
+                        buildingId: r.fiBuildingId ?? 0
+                    )
                 })
         } catch {
             print("getRecords FAILED!!! \(error)")
@@ -609,6 +612,69 @@ class EstateService: ObservableObject {
     }
     
     
+    func addConsultReport(sheet: ConsultReportSheet, inquiryId: Int) async {
+        guard !sheet.clientName.isEmpty,
+              let landArea = sheet.landArea,
+              landArea != 0,
+              inquiryId != 0,
+              let template = sheet.template,
+              template.id != 0
+        else {
+            Box.sendError("请输入必填信息")
+            return
+        }
+        
+        var dict = [String: Any]()
+        dict["fiReportState"] = 2
+        dict["fiInquiryId"] = inquiryId
+        dict["fiTemplateId"] = template.id
+        dict["fvCustomerName"] = sheet.clientName
+        dict["fdLandArea"] = landArea
+        
+        if !sheet.bankManager.isEmpty {
+            dict["fvCustomerManager"] = sheet.bankManager
+        }
+        // dept
+        if !sheet.houseNum.isEmpty {
+            dict["fvOwnershipHouseNumber"] = sheet.houseNum
+        }
+        if !sheet.landNum.isEmpty {
+            dict["fvLandUseRightNumber"] = sheet.landNum
+        }
+        if let houseArea = sheet.houseArea {
+            dict["fbInsuitArea"] = houseArea
+        }
+        if !sheet.quality.isEmpty {
+            dict["fvBuildingQuality"] = sheet.quality
+        }
+        if !sheet.landEndDate.isEmpty {
+            dict["fvLandEndDate"] = sheet.landEndDate
+        }
+        if let landUser = sheet.landUser {
+            dict["fvUseRightType"] = landUser.dictKey
+        }
+        if let landSe = sheet.landSe {
+            dict["fvClassToUse"] = landSe.dictKey
+        }
+
+        do {
+            var imageList = [[String: Any]]()
+            for image in sheet.images {
+                let uploadRsp = try await Linkman.shared.upload(image: image.image, filename: image.filename)
+                var imageDict = [String: Any]()
+                imageDict["fvReportOssId"] = uploadRsp.ossId
+                imageDict["fdCreateTime"] = uploadRsp.createTime
+                imageDict["fvReportOssUrl"] = uploadRsp.url
+                imageDict["imgType"] = uploadRsp.fileSuffix
+                imageList.append(imageDict)
+            }
+            dict["fileList"] = imageList
+            
+            try await Linkman.shared.addReport(reportDict: dict)
+        } catch {
+            print("addReport FAILED!!! \(error)")
+        }
+    }
 }
 
 extension SearchResult {

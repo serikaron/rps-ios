@@ -339,7 +339,28 @@ extension Record {
             inquiryState: ._0,
             reportState: ._0,
             downloadState: ._1,
-            totalPrice: "3149400", price: "39311", area: "80"
+            totalPrice: "3149400", price: "39311", area: "80",
+            roomId: "",
+            buildingId: 0
         )
+    }
+}
+
+extension CSComp {
+    static var mock: [CSComp] {
+        [
+            CSComp(name: "浙江估价公司--勿删", depts: [
+                CSDept(name: "杭州分公司")
+            ]),
+            CSComp(name: "浙江估价公司--勿删", depts: [
+                CSDept(name: "杭州分公司")
+            ]),
+        ]
+    }
+}
+
+extension CSUser {
+    static var mock: [CSUser] {
+        (0..<3).map { CSUser(name: "刘强北-\($0)", link: nil)}
     }
 }

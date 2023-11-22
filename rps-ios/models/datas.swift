@@ -54,6 +54,10 @@ struct RoomDetail {
     var networkRoomDetail: Linkman.NetworkRoomDetail
     let roomCount: Int
     
+    var id: String {
+        networkRoomDetail.id ?? ""
+    }
+    
     static var empty: RoomDetail {
         RoomDetail(networkRoomDetail: .empty, roomCount: 0)
     }
@@ -560,6 +564,10 @@ struct Inquiry {
         else { return }
         l.remove(at: idx)
         networkInquiry[key] = l
+    }
+    
+    var id: Int {
+        networkInquiry["id"] as? Int ?? 0
     }
     
     var area: Double? {
@@ -1155,6 +1163,8 @@ struct Record: Identifiable {
     let totalPrice: String
     let price: String
     let area: String
+    let roomId: String
+    let buildingId: Int
     
     var displayTotalPrice: String {
         guard let d = Double(totalPrice) else { return "" }

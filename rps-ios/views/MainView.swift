@@ -10,26 +10,27 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var accountService: AccountService
     @StateObject var estateService = EstateService()
+    @StateObject var tabService = TabService()
     
-    @State private var selectedTab = 1
     
     var body: some View {
         ZStack {
-            TabView(selection: $selectedTab) {
-                ForEach(Page.allCases, id: \.self) { page in
-                    page.page.tag(page.tag)
+            TabView(selection: $tabService.selectedTab) {
+                ForEach(MainTabPage.allCases, id: \.self) { page in
+                    page.page.tag(page)
                 }
             }
             .environmentObject(accountService)
             .environmentObject(estateService)
+            .environmentObject(tabService)
             
             HStack {
-                ForEach(Page.allCases, id: \.self) { page in
+                ForEach(MainTabPage.allCases, id: \.self) { page in
                     Button {
-                        selectedTab = page.tag
+                        tabService.selectedTab = page
                     } label: {
                         Group {
-                            if (page.tag == selectedTab) {
+                            if (page == tabService.selectedTab) {
                                 VStack {
                                     page.buttonIconSelected
                                     Text(page.buttonTitle)
@@ -66,13 +67,13 @@ struct MainView: View {
     }
 }
 
-private enum Page: CaseIterable {
-    case index, record
+private extension MainTabPage {
     
     var tag: Int {
         switch self {
         case .index: return 1
         case .record: return 2
+        case .cs: return 3
         }
     }
     
@@ -80,6 +81,7 @@ private enum Page: CaseIterable {
         switch self {
         case .index: return "首页"
         case .record: return "记录中心"
+        case .cs: return "在线客服"
         }
     }
     
@@ -87,6 +89,7 @@ private enum Page: CaseIterable {
         switch self {
         case .index: return Image.main.indexTabIconSelected
         case .record: return Image.main.recordTabIconSelected
+        case .cs: return Image.main.csTabIconSelected
         }
     }
     
@@ -94,6 +97,7 @@ private enum Page: CaseIterable {
         switch self {
         case .index: return Image.main.indexTabIcon
         case .record: return Image.main.recordTabIcon
+        case .cs: return Image.main.csTabIcon
         }
     }
     
@@ -101,6 +105,7 @@ private enum Page: CaseIterable {
         switch self {
         case .index: return IndexView().earseToAnyView()
         case .record: return RecordsCenterView().earseToAnyView()
+        case .cs: return CustomServiceView().earseToAnyView()
         }
     }
 }

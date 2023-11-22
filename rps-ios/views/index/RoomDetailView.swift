@@ -19,6 +19,7 @@ struct RoomDetailView: View {
     let estateType: String
     let buildingId: Int
     let floor: String
+    var roomId: String { roomDetail.id }
     
     @State private var inquiry: Inquiry?
     @State private var roomDetail: RoomDetail = .empty
@@ -74,7 +75,7 @@ struct RoomDetailView: View {
                     buildingId: buildingId,
                     orgId: accountService.account?.orgId ?? 0
                 )
-                inquiry = await estateService.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: familyRoomName, orgId: accountService.account?.orgId ?? 0)
+                inquiry = await estateService.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: familyRoomName, orgId: accountService.account?.orgId ?? 0, roomId: Int(roomId) ?? 0)
                 initialized = true
             }
         }
@@ -199,7 +200,7 @@ struct RoomDetailView: View {
         VStack(spacing: 20) {
             HStack {
                 NavigationLink {
-                    ReportSheetView(type: InquiryType.system.dictKey, estateType: estateType)
+                    ReportSheetView(type: InquiryType.system.dictKey, estateType: estateType, inquiryId: inquiry?.id ?? 0)
                 } label: {
                     actionItem(title: "获取报告单")
                 }

@@ -9,11 +9,13 @@ import SwiftUI
 
 struct ReportSheetView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject var estateService: EstateService
 
     @State private var sheet = ConsultReportSheet()
     
     let type: Int
     let estateType: String
+    let inquiryId: Int
     
     var body: some View {
         ScrollView {
@@ -34,6 +36,11 @@ struct ReportSheetView: View {
                     .background(Color.main)
                     .cornerRadius(8)
                     .padding(.horizontal, 12)
+                    .onTapGesture {
+                        Task {
+                            await estateService.addConsultReport(sheet: sheet, inquiryId: inquiryId)
+                        }
+                    }
             }
             .padding(.vertical, 10)
         }
@@ -45,7 +52,7 @@ struct ReportSheetView: View {
 }
 
 #Preview {
-    ReportSheetView(type: 0, estateType: DictType.EstateType.commApartment.dictKey)
+    ReportSheetView(type: 0, estateType: DictType.EstateType.commApartment.dictKey, inquiryId: 0)
         .environmentObject(EstateService.preview)
 }
 

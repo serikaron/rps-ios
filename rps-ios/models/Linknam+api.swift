@@ -326,6 +326,7 @@ extension Linkman {
     }
     
     struct NetworkRoomDetail: Codable {
+        var id: String?
         var fvFamilyRoomName: String?
         var fvProvinceName: String?
         var fvCityName: String?
@@ -403,7 +404,7 @@ extension Linkman {
     
     typealias NetworkInquiry = [String: Any]
     
-    func createInquiry(buildingId: Int, estateType: String, areaCode: Int, searchAddr: String, orgId: Int) async throws -> NetworkInquiry {
+    func createInquiry(buildingId: Int, estateType: String, areaCode: Int, searchAddr: String, orgId: Int, roomId: Int) async throws -> NetworkInquiry {
         let req = try await Request()
             .with(\.path, setTo: "/inquiry/rps/inquiry/addSystem")
             .with(\.method, setTo: .POST)
@@ -412,7 +413,8 @@ extension Linkman {
                 "fvEstateType": estateType,
                 "fiAreaCode": areaCode,
                 "fvSearchAddr": searchAddr,
-                "fiOrgId": orgId
+                "fiOrgId": orgId,
+                "roomId": roomId
             ])
             .make()
         
@@ -679,7 +681,7 @@ extension Linkman {
     
     func addInquiry(inquiryDict: [String: Any]) async throws {
         try await Request()
-            .with(\.path, setTo: "/inquiry/rps/mkInquiry/add")
+            .with(\.path, setTo: "/inquiry/rps/inquiry/add")
             .with(\.method, setTo: .POST)
             .with(\.body, setTo: inquiryDict)
             .make()
@@ -724,6 +726,8 @@ extension Linkman {
         let fvValuationTotalPrice: String?
         let downloadState: Int?
         let fbBuildingArea: Double?
+        let fiRoomId: String?
+        let fiBuildingId: Int?
     }
     
     struct NetworkRecordImage: Codable {
@@ -778,6 +782,46 @@ extension Linkman {
             .with(\.method, setTo: .GET)
             .make()
             .response() as TemplateResponse
+    }
+    
+    func addConsultReport(dict: [String: Any]) async throws {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/consultReport/add")
+            .with(\.method, setTo: .POST)
+            .with(\.body, setTo: dict)
+            .make()
+    }
+    
+    struct NetworkCSNode: Codable {
+        let label: String
+        let children: [NetworkCSNode]?
+    }
+    
+    typealias CSTreeResponse = [NetworkCSNode]
+    
+    func getCSTree() async throws -> CSTreeResponse {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/user/deptTree")
+            .with(\.method, setTo: .GET)
+            .make()
+            .response() as CSTreeResponse
+    }
+    
+    struct NetworkCSUser: Codable {
+        let nickName: String
+        let fvServiceLink: String?
+    }
+    
+    struct CSUsersResponse: Codable {
+        let rows: [NetworkCSUser]
+    }
+    
+    func getCSUsers(nodeLabel: String) async throws -> CSUsersResponse {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/user/list")
+            .with(\.method, setTo: .GET)
+            .make()
+            .response() as CSUsersResponse
     }
 }
 

@@ -15,6 +15,8 @@ class Box {
     let loadingSubject = CurrentValueSubject<Bool, Never>(false)
     
     let tokenSubject = CurrentValueSubject<String?, Never>(UserDefaults.token)
+    
+    static var isPreview = false
 }
 
 extension Box {

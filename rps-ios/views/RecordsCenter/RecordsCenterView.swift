@@ -265,6 +265,7 @@ private struct MoreFilterView: View {
 }
 
 private struct RecordView: View {
+    @EnvironmentObject var tabService: TabService
     let record: Record
     
     var body: some View {
@@ -365,7 +366,7 @@ private struct RecordView: View {
         ScrollView(.horizontal) {
             HStack {
                 NavigationLink {
-                    ReportSheetView(type: record.inquiryType!.dictKey, estateType: record.estateType.dictKey)
+                    ReportSheetView(type: record.inquiryType!.dictKey, estateType: record.estateType.dictKey, inquiryId: record.id)
                 } label: {
                     Text("获到报告单")
                 }
@@ -378,7 +379,9 @@ private struct RecordView: View {
                     .disabled(button4Disabled)
                 Button("提交询价") {}
                     .disabled(button5Disabled)
-                Button("客户咨询") {}
+                Button("客户咨询") {
+                    tabService.selectedTab = .cs
+                }
                     .disabled(button6Disabled)
             }
         }

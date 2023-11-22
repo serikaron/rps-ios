@@ -58,4 +58,11 @@ extension Image {
         static var add: Image { return Image("record-add") }
         static var remove: Image { return Image("record-remove") }
     }
+    
+    enum cs {
+        static var dept: Image { return Image("cs-dept") }
+        static var comp: Image { return Image("cs-comp") }
+        static var person: Image { return Image("cs-person") }
+        static var bg: Image { return Image("cs-background") }
+    }
 }
