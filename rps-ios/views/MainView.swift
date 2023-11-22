@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var accountService: AccountService
+    @StateObject var estateService = EstateService()
     
     @State private var selectedTab = 1
     
@@ -20,6 +21,7 @@ struct MainView: View {
                 }
             }
             .environmentObject(accountService)
+            .environmentObject(estateService)
             
             HStack {
                 ForEach(Page.allCases, id: \.self) { page in

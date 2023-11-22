@@ -494,6 +494,42 @@ class EstateService: ObservableObject {
             return false
         }
     }
+    
+    func getRecords(pageNum: Int, pageSize: Int) async -> RecordsResult {
+        if isPreview {
+            return RecordsResult(total: 10, current: 1, records: [.mock])
+        }
+        
+        do {
+            let rsp = try await Linkman.shared.getRecords(pageNum: pageNum, pageSize: pageSize)
+            return RecordsResult(
+                total: rsp.total, current: rsp.current,
+                records: rsp.records.compactMap { r -> Record? in
+                    guard let inquiryType = InquiryType(rawValue: r.fiType),
+                          let estateType = DictType.EstateType(rawValue: r.fvEstateType ?? ""),
+                          let inquiryState = InquiryState(rawValue: r.fiState),
+                          let downloadState = DownloadState(rawValue: r.downloadState ?? 1)
+                    else { return nil }
+                    return Record(
+                        id: r.id ?? 0,
+                        imageURL: r.fvCoverImg ?? "",
+                        inquiryType: inquiryType,
+                        district: r.fvAreaName ?? "",
+                        estateType: estateType,
+                        address: r.fvPropertyRightAddr ?? "",
+                        clientName: r.fvInquiryUserName ?? "",
+                        valuationDate: r.fvValuationDate ?? "",
+                        inquiryState: inquiryState,
+                        downloadState: downloadState,
+                        totalPrice: r.fvValuationTotalPrice ?? "",
+                        price: r.fvValuationPrice ?? "",
+                        area: r.fbBuildingArea == nil ? "" : "\(r.fbBuildingArea!)")
+                })
+        } catch {
+            print("getRecords FAILED!!! \(error)")
+            return RecordsResult(total: 0, current: 0, records: [])
+        }
+    }
 }
 
 extension SearchResult {
@@ -558,5 +594,41 @@ extension InquirySheet {
     func toDict() -> [String: Any] {
         var out = [String:Any]()
         return out
+    }
+}
+
+private extension InquiryType {
+    init?(rawValue: Int?) {
+        switch rawValue {
+        case 1: self = .system
+        case 2: self = .manual
+        default: return nil
+        }
+    }
+}
+
+private extension InquiryState {
+    init?(rawValue: Int?) {
+        switch rawValue {
+        case 0: self = ._0
+        case 1: self = ._1
+        case 2: self = ._2
+        case 3: self = ._3
+        case 4: self = ._4
+        case 5: self = ._5
+        default: return nil
+        }
+    }
+}
+
+private extension DownloadState {
+    init?(rawValue: Int?) {
+        switch rawValue {
+        case 1: self = ._1
+        case 2: self = ._2
+        case 3: self = ._3
+        case 4: self = ._4
+        default: return nil
+        }
     }
 }

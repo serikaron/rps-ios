@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FuzzySearchView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @StateObject var estateService = EstateService()
+    @EnvironmentObject var estateService: EstateService
     
     @State private var nextAction: NextAction = .exactSearch
     @State private var showExactSearchView = false
@@ -116,5 +116,6 @@ private enum NextAction {
     NavigationView {
         FuzzySearchView()
             .navigationBarTitleDisplayMode(.inline)
+            .environmentObject(EstateService.preview)
     }
 }

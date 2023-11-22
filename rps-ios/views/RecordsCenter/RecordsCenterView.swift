@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SBPAsyncImage
 
 struct RecordsCenterView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject var estateService: EstateService
     
     @State private var param = SearchParam()
     @State private var moreSheetShown = false
@@ -47,8 +49,9 @@ struct RecordsCenterView: View {
     }
     
     private var content: some View {
-        VStack {
+        VStack(spacing: 0) {
             header
+            RecordListView()
         }
         .background(Color.view.background)
     }
@@ -150,32 +153,6 @@ private enum RecordType: CaseIterable, HasLabel {
     }
 }
 
-private enum InquiryType: CaseIterable, HasLabel {
-    case system, manual
-    
-    var label: String {
-        switch self {
-        case .system: return "系统询价"
-        case .manual: return "人工询价"
-        }
-    }
-}
-
-private enum InquiryState: CaseIterable, HasLabel {
-    case _0, _1, _2, _3, _4, _5
-    
-    var label: String {
-        switch self {
-        case ._0: return "未提交"
-        case ._1: return "待分配"
-        case ._2: return "待接受"
-        case ._3: return "询价中"
-        case ._4: return "已报价"
-        case ._5: return "已撤消"
-        }
-    }
-}
-
 private struct SearchParam {
     var address: String = ""
     var recordType: RecordType?
@@ -191,6 +168,7 @@ private struct SearchParam {
 
 #Preview("main") {
     RecordsCenterView()
+        .environmentObject(EstateService.preview)
 }
 
 private struct MoreFilterView: View {
@@ -302,4 +280,212 @@ private struct MoreFilterView: View {
 
 #Preview("MoreFilter") {
     MoreFilterView(param: .constant(SearchParam()), shown: .constant(false))
+}
+
+private struct RecordView: View {
+    let record: Record
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            infoView
+            Divider()
+            buttonView
+        }
+        .background(Color.white)
+        .padding(.horizontal, 12)
+        .cornerRadius(8)
+    }
+    
+    private var infoView: some View {
+        HStack(spacing: 0) {
+            BackportAsyncImage(url: URL(string: record.imageURL)) { image in
+                image.resizable()
+            } placeholder: {
+//                Image.main.placeholder.resizable()
+                Color.gray
+            }
+            .frame(width: 100, height: 136)
+            .cornerRadius(8)
+
+            VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(record.address).headerText()
+                    Spacer().frame(height: 4)
+                    HStack {
+                        colorText(record.inquiryType.label)
+                        colorText(record.district)
+                        colorText(record.estateType.label)
+                    }
+                    Spacer().frame(height: 9)
+                    HStack(spacing: 30) {
+                        VStack(spacing: 8) {
+                            Text("询价人: \(record.clientName)")
+                            Text(record.valuationDate)
+                        }
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(record.inquiryState.label)
+                            Text(record.downloadState.label)
+                        }
+                    }
+                    .customText(size: 12, color: .text.gray6)
+                }
+                Spacer().frame(height: 8)
+                HStack {
+                    VStack {
+                        Text("总价")
+                        Text("\(record.displayTotalPrice)万元")
+                    }
+                    Spacer()
+                    VStack {
+                        Text("单价")
+                        Text("\(record.price)元/m²")
+                    }
+                    Spacer()
+                    VStack {
+                        Text("面积")
+                        Text("\(record.area)平方米")
+                    }
+                }
+                .customText(size: 12, color: .text.gray6)
+            }
+            .padding(.horizontal, 14)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 20)
+    }
+    
+    private func colorText(_ text: String) -> some View {
+        Text(text)
+            .customText(size: 12, color: .main)
+            .padding(.horizontal, 6)
+            .frame(height: 19)
+            .background(Color.hex("#E8EFFC"))
+            .cornerRadius(4)
+    }
+    
+    private var buttonView: some View {
+        ScrollView(.horizontal) {
+            HStack {
+                Button("获取报告单") {}
+                    .disabled(button1Disabled)
+                Button("重新估价") {}
+                    .disabled(button2Disabled)
+                Button("提交委托") {}
+                    .disabled(button3Disabled)
+                Button("撤消询价") {}
+                    .disabled(button4Disabled)
+                Button("提交询价") {}
+                    .disabled(button5Disabled)
+                Button("客户咨询") {}
+                    .disabled(button6Disabled)
+            }
+        }
+        .font(.system(size: 12))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 15)
+    }
+    
+    private var button1Disabled: Bool {
+        switch (record.inquiryType, record.inquiryState) {
+        case (_, ._4): return false
+        default: return true
+        }
+    }
+    
+    private var button2Disabled: Bool {
+        switch (record.inquiryType, record.inquiryState) {
+        case (.system, ._3): fallthrough
+        case (.system, ._4): fallthrough
+        case (.manual, ._4):
+            return false
+        default: return true
+        }
+    }
+    
+    private var button3Disabled: Bool {
+        switch (record.inquiryType, record.inquiryState) {
+        case (.system, ._3): fallthrough
+        case (.system, ._4): fallthrough
+        case (.manual, ._4):
+            return false
+        default: return true
+        }
+    }
+    
+    private var button4Disabled: Bool {
+        switch (record.inquiryType, record.inquiryState) {
+        case (.manual, ._1): fallthrough
+        case (.manual, ._2): fallthrough
+        case (.manual, ._3):
+            return false
+        default: return true
+        }
+    }
+    
+    private var button5Disabled: Bool {
+        switch (record.inquiryType, record.inquiryState) {
+        case (.system, ._3): fallthrough
+        case (.system, ._4): fallthrough
+        case (.manual, ._0): fallthrough
+        case (.manual, ._5):
+            return false
+        default: return true
+        }
+    }
+    
+    private var button6Disabled: Bool {
+        switch (record.inquiryType, record.inquiryState) {
+        case (.system, ._4): fallthrough
+        case (.manual, ._1): fallthrough
+        case (.manual, ._2): fallthrough
+        case (.manual, ._3): fallthrough
+        case (.manual, ._4):
+            return false
+        default: return true
+        }
+    }
+}
+
+#Preview("Record") {
+    RecordView(record: Record.mock)
+}
+
+private struct RecordListView: View {
+    @EnvironmentObject var estateService: EstateService
+    
+    @State private var pageSize = 10
+    @State private var pageNum = 0
+    @State private var records: [Record] = []
+    @State private var total = Int.max
+    
+    var body: some View {
+        ScrollView {
+            LazyVStack(spacing: 10) {
+                ForEach(Array(zip(records.indices, records)), id: \.0) { idx, r in
+                    RecordView(record: r)
+                        .onAppear {
+                            if idx == records.count - 2 {
+                                getRecord()
+                            }
+                        }
+                }
+            }
+        }
+        .padding(.vertical, 10)
+        .onAppear {
+            getRecord()
+        }
+    }
+    
+    private func getRecord() {
+        Task {
+            guard records.count < total else { return }
+            
+            let r = await estateService.getRecords(pageNum: pageNum + 1, pageSize: pageSize)
+            guard r.current == pageNum + 1 else { return }
+            records.append(contentsOf: r.records)
+            pageNum = r.current
+            total = r.total
+        }
+    }
 }

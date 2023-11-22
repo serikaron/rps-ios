@@ -1015,3 +1015,69 @@ struct ReportSheet {
     var images: [RpsImage] = []
 }
 
+
+enum InquiryType: CaseIterable, HasLabel {
+    case system, manual
+    
+    var label: String {
+        switch self {
+        case .system: return "系统询价"
+        case .manual: return "人工询价"
+        }
+    }
+}
+
+enum InquiryState: CaseIterable, HasLabel {
+    case _0, _1, _2, _3, _4, _5
+    
+    var label: String {
+        switch self {
+        case ._0: return "未提交"
+        case ._1: return "待分配"
+        case ._2: return "待接受"
+        case ._3: return "询价中"
+        case ._4: return "已报价"
+        case ._5: return "已撤消"
+        }
+    }
+}
+
+enum DownloadState: CaseIterable {
+    case _1, _2, _3, _4
+    
+    var label: String {
+        switch self {
+        case ._1: return "未申请下载"
+        case ._2: return "下载申请审批中"
+        case ._3: return "审批已通过，可下载"
+        case ._4: return "暂不审批"
+        }
+    }
+}
+
+struct Record: Identifiable {
+    let id: Int
+    let imageURL: String
+    let inquiryType: InquiryType
+    let district: String
+    let estateType: DictType.EstateType
+    let address: String
+    let clientName: String
+    let valuationDate: String
+    let inquiryState: InquiryState
+    let downloadState: DownloadState
+    let totalPrice: String
+    let price: String
+    let area: String
+    
+    var displayTotalPrice: String {
+        guard let d = Double(totalPrice) else { return "" }
+        return "\(d / 10000)"
+    }
+}
+
+struct RecordsResult {
+    let total: Int
+    let current: Int
+    let records: [Record]
+}

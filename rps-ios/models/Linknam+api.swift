@@ -708,7 +708,47 @@ extension Linkman {
             .make()
             .response() as AreaTreeResponse
     }
+    
+    struct NetworkRecord: Codable {
+        let id: Int?
+        let fvCoverImg: String?
+        let fiType: Int?
+        let fvAreaName: String?
+        let fvEstateType: String?
+        let fvPropertyRightAddr: String?
+        let fvInquiryUserName: String?
+        let fvValuationDate: String?
+        let fiState: Int?
+        let fvValuationPrice: String?
+        let fvValuationTotalPrice: String?
+        let downloadState: Int?
+        let fbBuildingArea: Double?
+    }
+    
+    struct NetworkRecordImage: Codable {
+        let fvOssUrl: String
+    }
+    
+    struct RecordsResponse: Codable {
+        let total: Int
+        let current: Int
+        let records: [NetworkRecord]
+    }
+    
+    func getRecords(pageNum: Int, pageSize: Int) async throws -> RecordsResponse {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/inquiry/page")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "pageNum": "\(pageNum)",
+                "pageSize": "\(pageSize)"
+            ])
+            .make()
+            .response() as RecordsResponse
+    }
 }
+
+// MARK: -
 
 
 struct DynamicKey: CodingKey {

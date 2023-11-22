@@ -323,3 +323,21 @@ extension AreaTree {
         ])
     }
 }
+
+extension Record {
+    static var mock: Record {
+        Record(
+            id: 0,
+            imageURL: "",
+            inquiryType: .manual,
+            district: "滨江区",
+            estateType: .commApartment,
+            address: "杭州市壹号院9幢1001室",
+            clientName: "郑为",
+            valuationDate: "2023-02-02",
+            inquiryState: ._0,
+            downloadState: ._1,
+            totalPrice: "3149400", price: "39311", area: "80"
+        )
+    }
+}
