@@ -7,20 +7,6 @@
 
 import Foundation
 
-extension Linkman.GetInfoResponse {
-    static var mock: Linkman.GetInfoResponse {
-        return Linkman.GetInfoResponse(user: Linkman.NetworkUser(
-            id: 0,
-            fiOrgId: 0,
-            fiUnitId: 0,
-            fvClientNickName: "",
-            fiCellphone: 0,
-            fvPlaceUnit: "",
-            fvPlaceOrganization: ""
-        ))
-    }
-}
-
 extension Linkman.NoticeRecord {
     static var mock: Linkman.NoticeRecord {
         return Linkman.NoticeRecord(noticeTitle: "公告1")

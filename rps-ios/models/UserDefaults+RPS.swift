@@ -29,14 +29,26 @@ extension UserDefaults {
                   let nickname = UserDefaults.rps.string(forKey: "account.nickname"),
                   let phone = UserDefaults.rps.string(forKey: "account.phone"),
                   let organ = UserDefaults.rps.string(forKey: "account.organ"),
-                  let unit = UserDefaults.rps.string(forKey: "account.unit")
+                  let unit = UserDefaults.rps.string(forKey: "account.unit"),
+                  let clientName = UserDefaults.rps.string(forKey: "account.clientName"),
+                  let position = UserDefaults.rps.string(forKey: "account.position"),
+                  let status = UserDefaults.rps.string(forKey: "account.status"),
+                  let date = UserDefaults.rps.string(forKey: "account.date"),
+                  let gender = UserDefaults.rps.string(forKey: "account.gender"),
+                  let birthday = UserDefaults.rps.string(forKey: "account.birthday"),
+                  let email = UserDefaults.rps.string(forKey: "account.email"),
+                  let workPhone = UserDefaults.rps.string(forKey: "account.workPhone")
             else { return nil }
             
             let orgId = UserDefaults.rps.integer(forKey: "account.orgId")
             let unitId = UserDefaults.rps.integer(forKey: "account.unitId")
             return Account(
                 id: 0, orgId: orgId, unitId: unitId, nickname: nickname,
-                phone: phone, placeOrganization: organ, placeUnit: unit
+                phone: phone, placeOrganization: organ, placeUnit: unit,
+                clientName: clientName, position: position,
+                status: DictType.CommonStatus(rawValue: status) ?? ._0,
+                date: date, gender: Gender(rawValue: gender) ?? .male,
+                birthday: birthday, email: email, workPhone: workPhone
             )
         }
         set(account) {
@@ -47,7 +59,14 @@ extension UserDefaults {
                 UserDefaults.rps.removeObject(forKey: "account.nickname")
                 UserDefaults.rps.removeObject(forKey: "account.phone")
                 UserDefaults.rps.removeObject(forKey: "account.unit")
-                UserDefaults.rps.removeObject(forKey: "account.organ")
+                UserDefaults.rps.removeObject(forKey: "account.clientName")
+                UserDefaults.rps.removeObject(forKey: "account.position")
+                UserDefaults.rps.removeObject(forKey: "account.status")
+                UserDefaults.rps.removeObject(forKey: "account.date")
+                UserDefaults.rps.removeObject(forKey: "account.gender")
+                UserDefaults.rps.removeObject(forKey: "account.birthday")
+                UserDefaults.rps.removeObject(forKey: "account.email")
+                UserDefaults.rps.removeObject(forKey: "account.workPhone")
             } else {
                 UserDefaults.rps.setValue(true, forKey: "account.has")
                 UserDefaults.rps.setValue(account!.orgId, forKey: "account.orgId")
@@ -56,6 +75,14 @@ extension UserDefaults {
                 UserDefaults.rps.setValue(account!.phone, forKey: "account.phone")
                 UserDefaults.rps.setValue(account!.placeUnit, forKey: "account.unit")
                 UserDefaults.rps.setValue(account!.placeOrganization, forKey: "account.organ")
+                UserDefaults.rps.setValue(account!.clientName, forKey: "account.clientName")
+                UserDefaults.rps.setValue(account!.position, forKey: "account.position")
+                UserDefaults.rps.setValue(account!.status.dictKey, forKey: "account.status")
+                UserDefaults.rps.setValue(account!.date, forKey: "account.date")
+                UserDefaults.rps.setValue(account!.gender.dictKey, forKey: "account.gender")
+                UserDefaults.rps.setValue(account!.birthday, forKey: "account.birthday")
+                UserDefaults.rps.setValue(account!.email, forKey: "account.email")
+                UserDefaults.rps.setValue(account!.workPhone, forKey: "account.workPhone")
             }
         }
     }

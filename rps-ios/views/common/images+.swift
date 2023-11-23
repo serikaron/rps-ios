@@ -71,5 +71,7 @@ extension Image {
         static var avatar: Image { return Image("me-avatar") }
         static var message: Image { return Image("me-message") }
         static var password: Image { return Image("me-password") }
+        static var radioGray: Image { return Image("me-radio-gray") }
+        static var radioColor: Image { return Image("me-radio-color") }
     }
 }

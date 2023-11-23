@@ -20,6 +20,7 @@
 		72749E942B0F047A000258C2 /* MeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749E932B0F047A000258C2 /* MeView.swift */; };
 		72749E962B0F06D4000258C2 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749E952B0F06D4000258C2 /* MessageView.swift */; };
 		72749E982B0F3057000258C2 /* PasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749E972B0F3057000258C2 /* PasswordView.swift */; };
+		72749E9A2B0F3CD3000258C2 /* MeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749E992B0F3CD3000258C2 /* MeInfoView.swift */; };
 		728697E72AFF1F0500CA31C5 /* DictType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E62AFF1F0500CA31C5 /* DictType.swift */; };
 		728697E92AFF209B00CA31C5 /* Linkman+mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E82AFF209B00CA31C5 /* Linkman+mock.swift */; };
 		728697F12AFF24BE00CA31C5 /* rps_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697F02AFF24BE00CA31C5 /* rps_iosTests.swift */; };
@@ -55,7 +56,6 @@
 		72DFCF222AFCBA6C0001831F /* Linknam+api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF212AFCBA6C0001831F /* Linknam+api.swift */; };
 		72DFCF242AFCCD520001831F /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF232AFCCD520001831F /* ErrorView.swift */; };
 		72DFCF262AFCCDAE0001831F /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF252AFCCDAE0001831F /* LoadingView.swift */; };
-		72F9BF8C2AFCF2E90040C6D2 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F9BF8B2AFCF2E90040C6D2 /* utils.swift */; };
 		72F9BF8E2AFD044C0040C6D2 /* Notice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F9BF8D2AFD044C0040C6D2 /* Notice.swift */; };
 		72F9BF902AFDC7F70040C6D2 /* FuzzySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F9BF8F2AFDC7F70040C6D2 /* FuzzySearchView.swift */; };
 		72F9BF962AFDE1C40040C6D2 /* EstateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F9BF952AFDE1C40040C6D2 /* EstateService.swift */; };
@@ -88,6 +88,7 @@
 		72749E932B0F047A000258C2 /* MeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeView.swift; sourceTree = "<group>"; };
 		72749E952B0F06D4000258C2 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		72749E972B0F3057000258C2 /* PasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordView.swift; sourceTree = "<group>"; };
+		72749E992B0F3CD3000258C2 /* MeInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeInfoView.swift; sourceTree = "<group>"; };
 		728697E62AFF1F0500CA31C5 /* DictType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictType.swift; sourceTree = "<group>"; };
 		728697E82AFF209B00CA31C5 /* Linkman+mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linkman+mock.swift"; sourceTree = "<group>"; };
 		728697EE2AFF24BE00CA31C5 /* rps-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rps-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,7 +126,6 @@
 		72DFCF212AFCBA6C0001831F /* Linknam+api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linknam+api.swift"; sourceTree = "<group>"; };
 		72DFCF232AFCCD520001831F /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		72DFCF252AFCCDAE0001831F /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
-		72F9BF8B2AFCF2E90040C6D2 /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 		72F9BF8D2AFD044C0040C6D2 /* Notice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notice.swift; sourceTree = "<group>"; };
 		72F9BF8F2AFDC7F70040C6D2 /* FuzzySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearchView.swift; sourceTree = "<group>"; };
 		72F9BF952AFDE1C40040C6D2 /* EstateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstateService.swift; sourceTree = "<group>"; };
@@ -176,6 +176,7 @@
 				72749E932B0F047A000258C2 /* MeView.swift */,
 				72749E952B0F06D4000258C2 /* MessageView.swift */,
 				72749E972B0F3057000258C2 /* PasswordView.swift */,
+				72749E992B0F3CD3000258C2 /* MeInfoView.swift */,
 			);
 			path = Me;
 			sourceTree = "<group>";
@@ -296,7 +297,6 @@
 				72DFCF1F2AFCBA400001831F /* string+.swift */,
 				72DFCF212AFCBA6C0001831F /* Linknam+api.swift */,
 				728697E82AFF209B00CA31C5 /* Linkman+mock.swift */,
-				72F9BF8B2AFCF2E90040C6D2 /* utils.swift */,
 				72F9BF8D2AFD044C0040C6D2 /* Notice.swift */,
 				72F9BF952AFDE1C40040C6D2 /* EstateService.swift */,
 				728697E62AFF1F0500CA31C5 /* DictType.swift */,
@@ -468,8 +468,8 @@
 				72749E942B0F047A000258C2 /* MeView.swift in Sources */,
 				72DFCF1E2AFCB9690001831F /* ErrorService.swift in Sources */,
 				72DFCF182AFCB6F20001831F /* Linkman.swift in Sources */,
-				72F9BF8C2AFCF2E90040C6D2 /* utils.swift in Sources */,
 				72DFCF1A2AFCB7790001831F /* Withable.swift in Sources */,
+				72749E9A2B0F3CD3000258C2 /* MeInfoView.swift in Sources */,
 				728D964C2B020CA900E1ACC4 /* RoomDetailView.swift in Sources */,
 				728697E72AFF1F0500CA31C5 /* DictType.swift in Sources */,
 				72DFCF222AFCBA6C0001831F /* Linknam+api.swift in Sources */,

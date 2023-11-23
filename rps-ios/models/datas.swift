@@ -1214,3 +1214,47 @@ struct Message {
     let date: String
     let sender: String
 }
+
+enum Gender {
+    case male, female
+    
+    init?(rawValue: String?) {
+        switch rawValue {
+        case "1": self = .male
+        case "2": self = .female
+        default: return nil
+        }
+    }
+    
+    var dictKey: String {
+        switch self {
+        case .male: return "1"
+        case .female: return "2"
+        }
+    }
+    
+    var label: String {
+        switch self {
+        case .male: return "男"
+        case .female: return "女"
+        }
+    }
+}
+
+struct Account {
+    let id: Int
+    let orgId: Int
+    let unitId: Int
+    let nickname: String
+    let phone: String
+    let placeOrganization: String
+    let placeUnit: String
+    let clientName: String
+    let position: String
+    let status: DictType.CommonStatus
+    let date: String
+    let gender: Gender
+    let birthday: String
+    let email: String
+    let workPhone: String
+}

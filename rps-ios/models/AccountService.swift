@@ -8,16 +8,6 @@
 import Foundation
 import Combine
 
-struct Account {
-    let id: Int
-    let orgId: Int
-    let unitId: Int
-    let nickname: String
-    let phone: String
-    let placeOrganization: String
-    let placeUnit: String
-}
-
 @MainActor
 class AccountService: ObservableObject {
     @Published var isLoggedIn: Bool = false
@@ -57,6 +47,8 @@ class AccountService: ObservableObject {
     }
     
     private func getInfo() async throws {
+        if Box.isPreview { return }
+        
         let rsp = try await Linkman.shared.getInfo()
         account = Account(
             id: rsp.user.id,
@@ -65,7 +57,15 @@ class AccountService: ObservableObject {
             nickname: rsp.user.fvClientNickName,
             phone: "\(rsp.user.fiCellphone)",
             placeOrganization: rsp.user.fvPlaceOrganization,
-            placeUnit: rsp.user.fvPlaceUnit
+            placeUnit: rsp.user.fvPlaceUnit,
+            clientName: rsp.user.fvClientName,
+            position: rsp.user.fvPosition ?? "",
+            status: DictType.CommonStatus(rawValue: rsp.user.fvApStatus) ?? ._0,
+            date: rsp.user.fvValidDate,
+            gender: Gender(rawValue: rsp.user.fvClientGender) ?? .male,
+            birthday: rsp.user.fdDateBirth ?? "",
+            email: rsp.user.fvEmail ?? "",
+            workPhone: rsp.user.fiWorkPhone == nil ? "" : "\(rsp.user.fiWorkPhone!)"
         )
     }
     
@@ -149,13 +149,44 @@ class AccountService: ObservableObject {
             print("resetPassword FAILED!!! \(error)")
         }
     }
+    
+    func updateInfo(gender: Gender, phone: String, birthday: String, email: String, workPhone: String) async {
+        do {
+            try await Linkman.shared.editClientUser(gender: gender.dictKey, phone: phone, birthday: birthday, email: email, workPhone: workPhone)
+            if let account = account {
+                self.account = Account(
+                    id: account.id,
+                    orgId: account.orgId,
+                    unitId: account.unitId,
+                    nickname: account.nickname,
+                    phone: phone,
+                    placeOrganization: account.placeOrganization,
+                    placeUnit: account.placeUnit,
+                    clientName: account.clientName,
+                    position: account.position,
+                    status: account.status,
+                    date: account.date,
+                    gender: gender,
+                    birthday: birthday,
+                    email: email,
+                    workPhone: workPhone)
+            } else {
+                try await getInfo()
+            }
+        } catch {
+            print("updateInfo FAILED!!! \(error)")
+        }
+    }
 }
 
 extension AccountService {
     static var preview: AccountService {
         Box.isPreview = true
         let out = AccountService()
-        out.account = Account(id: 0, orgId: 294, unitId: 0, nickname: "张三", phone: "13333333333", placeOrganization: "", placeUnit: "")
+        out.account = Account(
+            id: 0, orgId: 294, unitId: 0, nickname: "张三", phone: "13333333333", placeOrganization: "", placeUnit: "",
+            clientName: "hqb", position: "专员", status: ._0, date: "2024-11-30", gender: .male, birthday: "", email: "123456@qq.com", workPhone: "13344444444"
+        )
         return out
     }
 }

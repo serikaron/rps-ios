@@ -301,7 +301,7 @@ private struct RegisterView: View {
                 } else {
                     Image.onboarding.deselectedIcon
                 }
-                Text.deactivated(text: gender.text)
+                Text.deactivated(text: gender.label)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }

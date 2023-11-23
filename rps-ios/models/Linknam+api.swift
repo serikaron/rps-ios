@@ -31,6 +31,14 @@ extension Linkman {
         let fiCellphone: Int
         let fvPlaceUnit: String
         let fvPlaceOrganization: String
+        let fvClientName: String
+        let fvPosition: String?
+        let fvApStatus: String
+        let fvValidDate: String
+        let fvClientGender: String?
+        let fdDateBirth: String?
+        let fvEmail: String?
+        let fiWorkPhone: Int?
     }
     
     struct GetInfoResponse: Codable {
@@ -41,7 +49,6 @@ extension Linkman {
         return try await Request()
             .with(\.path, setTo: "/account/rps/account/clientUser/getInfo")
             .with(\.method, setTo: .GET)
-            .with(\.standaloneResponse, setTo: standaloneResponse(GetInfoResponse.mock))
             .make()
             .response() as GetInfoResponse
     }
@@ -57,7 +64,7 @@ extension Linkman {
             .with(\.bodyDict, setTo: [
                 "fvClientName": account,
                 "fvClientNickName": name,
-                "fvClientGender": gender.text,
+                "fvClientGender": gender.label,
                 "fdDateBirth": birthday,
                 "fvPlaceUnit": company,
                 "fvPlaceOrganization": department,
@@ -890,6 +897,20 @@ extension Linkman {
             .with(\.bodyDict, setTo: [
                 "oldPassword": oldPassword,
                 "newPassword": newPassword
+            ])
+            .make()
+    }
+    
+    func editClientUser(gender: String, phone: String, birthday: String, email: String, workPhone: String) async throws {
+        try await Request()
+            .with(\.path, setTo: "/rps/account/clientUser/editClientUser")
+            .with(\.method, setTo: .POST)
+            .with(\.bodyDict, setTo: [
+                "fvClientGender": gender,
+                "fiCellphone": phone,
+                "fdDateBirth": birthday,
+                "fvEmail": email,
+                "fiWorkPhone": workPhone
             ])
             .make()
     }
