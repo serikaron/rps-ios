@@ -14,10 +14,12 @@ struct CSUser {
 }
 
 struct CSDept {
-    init(name: String) {
+    init(id: Int, name: String) {
+        self.id = id
         self.name = name
     }
     
+    let id: Int
     let name: String
     private(set) var users: [CSUser] = []
     
@@ -34,8 +36,10 @@ struct CSDept {
         guard !_loaded else { return }
         
         do {
-            let rsp = try await Linkman.shared.getCSUsers(nodeLabel: name)
-            users = rsp.rows.map { CSUser(name: $0.nickName, link: $0.fvServiceLink) }
+            let rsp = try await Linkman.shared.getCSUsers(nodeId: id, pageSize: 10, pageNum: 1)
+            users = rsp.rows
+                .filter { $0.fvServiceLink != nil }
+                .map { CSUser(name: $0.nickName, link: $0.fvServiceLink) }
             _loaded = true
         } catch {
             print("CSDept.load FAILED!!! \(error)")
@@ -66,7 +70,7 @@ struct CSComp {
 
 private extension CSDept {
     static func from(network: Linkman.NetworkCSNode) -> Self {
-        CSDept(name: network.label)
+        CSDept(id: network.id, name: network.label)
     }
 }
 

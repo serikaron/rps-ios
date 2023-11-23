@@ -17,7 +17,7 @@ extension Linkman {
         return try await Request()
             .with(\.path, setTo: "/auth/rps/clientLogin")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: ["username": phone, "password": password, "deviceType": "APP"])
+            .with(\.bodyDict, setTo: ["username": phone, "password": password, "deviceType": "APP"])
             .with(\.standaloneResponse, setTo: standaloneResponse(LoginResponse(access_token: "mockToken")))
             .make()
             .response() as LoginResponse
@@ -54,7 +54,7 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/account/rps/account/clientUser/applyLoginClientUser")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: [
+            .with(\.bodyDict, setTo: [
                 "fvClientName": account,
                 "fvClientNickName": name,
                 "fvClientGender": gender.text,
@@ -179,7 +179,7 @@ extension Linkman {
         return try await Request()
             .with(\.path, setTo: "/data/rps/dcdata/getBuildingByComId")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: [
+            .with(\.bodyDict, setTo: [
                 "fiCompoundId": "\(compoundId)",
                 "fvEstateType": estateType,
                 "pageSize": "\(pageSize)",
@@ -408,7 +408,7 @@ extension Linkman {
         let req = try await Request()
             .with(\.path, setTo: "/inquiry/rps/inquiry/addSystem")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: [
+            .with(\.bodyDict, setTo: [
                 "fiBuildingId": "\(buildingId)",
                 "fvEstateType": estateType,
                 "fiAreaCode": areaCode,
@@ -435,7 +435,7 @@ extension Linkman {
         let req = try await Request()
             .with(\.path, setTo: "/inquiry/rps/inquiry/systemInquiry")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: inquiry)
+            .with(\.bodyDict, setTo: inquiry)
             .make()
         
         guard let data = req._response else {
@@ -455,7 +455,7 @@ extension Linkman {
         let req = try await Request()
             .with(\.path, setTo: "/inquiry/rps/inquiry/systemDetailInquiry")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: inquiry)
+            .with(\.bodyDict, setTo: inquiry)
             .make()
         
         guard let data = req._response else {
@@ -490,7 +490,7 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/cases/rps/CcCase/listRoomMatchCases")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: [
+            .with(\.bodyDict, setTo: [
                 "fiCompoundId": compoundId,
                 "fvEstateType": estateType,
                 "fbPrice": price
@@ -578,7 +578,7 @@ extension Linkman {
         let req = try await Request()
             .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/districtAndCountyCurve")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: [
+            .with(\.bodyDict, setTo: [
                 "startTime": startTime,
                 "endTime": endTime,
                 "fvEstateType": estateType,
@@ -605,7 +605,7 @@ extension Linkman {
         let req = try await Request()
             .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/districtAndCombinedCountyCurve")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: [
+            .with(\.bodyDict, setTo: [
                 "startTime": startTime,
                 "endTime": endTime,
                 "fvEstateType": estateType,
@@ -651,7 +651,7 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getPcBasePriceDistrictLineChart")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: [
+            .with(\.bodyDict, setTo: [
                 "fvCompoundId": "\(compoundId)",
                 "fdEvaluateTimeStart": startTime,
                 "fdEvaluateTimeEnd": endTime,
@@ -683,7 +683,7 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/inquiry/rps/inquiry/add")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: inquiryDict)
+            .with(\.bodyDict, setTo: inquiryDict)
             .make()
     }
     
@@ -691,7 +691,7 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/inquiry/rps/complexReport/add")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: reportDict)
+            .with(\.bodyDict, setTo: reportDict)
             .make()
     }
     
@@ -788,11 +788,12 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/inquiry/rps/consultReport/add")
             .with(\.method, setTo: .POST)
-            .with(\.body, setTo: dict)
+            .with(\.bodyDict, setTo: dict)
             .make()
     }
     
     struct NetworkCSNode: Codable {
+        let id: Int
         let label: String
         let children: [NetworkCSNode]?
     }
@@ -813,15 +814,84 @@ extension Linkman {
     }
     
     struct CSUsersResponse: Codable {
+        let total: Int
         let rows: [NetworkCSUser]
     }
     
-    func getCSUsers(nodeLabel: String) async throws -> CSUsersResponse {
-        try await Request()
+    func getCSUsers(nodeId: Int, pageSize: Int, pageNum: Int) async throws -> CSUsersResponse {
+        let req = try await Request()
             .with(\.path, setTo: "/system/rps/user/list")
             .with(\.method, setTo: .GET)
+//            .with(\.checkResponse, setTo: false)
             .make()
-            .response() as CSUsersResponse
+        
+        guard let r = req._response else {
+            throw "response not exist"
+        }
+        
+        return try r.decoded() as CSUsersResponse
+    }
+    
+    struct NetworkMessage: Codable {
+        let fvCreateBy: String?
+        let id: Int?
+        let fvTextMessageContent: String?
+        let fdCreateTime: String?
+        let fiState: Int?
+    }
+    
+    struct MessagesResponse: Codable {
+        let records: [NetworkMessage]
+        let total: Int
+        let current: Int
+    }
+    
+    func getMessages(pageSize: Int, pageNum: Int) async throws -> MessagesResponse {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/rpsMessage/page")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: [
+                "pageSize": "\(pageSize)",
+                "pageNum": "\(pageNum)"
+            ])
+            .make()
+            .response() as MessagesResponse
+    }
+    
+    typealias UnreadResponse = Int
+    
+    func getUnread() async throws -> UnreadResponse {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/rpsMessage/getUnreadCount")
+            .with(\.method, setTo: .GET)
+            .make()
+            .response() as UnreadResponse
+    }
+    
+    func readMessage(id: Int) async throws {
+        try await Request()
+            .with(\.path, setTo: "/system/rps/rpsMessage/updateState")
+            .with(\.method, setTo: .POST)
+            .with(\.bodyArray, setTo: [id])
+            .make()
+    }
+    
+    func logout() async throws {
+        try await Request()
+            .with(\.path, setTo: "/auth/rps/logout")
+            .with(\.method, setTo: .DELETE)
+            .make()
+    }
+    
+    func updatePwd(oldPassword: String, newPassword: String) async throws {
+        try await Request()
+            .with(\.path, setTo: "/account/rps/account/clientUser/updatePwd")
+            .with(\.method, setTo: .PUT)
+            .with(\.bodyDict, setTo: [
+                "oldPassword": oldPassword,
+                "newPassword": newPassword
+            ])
+            .make()
     }
 }
 

@@ -74,6 +74,7 @@ private extension MainTabPage {
         case .index: return 1
         case .record: return 2
         case .cs: return 3
+        case .me: return 4
         }
     }
     
@@ -82,6 +83,7 @@ private extension MainTabPage {
         case .index: return "首页"
         case .record: return "记录中心"
         case .cs: return "在线客服"
+        case .me: return "我的"
         }
     }
     
@@ -90,6 +92,7 @@ private extension MainTabPage {
         case .index: return Image.main.indexTabIconSelected
         case .record: return Image.main.recordTabIconSelected
         case .cs: return Image.main.csTabIconSelected
+        case .me: return Image.main.meTabIconSelected
         }
     }
     
@@ -98,6 +101,7 @@ private extension MainTabPage {
         case .index: return Image.main.indexTabIcon
         case .record: return Image.main.recordTabIcon
         case .cs: return Image.main.csTabIcon
+        case .me: return Image.main.meTabIcon
         }
     }
     
@@ -106,6 +110,7 @@ private extension MainTabPage {
         case .index: return IndexView().earseToAnyView()
         case .record: return RecordsCenterView().earseToAnyView()
         case .cs: return CustomServiceView().earseToAnyView()
+        case .me: return MeView().earseToAnyView()
         }
     }
 }

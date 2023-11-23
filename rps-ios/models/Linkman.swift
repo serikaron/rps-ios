@@ -112,7 +112,10 @@ extension Linkman {
             
             var req = URLRequest(url: url)
             req.httpMethod = request.method.rawValue
-            if let body = request.body {
+            if let body = request.bodyDict {
+                req.httpBody = try body.encoded()
+            }
+            if let body = request.bodyArray {
                 req.httpBody = try body.encoded()
             }
             if let token = Box.shared.tokenSubject.value {
@@ -149,17 +152,19 @@ extension Linkman {
                 throw "request failed, status: \(httpResponse.statusCode)"
             }
             
-            struct Rsp: Decodable {
-                let code: Int
-                let msg: String?
-            }
-            let rsp = try data.decoded() as Rsp
-            
-            guard rsp.code == 200 else {
-                if (rsp.code == 401) {
-                    Box.setToken(nil)
+            if request.checkResponse {
+                struct Rsp: Decodable {
+                    let code: Int
+                    let msg: String?
                 }
-                throw NetworkError.domainError(rsp.code, rsp.msg)
+                let rsp = try data.decoded() as Rsp
+                
+                guard rsp.code == 200 else {
+                    if (rsp.code == 401) {
+                        Box.setToken(nil)
+                    }
+                    throw NetworkError.domainError(rsp.code, rsp.msg)
+                }
             }
             
             
@@ -185,7 +190,8 @@ class Request: Withable {
     var path: String = ""
     var method: HTTPMethod = .GET
     var query: [String: String?]?
-    var body: JSONDict?
+    var bodyDict: JSONDict?
+    var bodyArray: [Any]?
     var headers: [String: String]?
     fileprivate var _uploadData: Data?
 
@@ -202,6 +208,7 @@ class Request: Withable {
     var sendError = true
     var throwError = true
     var forceStandalone: Bool = false
+    var checkResponse: Bool = true
     
     @discardableResult
     func make() async throws -> Self {
@@ -283,6 +290,12 @@ extension Data {
 
 typealias JSONDict = [String: Any]
 extension JSONDict {
+    func encoded() throws -> Data {
+        try JSONSerialization.data(withJSONObject: self)
+    }
+}
+
+extension [Any] {
     func encoded() throws -> Data {
         try JSONSerialization.data(withJSONObject: self)
     }

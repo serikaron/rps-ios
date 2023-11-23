@@ -8,7 +8,7 @@
 import Foundation
 
 enum MainTabPage: CaseIterable {
-    case index, record, cs
+    case index, record, cs, me
 }
 
 class TabService: ObservableObject {

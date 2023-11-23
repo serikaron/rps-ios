@@ -64,5 +64,12 @@ extension Image {
         static var comp: Image { return Image("cs-comp") }
         static var person: Image { return Image("cs-person") }
         static var bg: Image { return Image("cs-background") }
+        static var qrCodeBg: Image { return Image("cs-qrcode-bg") }
+    }
+    
+    enum me {
+        static var avatar: Image { return Image("me-avatar") }
+        static var message: Image { return Image("me-message") }
+        static var password: Image { return Image("me-password") }
     }
 }

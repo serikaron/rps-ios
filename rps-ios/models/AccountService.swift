@@ -84,7 +84,79 @@ class AccountService: ObservableObject {
     }
     
     func getNotice(pageNum: Int, pageSize: Int, orgId: Int) async {
+    }
+    
+    func getMessage(pageNum: Int, pageSize: Int) async -> (total: Int, current: Int, list: [Message]) {
+        if Box.isPreview {
+            return (100, pageNum, Message.mock)
+        }
         
+        do {
+            let rsp = try await Linkman.shared.getMessages(pageSize: pageSize, pageNum: pageNum)
+            return (rsp.total, rsp.current,
+                    rsp.records.map { Message(id: $0.id ?? 0,
+                                              content: $0.fvTextMessageContent ?? "",
+                                              read: $0.fiState == 1,
+                                              date: $0.fdCreateTime ?? "",
+                                              sender: $0.fvCreateBy ?? "") }
+            )
+        } catch {
+            print("getMessage FAILED!!! \(error)")
+            return (0, 0, [])
+        }
+    }
+    
+    func readMessage(id: Int) async {
+        do {
+            try await Linkman.shared.readMessage(id: id)
+        } catch {
+            print("readMessage FAILED!!! \(error)")
+        }
+    }
+    
+    func getUnread() async -> Int {
+        do {
+            return try await Linkman.shared.getUnread()
+        } catch {
+            print("getUnread FAILED!!! \(error)")
+            return 0
+        }
+    }
+    
+    func logout() async {
+        do {
+            try await Linkman.shared.logout()
+            Box.setToken(nil)
+        } catch {
+            print("logout FAILED!!! \(error)")
+        }
+    }
+    
+    func resetPassword(orgPassword: String, newPassword: String, newPassword2: String) async {
+        guard !orgPassword.isEmpty, !newPassword.isEmpty, !newPassword2.isEmpty else {
+            Box.sendError("请输入密码")
+            return
+        }
+        
+        guard newPassword == newPassword2 else {
+            Box.sendError("两次输入密码不一样")
+            return
+        }
+        
+        do {
+            try await Linkman.shared.updatePwd(oldPassword: orgPassword, newPassword: newPassword)
+        } catch {
+            print("resetPassword FAILED!!! \(error)")
+        }
+    }
+}
+
+extension AccountService {
+    static var preview: AccountService {
+        Box.isPreview = true
+        let out = AccountService()
+        out.account = Account(id: 0, orgId: 294, unitId: 0, nickname: "张三", phone: "13333333333", placeOrganization: "", placeUnit: "")
+        return out
     }
 }
 

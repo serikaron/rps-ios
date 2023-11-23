@@ -1206,3 +1206,11 @@ struct ConsultReportSheet {
     var comment: String = ""
     var images: [RpsImage] = []
 }
+
+struct Message {
+    let id: Int
+    let content: String
+    var read: Bool
+    let date: String
+    let sender: String
+}

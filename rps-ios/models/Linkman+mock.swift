@@ -348,19 +348,29 @@ extension Record {
 
 extension CSComp {
     static var mock: [CSComp] {
-        [
-            CSComp(name: "浙江估价公司--勿删", depts: [
-                CSDept(name: "杭州分公司")
-            ]),
-            CSComp(name: "浙江估价公司--勿删", depts: [
-                CSDept(name: "杭州分公司")
-            ]),
-        ]
+        (0..<10).map { i in
+            CSComp(name: "浙江估价公司--\(i)", depts: (0..<10).map { j in
+                CSDept(id: 1, name: "杭州分公司-\(i)-\(j)")
+            })
+        }
     }
 }
 
 extension CSUser {
     static var mock: [CSUser] {
-        (0..<3).map { CSUser(name: "刘强北-\($0)", link: nil)}
+        (0..<10).map { CSUser(name: "刘强北-\($0)", link: nil)}
+    }
+}
+
+extension Message {
+    static var mock: [Message] {
+        (0..<10).map { 
+            Message(
+                id: $0,
+                content: Bool.random() ? (0..<80).map { _ in "长长长文字" }.joined(separator: "-") : "短文字",
+                read: Bool.random(), date: Date().toString(),
+                sender: "27168"
+            )
+        }
     }
 }
