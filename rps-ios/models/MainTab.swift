@@ -13,4 +13,7 @@ enum MainTabPage: CaseIterable {
 
 class TabService: ObservableObject {
     @Published var selectedTab: MainTabPage = .index
+    @Published var isHidden = false
+    
+    static var height: CGFloat = 49 + 34
 }

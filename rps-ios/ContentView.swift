@@ -15,9 +15,7 @@ struct ContentView: View {
 //        Task {
 //            await DictType.getDict()
 //        }
-//        Box.setToken(nil)
-//        Linkman.shared.standalone = true
-//        Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoiQlFpb0p2WUJkaTBzNlRvQ1NtMlg1RmIxRHZuV3NOZUMiLCJ1c2VySWQiOjQwfQ.38Hkz9cSo2tuMGHGilzrlMr3VRgrbUOrLjldbiKUpc8")
+        MapService.initMAMapKit()
     }
     
 //    var body: some View {

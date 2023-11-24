@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct CustomText: ViewModifier {
     let size: CGFloat
@@ -94,5 +95,127 @@ extension View {
     }
     func itemPlaceholder() -> some View {
         modifier(CustomText(size: 14, color: .text.grayCD, weight: .regular))
+    }
+}
+
+// MARK: -
+
+extension UIApplication {
+    var key: UIWindow? {
+        self.connectedScenes
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?
+            .windows
+            .filter({$0.isKeyWindow})
+            .first
+    }
+}
+
+
+extension UIView {
+    func allSubviews() -> [UIView] {
+        var subs = self.subviews
+        for subview in self.subviews {
+            let rec = subview.allSubviews()
+            subs.append(contentsOf: rec)
+        }
+        return subs
+    }
+}
+    
+
+struct TabBarModifier {
+    static func showTabBar() {
+        UIApplication.shared.key?.allSubviews().forEach({ subView in
+            if let view = subView as? UITabBar {
+                view.isHidden = false
+            }
+        })
+    }
+    
+    static func hideTabBar() {
+        UIApplication.shared.key?.allSubviews().forEach({ subView in
+            if let view = subView as? UITabBar {
+                view.isHidden = true
+                view.backgroundColor = .clear
+            }
+        })
+    }
+}
+
+struct ShowTabBar: ViewModifier {
+    func body(content: Content) -> some View {
+        return content.padding(.zero).onAppear {
+            TabBarModifier.showTabBar()
+        }
+    }
+}
+struct HiddenTabBar: ViewModifier {
+    func body(content: Content) -> some View {
+        return content.padding(.zero).onAppear {
+            TabBarModifier.hideTabBar()
+        }
+    }
+}
+
+extension View {
+    
+    func showTabBar() -> some View {
+        return self.modifier(ShowTabBar())
+    }
+
+    func hiddenTabBar() -> some View {
+        return self.modifier(HiddenTabBar())
+    }
+}
+
+// MARK: -
+
+extension Publishers {
+    // 1.
+    static var keyboardHeight: AnyPublisher<CGFloat, Never> {
+        // 2.
+        let willShow = NotificationCenter.default.publisher(for: UIApplication.keyboardWillShowNotification)
+            .map { $0.keyboardHeight }
+        
+        let willHide = NotificationCenter.default.publisher(for: UIApplication.keyboardWillHideNotification)
+            .map { _ in CGFloat(0) }
+        
+        // 3.
+        return MergeMany(willShow, willHide)
+            .eraseToAnyPublisher()
+    }
+}
+
+extension Notification {
+    var keyboardHeight: CGFloat {
+        return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
+    }
+}
+
+struct KeyboardAdaptive: ViewModifier {
+    @State private var keyboardHeight: CGFloat = 0
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.bottom, keyboardHeight / 2)
+            .onReceive(Publishers.keyboardHeight) { h in
+                withAnimation {
+                    self.keyboardHeight = h
+                }
+            }
+    }
+}
+
+extension View {
+    func keyboardAdaptive() -> some View {
+        ModifiedContent(content: self, modifier: KeyboardAdaptive())
+    }
+}
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }

@@ -54,10 +54,11 @@ struct IndexView: View {
             }
         }
         .onAppear {
-            Task {
-                curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
-            }
+//            Task {
+//                curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
+//            }
         }
+        .showTabBar()
     }
     
     var content: some View {
@@ -146,15 +147,25 @@ struct IndexView: View {
     }
     
     private var searchAction: some View {
-        return searchInput
-            .padding(.horizontal, 16)
-            .padding(.top, 28)
-            .padding(.bottom, 28)
-            .background(
-                Color(hex: "#EDF1FF").opacity(0.5)
-                    .cornerRadius(8)
-                    .shadow(color: Color(hex: "#C8C8C8").opacity(0.25), radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-            )
+        HStack {
+            searchInput
+                .padding(.top, 28)
+                .padding(.bottom, 28)
+            Spacer().frame(width: 18)
+            NavigationLink {
+                MapSearchView()
+            } label: {
+                Text("地图找房")
+                    .customText(size: 14, color: .white)
+                    .frame(width: 84, height: 36)
+                    .background(Color.main)
+                    .clipShape(RoundedRectangle(cornerRadius: 18))
+            }
+        }
+        .padding(.horizontal, 16)
+        .background(Color(hex: "#EDF1FF").opacity(0.5))
+        .cornerRadius(8)
+        .shadow(color: Color(hex: "#C8C8C8").opacity(0.25), radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
     }
     
     private var searchInput: some View {

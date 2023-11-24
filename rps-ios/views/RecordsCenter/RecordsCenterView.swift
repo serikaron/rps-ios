@@ -371,14 +371,26 @@ private struct RecordView: View {
                     Text("获到报告单")
                 }
                     .disabled(button1Disabled)
-                Button("重新估价") {}
-                    .disabled(button2Disabled)
-                Button("提交委托") {}
-                    .disabled(button3Disabled)
+                NavigationLink {
+                    RoomDetailView(familyRoomName: record.address, areaCode: record.areaCode, estateType: record.estateType.dictKey, buildingId: record.buildingId, floor: record.floor)
+                } label: {
+                    Text("重新估价")
+                }
+                .disabled(button2Disabled)
+                NavigationLink {
+                    AddReportView(inquiry: nil, detail: nil)
+                } label: {
+                    Text("提交委托")
+                }
+                .disabled(button3Disabled)
                 Button("撤消询价") {}
                     .disabled(button4Disabled)
-                Button("提交询价") {}
-                    .disabled(button5Disabled)
+                NavigationLink {
+                    AddInquiryView(inquiry: nil)
+                } label: {
+                    Text("提交询价")
+                }
+                .disabled(button5Disabled)
                 Button("客户咨询") {
                     tabService.selectedTab = .cs
                 }

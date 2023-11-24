@@ -28,15 +28,15 @@ extension Linkman.NetworkSearchResult {
             fvCompoundName: "新世纪花苑",
             fvNameAlias: "新世纪花苑小区",
             fvStreetMark: "11浙江省杭州市西湖区古墩路1105号",
-//            fvToEast: "",
-//            fvToSouth: "",
-//            fvToWest: "",
-//            fvToNorth: "",
-//            fvAreaLocation: "7",
+            fvToEast: "",
+            fvToSouth: "",
+            fvToWest: "",
+            fvToNorth: "",
+            fvAreaLocation: "7",
 //            picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
             picUrls: "",
             fvCompletionDate: "2001",
-//            fvPois: null,
+            fvPois: nil,
 //            fiOrgId: 294,
 //            fvProvinceName: "浙江省",
 //            fvCityName: "杭州市",
@@ -58,8 +58,14 @@ extension Linkman.NetworkSearchResult {
             fvCompoundName: "fvCompoundName-\(num)",
             fvNameAlias: "fvNameAlias-\(num)",
             fvStreetMark: "fvStreetMark-\(num)",
+            fvToEast: "",
+            fvToSouth: "",
+            fvToWest: "",
+            fvToNorth: "",
+            fvAreaLocation: "7",
             picUrls: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg",
             fvCompletionDate: "\(num)",
+            fvPois: nil,
             fiBuildingId: 0,
             fvInFloor: "1-1"
         )
@@ -327,7 +333,9 @@ extension Record {
             downloadState: ._1,
             totalPrice: "3149400", price: "39311", area: "80",
             roomId: "",
-            buildingId: 0
+            buildingId: 0,
+            areaCode: 0,
+            floor: ""
         )
     }
 }
@@ -358,5 +366,14 @@ extension Message {
                 sender: "27168"
             )
         }
+    }
+}
+
+extension MapCompound {
+    static var mock: Self {
+        MapCompound(name: "宝石小区", alias: "宝石小区", streetMark: "233号", north: "金祝小区", south: "金祝小区", east: "金祝小区", west: "金祝小区", location: "胜利",
+//                    coordinate: Coordinate(latitude: 30.25301, longitude: 120.167998),
+                    coordinate: nil,
+                    picUrl: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "")
     }
 }

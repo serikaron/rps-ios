@@ -39,6 +39,7 @@ extension Image {
         static var removeIcon: Image { return Image("index-remove-icon") }
         static var addIcon: Image { return Image("index-add-icon") }
         static var addButton: Image { return Image("index-add-button") }
+        static var mapBack: Image { return Image("index-map-back") }
     }
     
     enum onboarding {

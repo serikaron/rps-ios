@@ -12,6 +12,7 @@ struct RoomDetailView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var estateService: EstateService
     @EnvironmentObject var accountService: AccountService
+    @EnvironmentObject var tabService: TabService
     
     
     let familyRoomName: String
@@ -34,7 +35,7 @@ struct RoomDetailView: View {
         ZStack {
             Color.view.background
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea(edges: .bottom)
+//                .ignoresSafeArea(edges: .bottom)
             VStack(spacing: 0) {
                 ScrollView {
                     ZStack(alignment: .top) {
@@ -79,6 +80,7 @@ struct RoomDetailView: View {
                 initialized = true
             }
         }
+        .showTabBar()
     }
     
     @State private var selectedTab: RoomDetailTab = .inquiryDetail
@@ -178,7 +180,7 @@ struct RoomDetailView: View {
             }
             Spacer().frame(height: 16)
             if mapShowing {
-                Color.gray
+                MapView(coordinate: $roomDetail.coordinate)
                     .frame(height: 138)
                     .cornerRadius(5)
             }
@@ -219,6 +221,9 @@ struct RoomDetailView: View {
             }
             HStack {
                 actionItem(title: "价格反馈")
+                    .onTapGesture {
+                        tabService.selectedTab = .cs
+                    }
                 Spacer()
                 actionItem(title: "复制询价")
                 Spacer()
@@ -244,19 +249,23 @@ struct RoomDetailView: View {
 }
 
 #Preview {
-    NavigationView {
-        RoomDetailView(
-            familyRoomName: "宝石1幢1单元RF301",
-            areaCode: 300106,
-            estateType: "singleApartment",
-            buildingId: 1,
-            floor: "1-1"
-        )
-        .environmentObject(
-            EstateService()
-        )
-        .environmentObject(AccountService())
-        .navigationBarTitleDisplayMode(.inline)
+    MapService.initMAMapKit()
+    return TabView {
+        NavigationView {
+            RoomDetailView(
+                familyRoomName: "宝石1幢1单元RF301",
+                areaCode: 300106,
+                estateType: "singleApartment",
+                buildingId: 1,
+                floor: "1-1"
+            )
+            .environmentObject(
+                EstateService()
+            )
+            .environmentObject(AccountService())
+            .environmentObject(TabService())
+            .navigationBarTitleDisplayMode(.inline)
+        }
     }
 }
 //
@@ -1660,7 +1669,7 @@ private struct InfoFixView: View {
         .sectionStyle()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black.opacity(0.6))
-        .ignoresSafeArea()
+//        .ignoresSafeArea()
         .onAppear {
             setup()
         }

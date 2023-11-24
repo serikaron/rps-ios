@@ -23,41 +23,43 @@ struct MainView: View {
             .environmentObject(accountService)
             .environmentObject(estateService)
             .environmentObject(tabService)
-            
-            HStack {
-                ForEach(MainTabPage.allCases, id: \.self) { page in
-                    Button {
-                        tabService.selectedTab = page
-                    } label: {
-                        Group {
-                            if (page == tabService.selectedTab) {
-                                VStack {
-                                    page.buttonIconSelected
-                                    Text(page.buttonTitle)
-                                        .customText(size: 10, color: .main)
-                                        .lineLimit(1)
-                                }
-                            } else {
-                                VStack {
-                                    page.buttonIcon
-                                    Text(page.buttonTitle)
-                                        .customText(size: 10, color: .black)
+
+            if !tabService.isHidden {
+                HStack {
+                    ForEach(MainTabPage.allCases, id: \.self) { page in
+                        Button {
+                            tabService.selectedTab = page
+                        } label: {
+                            Group {
+                                if (page == tabService.selectedTab) {
+                                    VStack {
+                                        page.buttonIconSelected
+                                        Text(page.buttonTitle)
+                                            .customText(size: 10, color: .main)
+                                            .lineLimit(1)
+                                    }
+                                } else {
+                                    VStack {
+                                        page.buttonIcon
+                                        Text(page.buttonTitle)
+                                            .customText(size: 10, color: .black)
+                                    }
                                 }
                             }
+                            .frame(maxWidth: .infinity)
                         }
-                        .frame(maxWidth: .infinity)
                     }
                 }
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .background(
+                    Color.white
+                        .cornerRadius(8)
+                        .shadow(color: .hex("#A4ADBC").opacity(0.2), radius: 10)
+                        .frame(height: 49+34)
+                        .frame(maxHeight: .infinity, alignment: .bottom)
+                        .ignoresSafeArea()
+                )
             }
-            .frame(maxHeight: .infinity, alignment: .bottom)
-            .background(
-                Color.white
-                    .cornerRadius(8)
-                    .shadow(color: .hex("#A4ADBC").opacity(0.2), radius: 10)
-                    .frame(height: 49+34)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .ignoresSafeArea()
-            )
         }
         .onAppear {
             Task {

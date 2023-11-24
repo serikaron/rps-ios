@@ -572,7 +572,9 @@ class EstateService: ObservableObject {
                         price: r.fvValuationPrice ?? "",
                         area: r.fbBuildingArea == nil ? "" : "\(r.fbBuildingArea!)",
                         roomId: r.fiRoomId ?? "",
-                        buildingId: r.fiBuildingId ?? 0
+                        buildingId: r.fiBuildingId ?? 0,
+                        areaCode: r.fiAreaCode ?? 0,
+                        floor: "\(r.fiBeginFloor ?? 0)-\(r.fiEndFloor ?? 0)"
                     )
                 })
         } catch {
@@ -675,6 +677,60 @@ class EstateService: ObservableObject {
             print("addReport FAILED!!! \(error)")
         }
     }
+    
+    func searchMap(address: String) async -> MapCompound? {
+        if Box.isPreview { return .mock }
+        
+        do {
+            let rsp = try await Linkman.shared.exactSearch(keyword: address, pageSize: 1, pageNum: 1)
+            guard !rsp.records.isEmpty else {
+                throw "record not found"
+            }
+            
+            let r = rsp.records[0]
+            var coordinate: Coordinate?
+            if let pois = r.fvPois,
+               let data = pois.data(using: .utf8) {
+                do {
+                    coordinate = try data.decoded() as Coordinate
+                } catch { }
+            }
+            
+            var loc = ""
+            if let location = DictType.AreaLocation(rawValue: r.fvAreaLocation) {
+                loc = location.label
+            }
+            
+            var picUrl = ""
+            if let urlString = r.picUrls {
+                let urls = urlString.components(separatedBy: ",")
+                if !urls.isEmpty {
+                    picUrl = urls[0]
+                }
+            }
+            
+            return MapCompound(
+                name: r.fvCompoundName ?? "",
+                alias: r.fvNameAlias ?? "",
+                streetMark: r.fvStreetMark ?? "",
+                north: r.fvToNorth ?? "",
+                south: r.fvToSouth ?? "",
+                east: r.fvToEast ?? "",
+                west: r.fvToWest ?? "",
+                location: loc,
+                coordinate: coordinate,
+                picUrl: picUrl,
+                familyRoomName: r.fvFamilyRoomName ?? "",
+                areaCode: r.fiAreaCode ?? 0,
+                estateType: r.fvEstateType ?? "",
+                buildingId: r.fiBuildingId ?? 0,
+                floor: r.fvInFloor ?? ""
+            )
+        } catch {
+            print("searchMap failed!!! \(error)")
+            return nil
+        }
+    }
 }
 
 extension SearchResult {
@@ -731,13 +787,6 @@ extension EstateService {
         out.exactSearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
         out.fuzzySearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
         out.buildings = (0..<10).map { _ in Building.mock }
-        return out
-    }
-}
-
-extension InquirySheet {
-    func toDict() -> [String: Any] {
-        var out = [String:Any]()
         return out
     }
 }

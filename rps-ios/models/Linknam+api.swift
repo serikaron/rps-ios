@@ -108,8 +108,14 @@ extension Linkman {
         let fvCompoundName: String?
         let fvNameAlias: String?
         let fvStreetMark: String?
+        let fvToEast: String?
+        let fvToSouth: String?
+        let fvToWest: String?
+        let fvToNorth: String?
+        let fvAreaLocation: String?
         let picUrls: String?
         let fvCompletionDate: String?
+        let fvPois: String?
         let fiBuildingId: Int?
         let fvInFloor: String?
     }
@@ -330,6 +336,7 @@ extension Linkman {
         var fvKindergarten: String?
         var fvPrimarySchool: String?
         var fvMiddleSchool: String?
+        var fvPois: String?
     }
     
     struct NetworkRoomDetail: Codable {
@@ -735,6 +742,9 @@ extension Linkman {
         let fbBuildingArea: Double?
         let fiRoomId: String?
         let fiBuildingId: Int?
+        let fiAreaCode: Int?
+        let fiBeginFloor: Int?
+        let fiEndFloor: Int?
     }
     
     struct NetworkRecordImage: Codable {
