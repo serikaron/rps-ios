@@ -223,24 +223,24 @@ class Request: Withable {
         }
     }
     
-    func uploadInfo(filename: String, data: Data, boundary: String = UUID().uuidString) -> Self {
+    func uploadInfo(filename: String, binary: Data, boundary: String = UUID().uuidString) -> Self {
         if headers == nil {
             headers = [:]
         }
         headers!["Content-Type"] = "multipart/form-data; boundary=\(boundary)"
         
-        var data = Data()
+        var formData = Data()
         
         // Add the image data to the raw http request data
-        data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
+        formData.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
         let paramName = "file"
-        data.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
-        data.append("Content-Type: image/png\r\n\r\n".data(using: .utf8)!)
-        data.append(data)
+        formData.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+        formData.append("Content-Type: image/png\r\n\r\n".data(using: .utf8)!)
+        formData.append(binary)
         
-        data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        formData.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
         
-        _uploadData = data
+        _uploadData = formData
         
         return self
     }

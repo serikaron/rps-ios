@@ -31,8 +31,10 @@ class EstateService: ObservableObject {
     
     var isPreview = false
     
-    func fuzzySearch(keyword: String) {
-        guard !keyword.isEmpty else {
+    @Published var fuzzyKeyword = ""
+    
+    func fuzzySearch() {
+        guard !fuzzyKeyword.isEmpty else {
             fuzzySearchResult = []
             return
         }
@@ -48,7 +50,7 @@ class EstateService: ObservableObject {
                     return
                 }
                 
-                fuzzySearchResult = await _searchRoom(keyword: keyword)
+                fuzzySearchResult = await _searchRoom(keyword: fuzzyKeyword)
             } catch {
                 fuzzySearchResult = []
             }
@@ -732,13 +734,23 @@ class EstateService: ObservableObject {
         }
     }
     
-    func ocr(image: RpsImage) async {
+    func ocr(image: RpsImage) async -> String? {
         do {
             let rsp = try await Linkman.shared.upload(image: image.image, filename: image.filename)
-            guard let url = rsp.url else { return }
-            try await Linkman.shared.recognizeEstateCertificationWithOptions(ossUrl: url)
+            guard let url = rsp.url else { return nil }
+            let ocrRsp = try await Linkman.shared.recognizeEstateCertificationWithOptions(ossUrl: url)
+            return ocrRsp.fvThePropertyIsLocated
         } catch {
             print("ocr FAILED!!! \(error)")
+            return nil
+        }
+    }
+    
+    func withdrawInquiry(id: Int) async {
+        do {
+            try await Linkman.shared.withdrawInquiry(id: id)
+        } catch {
+            print("withdrawInquiry FAILED!!! \(error)")
         }
     }
 }

@@ -266,6 +266,8 @@ private struct MoreFilterView: View {
 
 private struct RecordView: View {
     @EnvironmentObject var tabService: TabService
+    @EnvironmentObject var estateService: EstateService
+    
     let record: Record
     
     var body: some View {
@@ -383,7 +385,11 @@ private struct RecordView: View {
                     Text("提交委托")
                 }
                 .disabled(button3Disabled)
-                Button("撤消询价") {}
+                Button("撤消询价") {
+                    Task {
+                        await estateService.withdrawInquiry(id: record.id)
+                    }
+                }
                     .disabled(button4Disabled)
                 NavigationLink {
                     AddInquiryView(inquiry: nil)
@@ -465,10 +471,18 @@ private struct RecordView: View {
     private var buttonViewReport: some View {
         ScrollView(.horizontal) {
             HStack {
-                Button("提交委托") {}
-                    .disabled(reportButton1Disabled)
-                Button("撤消询价") {}
-                    .disabled(reportButton2Disabled)
+                NavigationLink {
+                    AddReportView(inquiry: nil, detail: nil)
+                } label: {
+                    Text("提交委托")
+                }
+                .disabled(reportButton1Disabled)
+                Button("撤消询价") {
+                    Task {
+                        await estateService.withdrawInquiry(id: record.id)
+                    }
+                }
+                .disabled(reportButton2Disabled)
                 Button("查看结果") {}
                     .disabled(reportButton3Disabled)
                 Button("客户咨询") {}

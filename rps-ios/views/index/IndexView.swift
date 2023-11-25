@@ -20,6 +20,7 @@ struct IndexView: View {
     @State private var estateType = DictType.EstateType.commApartment
     @State private var ocrImage = ImagePicker.ImageInfo(image: UIImage(), imageURL: "")
     @State private var showImpagePicker = false
+    @State private var navOcr = false
     
     var body: some View {
         ZStack {
@@ -33,7 +34,13 @@ struct IndexView: View {
                             noticeList = await Notice.list(pageNum: 1, pageSize: 10, orgId: accountService.account?.orgId ?? 0)
                         }
                     }
-                
+                    .overlay (
+                        NavigationLink(
+                            destination: FuzzySearchView(),
+                            isActive: $navOcr) {
+                                EmptyView()
+                        }
+                    )
             }
             if isChoisesShown {
                 Color.white.opacity(0.01)
@@ -186,7 +193,10 @@ struct IndexView: View {
                     .onChange(of: ocrImage) { _ in
                         guard !ocrImage.imageURL.isEmpty else { return }
                         Task {
-                            await estateService.ocr(image: .from(pickerImage: ocrImage))
+                            guard let searchResult = await estateService.ocr(image: .from(pickerImage: ocrImage))
+                            else { return }
+                            estateService.fuzzyKeyword = searchResult
+                            navOcr = true
                         }
                     }
                 Spacer().frame(width: 10)

@@ -688,7 +688,7 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/resource/rps/oss/upload")
             .with(\.method, setTo: .POST)
-            .uploadInfo(filename: filename, data: image.pngData()!)
+            .uploadInfo(filename: filename, binary: image.pngData()!)
             .make()
             .response() as UploadResponse
     }
@@ -925,16 +925,24 @@ extension Linkman {
             .make()
     }
     
-    func recognizeEstateCertificationWithOptions(ossUrl: String) async throws {
-        guard let url = ossUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {
-            throw "invalid ossUrl"
-        }
-        
-        let rawURL = "\(URLComponents.rps().url!)/inquiry/rps/aliyunOCRController/recognizeEstateCertificationWithOptions?url=\(url)"
-        
+    struct OcrResponse: Codable {
+        let fvThePropertyIsLocated: String?
+    }
+    
+    func recognizeEstateCertificationWithOptions(ossUrl: String) async throws -> OcrResponse {
         try await Request()
-            .with(\.rawURL, setTo: rawURL)
+            .with(\.path, setTo: "/inquiry/rps/aliyunOCRController/recognizeEstateCertificationWithOptions")
             .with(\.method, setTo: .GET)
+            .with(\.query, setTo: ["url": ossUrl])
+            .make()
+            .response() as OcrResponse
+    }
+    
+    func withdrawInquiry(id: Int) async throws {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/inquiry/withdraw")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: ["id":"\(id)"])
             .make()
     }
 }

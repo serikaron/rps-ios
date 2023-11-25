@@ -20,7 +20,7 @@ struct FuzzySearchView: View {
     var body: some View {
         ZStack {
             NavigationLink(isActive: $showExactSearchView) {
-                ExactSearchView(text: text)
+                ExactSearchView(text: estateService.fuzzyKeyword)
                     .environmentObject(estateService)
             } label: {
                 EmptyView()
@@ -42,13 +42,13 @@ struct FuzzySearchView: View {
 
             VStack {
                 Spacer().frame(height: 10)
-                SearchInputView(text: $text, ocrAction: {}, searchAction: {
-                    guard !text.isEmpty else { return }
+                SearchInputView(text: $estateService.fuzzyKeyword, ocrAction: {}, searchAction: {
+                    guard !estateService.fuzzyKeyword.isEmpty else { return }
                     
                     switch nextAction {
                     case .exactSearch:
                         Task {
-                            await estateService.exactSearch(keyword: text)
+                            await estateService.exactSearch(keyword: estateService.fuzzyKeyword)
                         }
                         showExactSearchView = true
                     case .detail:
@@ -64,11 +64,11 @@ struct FuzzySearchView: View {
             .setupNavigationBar(title: "搜索", {
                 presentationMode.wrappedValue.dismiss()
             })
-            .onChange(of: text) { newValue in
+            .onChange(of: estateService.fuzzyKeyword) { newValue in
                 if !disableSearch {
                     nextAction = .exactSearch
                     selectedRoomInfo = nil
-                    estateService.fuzzySearch(keyword: text)
+                    estateService.fuzzySearch()
                 }
                 disableSearch = false
             }
@@ -76,8 +76,6 @@ struct FuzzySearchView: View {
     }
     
     private var searchRoomTask: Task<Void, Never>?
-    
-    @State private var text: String = ""
     
     private var liteInfoList: SearchResultList {
         estateService.fuzzySearchResult
@@ -91,7 +89,7 @@ struct FuzzySearchView: View {
                 Button {
                     disableSearch = true
                     nextAction = .detail
-                    text = info.roomName ?? ""
+                    estateService.fuzzyKeyword = info.roomName ?? ""
                     selectedRoomInfo = info
                 } label: {
                     roomItem(info: info)
