@@ -46,6 +46,26 @@ class AccountService: ObservableObject {
         }
     }
     
+    func getSms(phone: String) async {
+        do {
+            try await Linkman.shared.getSms(phone: phone)
+        } catch {
+            print("getSms FAILED!!! \(error)")
+        }
+    }
+    
+    func login(phone: String, smsCode: String) async {
+        do {
+            let loginRsp = try await Linkman.shared.login(phone: phone, smsCode: smsCode)
+            Box.setToken(loginRsp.access_token)
+            try await getInfo()
+        } catch {
+            print("login failed: \(error)")
+            account = nil
+            Box.setToken(nil)
+        }
+    }
+    
     private func getInfo() async throws {
         if Box.isPreview { return }
         

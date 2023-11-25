@@ -16,6 +16,7 @@ struct ReportSheetView: View {
     let type: Int
     let estateType: String
     let inquiryId: Int
+    let reportState: Int
     
     var body: some View {
         ScrollView {
@@ -38,7 +39,7 @@ struct ReportSheetView: View {
                     .padding(.horizontal, 12)
                     .onTapGesture {
                         Task {
-                            await estateService.addConsultReport(sheet: sheet, inquiryId: inquiryId)
+                            await estateService.addConsultReport(sheet: sheet, inquiryId: inquiryId, reportState: reportState)
                         }
                     }
             }
@@ -52,7 +53,7 @@ struct ReportSheetView: View {
 }
 
 #Preview {
-    ReportSheetView(type: 0, estateType: DictType.EstateType.commApartment.dictKey, inquiryId: 0)
+    ReportSheetView(type: 0, estateType: DictType.EstateType.commApartment.dictKey, inquiryId: 0, reportState: 2)
         .environmentObject(EstateService.preview)
 }
 

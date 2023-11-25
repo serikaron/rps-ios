@@ -202,7 +202,7 @@ struct RoomDetailView: View {
         VStack(spacing: 20) {
             HStack {
                 NavigationLink {
-                    ReportSheetView(type: InquiryType.system.dictKey, estateType: estateType, inquiryId: inquiry?.id ?? 0)
+                    ReportSheetView(type: InquiryType.system.dictKey, estateType: estateType, inquiryId: inquiry?.id ?? 0, reportState: 2)
                 } label: {
                     actionItem(title: "获取报告单")
                 }

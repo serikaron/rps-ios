@@ -23,6 +23,24 @@ extension Linkman {
             .response() as LoginResponse
     }
     
+    func getSms(phone: String) async throws {
+        try await Request()
+            .with(\.path, setTo: "/auth/rps/getSms")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: ["phone": phone])
+            .make()
+    }
+    
+    func login(phone: String, smsCode: String) async throws -> LoginResponse {
+        return try await Request()
+            .with(\.path, setTo: "/auth/rps/smsLogin")
+            .with(\.method, setTo: .POST)
+            .with(\.bodyDict, setTo: ["username": phone, "smdCode": smsCode, "deviceType": "APP"])
+            .with(\.standaloneResponse, setTo: standaloneResponse(LoginResponse(access_token: "mockToken")))
+            .make()
+            .response() as LoginResponse
+    }
+
     struct NetworkUser: Codable {
         let id: Int
         let fiOrgId: Int
@@ -943,6 +961,13 @@ extension Linkman {
             .with(\.path, setTo: "/inquiry/rps/inquiry/withdraw")
             .with(\.method, setTo: .GET)
             .with(\.query, setTo: ["id":"\(id)"])
+            .make()
+    }
+    
+    func sendReportToEmail(id: String, email: String) async throws {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/complexReport/sendMail/\(id)/\(email)")
+            .with(\.method, setTo: .GET)
             .make()
     }
 }

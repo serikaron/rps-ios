@@ -616,7 +616,7 @@ class EstateService: ObservableObject {
     }
     
     
-    func addConsultReport(sheet: ConsultReportSheet, inquiryId: Int) async {
+    func addConsultReport(sheet: ConsultReportSheet, inquiryId: Int, reportState: Int) async {
         guard !sheet.clientName.isEmpty,
               let landArea = sheet.landArea,
               landArea != 0,
@@ -629,7 +629,8 @@ class EstateService: ObservableObject {
         }
         
         var dict = [String: Any]()
-        dict["fiReportState"] = 2
+//        dict["fiReportState"] = 2
+        dict["fiReportState"] = reportState
         dict["fiInquiryId"] = inquiryId
         dict["fiTemplateId"] = template.id
         dict["fvCustomerName"] = sheet.clientName
@@ -753,7 +754,17 @@ class EstateService: ObservableObject {
             print("withdrawInquiry FAILED!!! \(error)")
         }
     }
+    
+    func sendReportToMail(id: String, email: String) async {
+        do {
+            try await Linkman.shared.sendReportToEmail(id: id, email: email)
+        } catch {
+            print("sendReportToMail FAILED!!! \(error)")
+        }
+    }
 }
+
+// MARK: -
 
 extension SearchResult {
     static func mock(num: Int) -> SearchResult {

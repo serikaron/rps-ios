@@ -99,6 +99,7 @@ private struct LoginView: View {
                 text: $account,
                 secure: false
             )
+            .textContentType(.username)
             Spacer().frame(height: 20)
             OnboardingInput(
                 icon: Image.onboarding.passwordIcon,
@@ -106,6 +107,7 @@ private struct LoginView: View {
                 text: $password,
                 secure: true
             )
+            .textContentType(.password)
             Spacer().frame(height: 30)
             Button {
                 Task {
@@ -135,6 +137,7 @@ private struct LoginView: View {
                 text: $phone,
                 secure: false
             )
+            .textContentType(.telephoneNumber)
             Spacer().frame(height: 20)
             OnboardingInput(
                 icon: Image.onboarding.codeIcon,
@@ -142,15 +145,23 @@ private struct LoginView: View {
                 text: $code,
                 secure: false
             )
+            .textContentType(.oneTimeCode)
                 .overlay (
                     Text("获到验证码")
                         .customText(size: 14, color: .main)
                         .padding(.trailing, 8)
-                    , alignment: .trailing
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .onTapGesture {
+                            Task {
+                                await accountService.getSms(phone: phone)
+                            }
+                        }
                 )
             Spacer().frame(height: 30)
             Button {
-                
+                Task {
+                    await accountService.login(phone: phone, smsCode: code)
+                }
             } label: {
                 loginButtonLabel
             }

@@ -17,6 +17,7 @@ struct RecordsCenterView: View {
     @State private var moreSheetShown = false
     @State private var maskAlpha: Double = .zero
     @State private var sheetOffset: Double = 300
+    @State private var popupRecord: Record?
     
     var body: some View {
         NavigationView {
@@ -31,6 +32,8 @@ struct RecordsCenterView: View {
                     .frame(maxHeight: .infinity, alignment: .bottom)
                     .offset(x: 0, y: sheetOffset)
                     .ignoresSafeArea()
+                RecordPopupView(record: $popupRecord)
+                    .opacity(popupRecord == nil ? 0 : 1)
             }
             .navigationTitle(page.viewTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -49,13 +52,16 @@ struct RecordsCenterView: View {
                     sheetOffset = shown ? 0 : 300
                 }
             }
+            .onDisappear {
+                popupRecord = nil
+            }
         }
     }
     
     private var content: some View {
         VStack(spacing: 0) {
             header
-            RecordListView(page: $page, filter: $param)
+            RecordListView(page: $page, filter: $param, popupRecord: $popupRecord)
         }
         .background(Color.view.background)
     }
@@ -269,6 +275,7 @@ private struct RecordView: View {
     @EnvironmentObject var estateService: EstateService
     
     let record: Record
+    @Binding var popupRecord: Record?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -368,7 +375,7 @@ private struct RecordView: View {
         ScrollView(.horizontal) {
             HStack {
                 NavigationLink {
-                    ReportSheetView(type: record.inquiryType!.dictKey, estateType: record.estateType.dictKey, inquiryId: record.id)
+                    ReportSheetView(type: record.inquiryType!.dictKey, estateType: record.estateType.dictKey, inquiryId: record.id, reportState: 2)
                 } label: {
                     Text("获到报告单")
                 }
@@ -483,9 +490,15 @@ private struct RecordView: View {
                     }
                 }
                 .disabled(reportButton2Disabled)
-                Button("查看结果") {}
+                Button("查看结果") {
+                    withAnimation {
+                        popupRecord = record
+                    }
+                }
                     .disabled(reportButton3Disabled)
-                Button("客户咨询") {}
+                Button("客户咨询") {
+                    tabService.selectedTab = .cs
+                }
                     .disabled(reportButton4Disabled)
             }
         }
@@ -539,7 +552,7 @@ private struct RecordView: View {
 }
 
 #Preview("Record") {
-    RecordView(record: Record.mock)
+    RecordView(record: Record.mock, popupRecord: .constant(nil))
 }
 
 private struct RecordListView: View {
@@ -551,12 +564,13 @@ private struct RecordListView: View {
     @State private var total = Int.max
     @Binding var page: RecordPage
     @Binding var filter: SearchFilter
+    @Binding var popupRecord: Record?
     
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 10) {
                 ForEach(Array(zip(records.indices, records)), id: \.0) { idx, r in
-                    RecordView(record: r)
+                    RecordView(record: r, popupRecord: $popupRecord)
                         .onAppear {
                             if idx == records.count - 2 {
                                 getRecord()
@@ -587,6 +601,81 @@ private struct RecordListView: View {
             total = r.total
         }
     }
+}
+
+private struct RecordPopupView: View {
+    @EnvironmentObject var estateService: EstateService
+    @EnvironmentObject var accountService: AccountService
+    
+    @Binding var record: Record?
+    
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.6)
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
+                    hide()
+                }
+            
+            VStack {
+                Image.index.close
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing, 12)
+                    .onTapGesture {
+                        hide()
+                    }
+                Spacer().frame(height: 20)
+                HStack {
+                    NavigationLink {
+                        ReportSheetView(type: record?.inquiryType?.dictKey ?? 0, estateType: record?.estateType.dictKey ?? "", inquiryId: record?.id ?? 0, reportState: 1)
+                    } label: {
+                        Text("直接下载")
+                            .customText(size: 16, color: .main)
+                            .frame(height: 40)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.main, lineWidth: 1)
+                            )
+                    }
+                    Text("发送邮箱")
+                        .customText(size: 16, color: .white)
+                        .frame(height: 40)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.main)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .onTapGesture {
+                            Task {
+                                if let record = record {
+                                    await estateService.sendReportToMail(id: "\(record.id)", email: accountService.account?.email ?? "")
+                                }
+                                hide()
+                            }
+                        }
+                }
+                .padding(.horizontal, 20)
+            }
+            .padding(.top, 12)
+            .padding(.bottom, 45)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .padding(.horizontal, 30)
+        }
+    }
+    
+    private func hide() {
+        withAnimation {
+            record = nil
+        }
+    }
+}
+
+#Preview("popup") {
+    RecordPopupView(record: .constant(nil))
+        .environmentObject(EstateService.preview)
+        .environmentObject(AccountService.preview)
 }
 
 private extension RecordPage {
