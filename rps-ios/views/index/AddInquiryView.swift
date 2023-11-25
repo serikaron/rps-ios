@@ -420,13 +420,7 @@ struct ImageListView: View {
             ImagePicker(selectedImage: $imageInfo)
         })
         .onChange(of: imageInfo) { newValue in
-            var filename = ""
-            if let url = URL(string: imageInfo.imageURL) {
-                filename = url.lastPathComponent
-            } else {
-                filename = UUID().uuidString
-            }
-            images.append(RpsImage(image: imageInfo.image, filename: filename))
+            images.append(RpsImage.from(pickerImage: imageInfo))
         }
     }
     

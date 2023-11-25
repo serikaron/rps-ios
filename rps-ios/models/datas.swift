@@ -424,6 +424,16 @@ struct ReferenceCase {
 struct RpsImage {
     let image: UIImage
     let filename: String
+    
+    static func from(pickerImage: ImagePicker.ImageInfo) -> Self {
+        var filename = ""
+        if let url = URL(string: pickerImage.imageURL) {
+            filename = url.lastPathComponent
+        } else {
+            filename = UUID().uuidString
+        }
+        return RpsImage(image: pickerImage.image, filename: filename)
+    }
 }
 
 struct InquirySheet {

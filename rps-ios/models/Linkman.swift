@@ -97,18 +97,7 @@ extension Linkman {
                 return
             }
             
-            var urlComponents = URLComponents.rps()
-            urlComponents.path = request.path
-            
-            if let query = request.query {
-                urlComponents.queryItems = query.map { (key, value) in
-                    URLQueryItem(name: key, value: value)
-                }
-            }
-            
-            guard let url = urlComponents.url else {
-                throw "invalid url: \(urlComponents.string ?? request.path)"
-            }
+            let url = try request.url
             
             var req = URLRequest(url: url)
             req.httpMethod = request.method.rawValue
@@ -187,6 +176,7 @@ enum HTTPMethod: String {
 // MARK: - Request
 
 class Request: Withable {
+    var rawURL: String = ""
     var path: String = ""
     var method: HTTPMethod = .GET
     var query: [String: String?]?
@@ -253,6 +243,33 @@ class Request: Withable {
         _uploadData = data
         
         return self
+    }
+    
+    fileprivate var url: URL {
+        get throws {
+            if rawURL.isEmpty {
+                var urlComponents = URLComponents.rps()
+                urlComponents.path = path
+                
+                if let query = query {
+                    urlComponents.queryItems = query.map { (key, value) in
+                        URLQueryItem(name: key, value: value)
+                    }
+                }
+                
+                guard let url = urlComponents.url else {
+                    throw "invalid url: \(urlComponents.string ?? path)"
+                }
+                
+                return url
+            } else {
+                guard let url = URL(string: rawURL) else {
+                    throw "invalid url \(rawURL)"
+                }
+                
+                return url
+            }
+        }
     }
 }
 

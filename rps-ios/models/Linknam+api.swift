@@ -924,6 +924,19 @@ extension Linkman {
             ])
             .make()
     }
+    
+    func recognizeEstateCertificationWithOptions(ossUrl: String) async throws {
+        guard let url = ossUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {
+            throw "invalid ossUrl"
+        }
+        
+        let rawURL = "\(URLComponents.rps().url!)/inquiry/rps/aliyunOCRController/recognizeEstateCertificationWithOptions?url=\(url)"
+        
+        try await Request()
+            .with(\.rawURL, setTo: rawURL)
+            .with(\.method, setTo: .GET)
+            .make()
+    }
 }
 
 // MARK: -

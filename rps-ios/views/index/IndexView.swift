@@ -11,12 +11,15 @@ import SBPAsyncImage
 
 struct IndexView: View {
     @EnvironmentObject var accountService: AccountService
+    @EnvironmentObject var estateService: EstateService
     
     @State private var noticeList = [Notice]()
     @State private var curves: [Curve] = []
     @State private var isChoisesShown = false
     @State private var chartCurveType = ChartCurveType.district(startTime: nil, endTime: nil)
     @State private var estateType = DictType.EstateType.commApartment
+    @State private var ocrImage = ImagePicker.ImageInfo(image: UIImage(), imageURL: "")
+    @State private var showImpagePicker = false
     
     var body: some View {
         ZStack {
@@ -165,7 +168,7 @@ struct IndexView: View {
         .padding(.horizontal, 16)
         .background(Color(hex: "#EDF1FF").opacity(0.5))
         .cornerRadius(8)
-        .shadow(color: Color(hex: "#C8C8C8").opacity(0.25), radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+        .shadow(color: Color(hex: "#C8C8C8").opacity(0.25), radius: 10)
     }
     
     private var searchInput: some View {
@@ -174,6 +177,18 @@ struct IndexView: View {
         } label: {
             HStack(spacing: 0) {
                 Image.index.searchOCR
+                    .onTapGesture {
+                        showImpagePicker = true
+                    }
+                    .sheet(isPresented: $showImpagePicker, content: {
+                        ImagePicker(selectedImage: $ocrImage)
+                    })
+                    .onChange(of: ocrImage) { _ in
+                        guard !ocrImage.imageURL.isEmpty else { return }
+                        Task {
+                            await estateService.ocr(image: .from(pickerImage: ocrImage))
+                        }
+                    }
                 Spacer().frame(width: 10)
                 Text("请输入物业名称或地址")
                     .customText(size: 14, color: .text.grayCD)
@@ -257,6 +272,8 @@ struct IndexView: View {
 #Preview {
     IndexView()
         .environmentObject(AccountService())
+        .environmentObject(EstateService.preview)
+        .environmentObject(TabService())
 }
 
 private struct ChartTabView: View {

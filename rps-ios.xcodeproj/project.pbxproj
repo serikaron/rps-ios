@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		720C96B52B10850300E85AC5 /* data+RoomDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720C96B42B10850300E85AC5 /* data+RoomDetail.swift */; };
 		720C96B72B10862900E85AC5 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720C96B62B10862900E85AC5 /* MapView.swift */; };
-		720C96BB2B10A20300E85AC5 /* MAMapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 720C96BA2B10A20300E85AC5 /* MAMapKit.framework */; };
-		720C96BD2B10A20B00E85AC5 /* AMap.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 720C96BC2B10A20B00E85AC5 /* AMap.bundle */; };
 		722DA22D2B0AFD0500C0A3DF /* AddInquiryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA22C2B0AFD0500C0A3DF /* AddInquiryView.swift */; };
 		722DA22F2B0B029C00C0A3DF /* AreaTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA22E2B0B029C00C0A3DF /* AreaTree.swift */; };
 		722DA2312B0B05E600C0A3DF /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2302B0B05E600C0A3DF /* SectionView.swift */; };
@@ -25,8 +23,6 @@
 		72749E962B0F06D4000258C2 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749E952B0F06D4000258C2 /* MessageView.swift */; };
 		72749E982B0F3057000258C2 /* PasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749E972B0F3057000258C2 /* PasswordView.swift */; };
 		72749E9A2B0F3CD3000258C2 /* MeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749E992B0F3CD3000258C2 /* MeInfoView.swift */; };
-		72749EC52B0F923B000258C2 /* AMapFoundationKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72749EC22B0F923B000258C2 /* AMapFoundationKit.framework */; };
-		72749EC72B0F923B000258C2 /* AMapSearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72749EC42B0F923B000258C2 /* AMapSearchKit.framework */; };
 		72749EC92B0F926E000258C2 /* MapSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749EC82B0F926E000258C2 /* MapSearchView.swift */; };
 		72749ECC2B0F92F5000258C2 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72749ECB2B0F92F5000258C2 /* GLKit.framework */; };
 		72749ECE2B0F9304000258C2 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 72749ECD2B0F9304000258C2 /* libc++.tbd */; };
@@ -71,6 +67,9 @@
 		72DFCF222AFCBA6C0001831F /* Linknam+api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF212AFCBA6C0001831F /* Linknam+api.swift */; };
 		72DFCF242AFCCD520001831F /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF232AFCCD520001831F /* ErrorView.swift */; };
 		72DFCF262AFCCDAE0001831F /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCF252AFCCDAE0001831F /* LoadingView.swift */; };
+		72EE510D2B10ABD3002D9218 /* AMapFoundationKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72EE510A2B10ABD3002D9218 /* AMapFoundationKit.framework */; };
+		72EE510E2B10ABD3002D9218 /* AMap.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 72EE510B2B10ABD3002D9218 /* AMap.bundle */; };
+		72EE510F2B10ABD3002D9218 /* MAMapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72EE510C2B10ABD3002D9218 /* MAMapKit.framework */; };
 		72F9BF8E2AFD044C0040C6D2 /* Notice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F9BF8D2AFD044C0040C6D2 /* Notice.swift */; };
 		72F9BF902AFDC7F70040C6D2 /* FuzzySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F9BF8F2AFDC7F70040C6D2 /* FuzzySearchView.swift */; };
 		72F9BF962AFDE1C40040C6D2 /* EstateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F9BF952AFDE1C40040C6D2 /* EstateService.swift */; };
@@ -105,8 +104,6 @@
 /* Begin PBXFileReference section */
 		720C96B42B10850300E85AC5 /* data+RoomDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "data+RoomDetail.swift"; sourceTree = "<group>"; };
 		720C96B62B10862900E85AC5 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
-		720C96BA2B10A20300E85AC5 /* MAMapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MAMapKit.framework; sourceTree = "<group>"; };
-		720C96BC2B10A20B00E85AC5 /* AMap.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = AMap.bundle; path = MAMapKit.framework/AMap.bundle; sourceTree = "<group>"; };
 		722DA22C2B0AFD0500C0A3DF /* AddInquiryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddInquiryView.swift; sourceTree = "<group>"; };
 		722DA22E2B0B029C00C0A3DF /* AreaTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTree.swift; sourceTree = "<group>"; };
 		722DA2302B0B05E600C0A3DF /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
@@ -121,8 +118,6 @@
 		72749E952B0F06D4000258C2 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		72749E972B0F3057000258C2 /* PasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordView.swift; sourceTree = "<group>"; };
 		72749E992B0F3CD3000258C2 /* MeInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeInfoView.swift; sourceTree = "<group>"; };
-		72749EC22B0F923B000258C2 /* AMapFoundationKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AMapFoundationKit.framework; sourceTree = "<group>"; };
-		72749EC42B0F923B000258C2 /* AMapSearchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AMapSearchKit.framework; sourceTree = "<group>"; };
 		72749EC82B0F926E000258C2 /* MapSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSearchView.swift; sourceTree = "<group>"; };
 		72749ECB2B0F92F5000258C2 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		72749ECD2B0F9304000258C2 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -169,6 +164,9 @@
 		72DFCF212AFCBA6C0001831F /* Linknam+api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linknam+api.swift"; sourceTree = "<group>"; };
 		72DFCF232AFCCD520001831F /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		72DFCF252AFCCDAE0001831F /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		72EE510A2B10ABD3002D9218 /* AMapFoundationKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AMapFoundationKit.framework; sourceTree = "<group>"; };
+		72EE510B2B10ABD3002D9218 /* AMap.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AMap.bundle; sourceTree = "<group>"; };
+		72EE510C2B10ABD3002D9218 /* MAMapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MAMapKit.framework; sourceTree = "<group>"; };
 		72F9BF8D2AFD044C0040C6D2 /* Notice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notice.swift; sourceTree = "<group>"; };
 		72F9BF8F2AFDC7F70040C6D2 /* FuzzySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearchView.swift; sourceTree = "<group>"; };
 		72F9BF952AFDE1C40040C6D2 /* EstateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstateService.swift; sourceTree = "<group>"; };
@@ -190,16 +188,15 @@
 			files = (
 				72749ECC2B0F92F5000258C2 /* GLKit.framework in Frameworks */,
 				72749ECE2B0F9304000258C2 /* libc++.tbd in Frameworks */,
+				72EE510F2B10ABD3002D9218 /* MAMapKit.framework in Frameworks */,
 				72749ED02B0F930F000258C2 /* libz.tbd in Frameworks */,
 				72749F0E2B0F97A6000258C2 /* DGCharts in Frameworks */,
 				72749ED22B0F931A000258C2 /* Security.framework in Frameworks */,
 				72749ED42B0F9324000258C2 /* SystemConfiguration.framework in Frameworks */,
-				720C96BB2B10A20300E85AC5 /* MAMapKit.framework in Frameworks */,
 				72749ED62B0F932E000258C2 /* CoreLocation.framework in Frameworks */,
 				72749ED82B0F933B000258C2 /* CoreTelephony.framework in Frameworks */,
-				72749EC72B0F923B000258C2 /* AMapSearchKit.framework in Frameworks */,
-				72749EC52B0F923B000258C2 /* AMapFoundationKit.framework in Frameworks */,
 				72F9BF9D2AFE70A40040C6D2 /* SBPAsyncImage in Frameworks */,
+				72EE510D2B10ABD3002D9218 /* AMapFoundationKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,17 +231,6 @@
 			path = Me;
 			sourceTree = "<group>";
 		};
-		72749EC12B0F923B000258C2 /* frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				720C96BC2B10A20B00E85AC5 /* AMap.bundle */,
-				720C96BA2B10A20300E85AC5 /* MAMapKit.framework */,
-				72749EC22B0F923B000258C2 /* AMapFoundationKit.framework */,
-				72749EC42B0F923B000258C2 /* AMapSearchKit.framework */,
-			);
-			path = frameworks;
-			sourceTree = "<group>";
-		};
 		72749ECA2B0F92F5000258C2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -270,7 +256,7 @@
 		72DFCEDC2AFA00F50001831F = {
 			isa = PBXGroup;
 			children = (
-				72749EC12B0F923B000258C2 /* frameworks */,
+				72EE51092B10ABD3002D9218 /* frameworks */,
 				72DFCEE72AFA00F50001831F /* rps-ios */,
 				728697EF2AFF24BE00CA31C5 /* rps-iosTests */,
 				72DFCEE62AFA00F50001831F /* Products */,
@@ -395,6 +381,16 @@
 			path = models;
 			sourceTree = "<group>";
 		};
+		72EE51092B10ABD3002D9218 /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				72EE510A2B10ABD3002D9218 /* AMapFoundationKit.framework */,
+				72EE510B2B10ABD3002D9218 /* AMap.bundle */,
+				72EE510C2B10ABD3002D9218 /* MAMapKit.framework */,
+			);
+			path = frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -492,7 +488,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				720C96BD2B10A20B00E85AC5 /* AMap.bundle in Resources */,
+				72EE510E2B10ABD3002D9218 /* AMap.bundle in Resources */,
 				72DFCEF02AFA00F60001831F /* Preview Assets.xcassets in Resources */,
 				72DFCEED2AFA00F60001831F /* Assets.xcassets in Resources */,
 			);

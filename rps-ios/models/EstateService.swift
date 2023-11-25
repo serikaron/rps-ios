@@ -731,6 +731,16 @@ class EstateService: ObservableObject {
             return nil
         }
     }
+    
+    func ocr(image: RpsImage) async {
+        do {
+            let rsp = try await Linkman.shared.upload(image: image.image, filename: image.filename)
+            guard let url = rsp.url else { return }
+            try await Linkman.shared.recognizeEstateCertificationWithOptions(ossUrl: url)
+        } catch {
+            print("ocr FAILED!!! \(error)")
+        }
+    }
 }
 
 extension SearchResult {
