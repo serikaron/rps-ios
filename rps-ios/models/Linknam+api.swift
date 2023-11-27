@@ -347,14 +347,43 @@ extension Linkman {
         var fvSubwayName: String?
         var fvVegeMarket: String?
         var fvBusinessSet: String?
+        var fvBusinessMating: String?
         var fvHospital: String?
         var fvFinaceOrg: String?
         var fvStadium: String?
+        var fvAdminOffice: String?
         var fvRelaxSquare: String?
         var fvKindergarten: String?
         var fvPrimarySchool: String?
         var fvMiddleSchool: String?
+        var fvUniversity: String?
         var fvPois: String?
+        var fvStreetMark: String?
+        var fvAddrMark: String?
+        var fvAdjacentEstate: String?
+        var fvLandNo: String?
+        var fvBusinessDistrict: String?
+        var fvPlate: String?
+        var fbResidentialArea: Double?
+        var fiBuildingNumber: Int?
+        var fvBuildingDesc: String?
+        var fvBuildingType: String?
+        var fvBuildingStructure: String?
+        var fvBuildingDensity: String?
+        var fvGreeningRate: String?
+        var fbVolumeRate: Double?
+        var fvOutsideMainRoad: String?
+        var fvInternalRoad: String?
+        var fbBusStopDistance: String?
+        var fiBusLineNumber: Int?
+        var fbSubwayDistance: String?
+        var fvClubServise: String?
+        var fvSportStructure: String?
+        var fvFallowStructure: String?
+        var fvParking: String?
+        var fvParkingType: String?
+        var fvParkingRate: String?
+        var fvBaseFacility: String?
     }
     
     struct NetworkRoomDetail: Codable {

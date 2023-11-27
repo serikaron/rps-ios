@@ -468,13 +468,43 @@ struct RoomDetail {
     var compoundSubway: String { dcCompound.fvSubwayName ?? "" }
     var compoundVegeMarket: String { dcCompound.fvVegeMarket ?? "" }
     var compoundBusinessSet: String { dcCompound.fvBusinessSet ?? "" }
+    var compoundBusinessMating: String { dcCompound.fvBusinessMating ?? "" }
     var compoundHospital: String { dcCompound.fvHospital ?? "" }
     var compoundFinaceOrg: String { dcCompound.fvFinaceOrg ?? "" }
     var compoundStadium: String { dcCompound.fvStadium ?? "" }
+    var compoundAdminOffice: String { dcCompound.fvAdminOffice ?? "" }
     var compoundRelaxSquare: String { dcCompound.fvRelaxSquare ?? ""}
     var compoundKindergarten: String { dcCompound.fvKindergarten ?? ""}
     var compoundPrimarySchool: String { dcCompound.fvPrimarySchool ?? "" }
     var compoundMiddleSchool: String { dcCompound.fvMiddleSchool ?? "" }
+    var compoundUniversity: String { dcCompound.fvUniversity ?? "" }
+    var compoundStreetMark: String { dcCompound.fvStreetMark ?? "" }
+    var compoundAddrMark: String { dcCompound.fvAddrMark ?? "" }
+    var compoundAdjacentEstate: String { dcCompound.fvAdjacentEstate ?? "" }
+    var compoundLandNo: String { dcCompound.fvLandNo ?? "" }
+    var compoundBusinessDistrict: String { dcCompound.fvBusinessDistrict ?? "" }
+    var compoundPlate: String { dcCompound.fvPlate ?? "" }
+    var compoundResidentialArea: String { "\(dcCompound.fbResidentialArea ?? 0)" }
+    var compoundBuildingNumber: String { "\(dcCompound.fiBuildingNumber ?? 0)" }
+    var compoundBuildingDesc: String { dcCompound.fvBuildingDesc ?? "" }
+    var compoundBuildingType: String { dcCompound.fvBuildingType ?? "" }
+    var compoundBuildingStructure: String { DictType.buildingStructure.label(of: dcCompound.fvBuildingStructure ?? "") ?? "" }
+    var compoundBuildingDensity: String { dcCompound.fvBuildingDensity ?? "" }
+    var compoundGreeningRate: String { dcCompound.fvGreeningRate ?? "" }
+    var compoundVolumeRate: String { "\(dcCompound.fbVolumeRate ?? 0)" }
+    var compoundOutsideMainRoad: String { dcCompound.fvOutsideMainRoad ?? "" }
+    var compoundInternalRoad: String { dcCompound.fvInternalRoad ?? "" }
+    var compoundBusStopDistance: String { dcCompound.fbBusStopDistance ?? "" }
+    var compoundBusLineNumber: String { "\(dcCompound.fiBusLineNumber ?? 0)" }
+    var compoundSubwayDistance: String { dcCompound.fbSubwayDistance ?? "" }
+    var compoundClubServise: String { dcCompound.fvClubServise ?? "" }
+    var compoundSportStructure: String { dcCompound.fvSportStructure ?? "" }
+    var compoundFallowStructure: String { dcCompound.fvFallowStructure ?? "" }
+    var compoundParking: String { dcCompound.fvParking ?? "" }
+    var compoundParkingType: String { dcCompound.fvParkingType ?? "" }
+    var compoundParkingRate: String { dcCompound.fvParkingRate ?? "" }
+    var compoundBaseFacility: String { dcCompound.fvBaseFacility ?? "" }
+
     
     var buildingLevelDecorate: DictType.LevelDecorate? {
         DictType.LevelDecorate(rawValue: dcBuilding.fvLevelDecorateFk ?? "" )

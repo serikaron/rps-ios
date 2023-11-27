@@ -64,9 +64,9 @@ struct IndexView: View {
             }
         }
         .onAppear {
-//            Task {
-//                curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
-//            }
+            Task {
+                curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
+            }
         }
         .showTabBar()
     }
