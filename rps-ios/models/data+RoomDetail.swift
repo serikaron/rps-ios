@@ -456,6 +456,7 @@ struct RoomDetail {
     var compoundAreaName: String { dcCompound.fvAreaName ?? "" }
     var compoundSubdistrictName: String { dcCompound.fvSubdistrictName ?? "" }
     var compoundCompoundName: String { dcCompound.fvCompoundName ?? "" }
+    var compoundNameAlias: String { dcCompound.fvNameAlias ?? "" }
     var compoundLandAreaString: String { "\(dcCompound.fbLandArea ?? 0)" }
     var compoundLandUserLabel: String { DictType.landUser.label(of: dcCompound.fvLandUser ?? "") ?? "" }
     var compoundLandLevelLabel: String { DictType.landUser.label(of: dcCompound.fvLandLevel ?? "") ?? "" }
@@ -483,6 +484,7 @@ struct RoomDetail {
     var compoundAdjacentEstate: String { dcCompound.fvAdjacentEstate ?? "" }
     var compoundLandNo: String { dcCompound.fvLandNo ?? "" }
     var compoundBusinessDistrict: String { dcCompound.fvBusinessDistrict ?? "" }
+    var compoundBusinessLevel: String { dcCompound.fvBusinessLevel ?? "" }
     var compoundPlate: String { dcCompound.fvPlate ?? "" }
     var compoundResidentialArea: String { "\(dcCompound.fbResidentialArea ?? 0)" }
     var compoundBuildingNumber: String { "\(dcCompound.fiBuildingNumber ?? 0)" }
@@ -504,6 +506,20 @@ struct RoomDetail {
     var compoundParkingType: String { dcCompound.fvParkingType ?? "" }
     var compoundParkingRate: String { dcCompound.fvParkingRate ?? "" }
     var compoundBaseFacility: String { dcCompound.fvBaseFacility ?? "" }
+    var compoundGetHouseRate: String { dcCompound.fvGetHouseRate ?? "" }
+    var compoundCbdDistance: String { dcCompound.fvCbdDistance ?? "" }
+    var compoundRoadLevel: String { dcCompound.fvRoadLevel ?? "" }
+    var compoundOutEnvi: String { dcCompound.fvOutEnvi ?? "" }
+    var compoundInEnvi: String { dcCompound.fvInEnvi ?? "" }
+    var compoundRoadEnvi: String { dcCompound.fvRoadEnvi ?? "" }
+    var compoundPollution: String { dcCompound.fvPollution ?? "" }
+    var compoundPollution2: String { dcCompound.fvPollution2 ?? "" }
+    var compoundOtherPolu: String { dcCompound.fvOtherPolu ?? "" }
+    var compoundOtherFactor: String { dcCompound.fvOtherFactor ?? "" }
+    var compoundIsClose: String { DictType.IsClose(rawValue: dcCompound.fvIsClose ?? "")?.label ?? ""}
+    var compoundPropertyManageType: String { DictType.fv_property_manage_type.label(of: dcCompound.fvPropertyManageType ?? "") ?? "" }
+    var compoundPropertyCompany: String { dcCompound.fvPropertyCompany ?? "" }
+    var compoundPropertyFee: String { dcCompound.fvPropertyFee ?? "" }
 
     
     var buildingLevelDecorate: DictType.LevelDecorate? {

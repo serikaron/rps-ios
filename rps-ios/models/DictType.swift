@@ -13,7 +13,7 @@ enum DictType: String {
     typealias MainDict = [String: SubDict]
     
     case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPosition, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages
-    case common_has, fv_land_se, fv_temporary_road_conditions, fi_trade_type, fv_decoration, fv_type_of_house, fv_daylighting, fv_noise, fv_landscape, fv_garden, fv_terrace, fv_attic, fv_basement, valuation_purpose, fv_co_ownership_situation, fv_report_spatial_layout, common_status, fv_area_location
+    case common_has, fv_land_se, fv_temporary_road_conditions, fi_trade_type, fv_decoration, fv_type_of_house, fv_daylighting, fv_noise, fv_landscape, fv_garden, fv_terrace, fv_attic, fv_basement, valuation_purpose, fv_co_ownership_situation, fv_report_spatial_layout, common_status, fv_area_location, fv_is_close, fv_property_manage_type
     
     var typeName: String {
         switch self {
@@ -790,5 +790,26 @@ extension DictType {
         }
 
         var label: String { DictType.fv_area_location.label(of: dictKey) ?? "" }
+    }
+    
+    enum IsClose: CaseIterable, HasLabel {
+        case _1, _2
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            }
+        }
+
+        var label: String { DictType.fv_is_close.label(of: dictKey) ?? "" }
     }
 }
