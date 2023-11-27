@@ -1008,7 +1008,7 @@ extension Linkman {
     
     func editClientUser(gender: String, phone: String, birthday: String, email: String, workPhone: String) async throws {
         try await Request()
-            .with(\.path, setTo: "/rps/account/clientUser/editClientUser")
+            .with(\.path, setTo: "/account/rps/account/clientUser/editClientUser")
             .with(\.method, setTo: .POST)
             .with(\.bodyDict, setTo: [
                 "fvClientGender": gender,
@@ -1017,6 +1017,7 @@ extension Linkman {
                 "fvEmail": email,
                 "fiWorkPhone": workPhone
             ])
+            .with(\.throwError, setTo: true)
             .make()
     }
     

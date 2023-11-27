@@ -786,8 +786,8 @@ struct Account {
     let position: String
     let status: DictType.CommonStatus
     let date: String
-    let gender: Gender
-    let birthday: String
+    var gender: Gender
+    var birthday: String
     let email: String
     let workPhone: String
 }

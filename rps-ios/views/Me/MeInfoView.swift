@@ -35,7 +35,6 @@ struct MeInfoView: View {
             }
         }
         .background(Color.view.background)
-        .ignoresSafeArea()
         .setupNavigationBar(title: "我的") {
             presentationMode.wrappedValue.dismiss()
         }
@@ -68,7 +67,11 @@ struct MeInfoView: View {
                 Divider()
                 itemView(title: "办公电话", content: account?.workPhone ?? "")
                 Divider()
-                Text("修改信息").itemTitle().frame(height: 36)
+                NavigationLink {
+                    MeEditView()
+                } label: {
+                    Text("修改信息").itemTitle().frame(height: 36)
+                }
             }.sectionStyle()
         }
         .padding(.vertical, 10)
@@ -132,6 +135,7 @@ private struct MeEditView: View {
                 }
         }
         .padding(.top, 10)
+        .padding(.bottom)
         .background(Color.view.background)
         .setupNavigationBar(title: "修改信息", {
             presentationMode.wrappedValue.dismiss()
