@@ -665,7 +665,7 @@ enum RecordType: CaseIterable, HasLabel {
     }
 }
 
-struct SearchFilter {
+struct SearchFilter: Equatable {
     var address: String = ""
     var recordType: RecordType?
     var estateType: DictType.EstateType?

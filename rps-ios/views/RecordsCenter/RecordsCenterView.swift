@@ -27,11 +27,11 @@ struct RecordsCenterView: View {
                     .onTapGesture {
                         moreSheetShown = false
                     }
-                    .ignoresSafeArea()
+//                    .ignoresSafeArea()
                 MoreFilterView(param: $param, shown: $moreSheetShown)
                     .frame(maxHeight: .infinity, alignment: .bottom)
                     .offset(x: 0, y: sheetOffset)
-                    .ignoresSafeArea()
+//                    .ignoresSafeArea()
                 RecordPopupView(record: $popupRecord)
                     .opacity(popupRecord == nil ? 0 : 1)
             }
@@ -49,11 +49,17 @@ struct RecordsCenterView: View {
             .onChange(of: moreSheetShown) { shown in
                 withAnimation(.linear(duration: 0.2)) {
                     maskAlpha = shown ? 0.6 : 0
-                    sheetOffset = shown ? 0 : 300
+                    sheetOffset = shown ? 0 : 500
+                    if !shown {
+                        hideKeyboard()
+                    }
                 }
             }
             .onDisappear {
                 popupRecord = nil
+            }
+            .onTapGesture {
+                hideKeyboard()
             }
         }
     }
@@ -164,6 +170,7 @@ private struct MoreFilterView: View {
     @Binding var shown: Bool
     
     @State private var height: CGFloat = .zero
+    @State private var newFilter = SearchFilter()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -174,20 +181,20 @@ private struct MoreFilterView: View {
                 HStack {
                     Text("估价时间")
                     HStack {
-                        dateButton(placeholder: "开始时间", binding: $param.startDate)
-                        dateButton(placeholder: "结束时间", binding: $param.endDate)
+                        dateButton(placeholder: "开始时间", binding: $newFilter.startDate)
+                        dateButton(placeholder: "结束时间", binding: $newFilter.endDate)
                     }.frame(width: 255)
                 }
                 HStack {
                     Text("评估价格")
                     HStack {
-                        priceInput(placeholder: "", binding: $param.startPrice)
-                        priceInput(placeholder: "", binding: $param.endPrice)
+                        priceInput(placeholder: "", binding: $newFilter.startPrice)
+                        priceInput(placeholder: "", binding: $newFilter.endPrice)
                     }.frame(width: 255)
                 }
                 HStack {
                     Text("询价人")
-                    TextField("询价人", text: $param.clientName)
+                    TextField("询价人", text: $newFilter.clientName)
                         .keyboardType(.numberPad)
                         .padding(.horizontal, 8)
                         .frame(width: 255, height: 28)
@@ -210,8 +217,7 @@ private struct MoreFilterView: View {
                             .stroke(Color.main, lineWidth: 1)
                     )
                     .onTapGesture {
-                        param = SearchFilter()
-                        shown = false
+                        newFilter = SearchFilter()
                     }
                 Spacer()
                 Text("搜索")
@@ -220,6 +226,7 @@ private struct MoreFilterView: View {
                     .background(Color.main)
                     .cornerRadius(8)
                     .onTapGesture {
+                        param = newFilter
                         shown = false
                     }
                 Spacer()
@@ -586,6 +593,9 @@ private struct RecordListView: View {
         .onChange(of: page) { newValue in
             pageNum = 0
             records = []
+            getRecord()
+        }
+        .onChange(of: filter) { _ in
             getRecord()
         }
     }
