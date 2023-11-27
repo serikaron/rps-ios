@@ -525,7 +525,7 @@ private struct ChartChoisesView: View {
     }
 }
 
-#Preview("ChartChoises") {
-    ChartChoisesView(selectedCurve: .constant(.combined(startTime: nil, endTime: nil)))
-}
+//#Preview("ChartChoises") {
+//    ChartChoisesView(selectedCurve: .constant(.combined(startTime: nil, endTime: nil)))
+//}
 

@@ -815,6 +815,7 @@ extension SearchResultList {
 
 extension EstateService {
     static var preview: EstateService {
+        Box.isPreview = true
         let out = EstateService()
         out.isPreview = true
         out.exactSearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]

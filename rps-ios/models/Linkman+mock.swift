@@ -293,7 +293,9 @@ extension ReferenceCase {
 extension Curve {
     static var mock: Curve {
         Curve(name: "测试",
-              values: (0..<12).map { _ in Double.random(in: 0...1) },
+              values: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2656.25],
+//              xAxisLabels: ["2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11"]
+//              values: (0..<12).map { _ in Double.random(in: 0...1) },
               xAxisLabels: (1...12).map { "23-\(String(format: "%02d", $0))" }
         )
     }

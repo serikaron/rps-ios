@@ -13,20 +13,20 @@ struct ChartView: UIViewRepresentable {
     
     
     func makeUIView(context: Context) -> DGCharts.LineChartView {
-        print("ChartView makeUIView")
         let chart = LineChartView()
-        chart.data = curveToData()
         chart.leftAxis.drawLabelsEnabled = false
         chart.leftAxis.drawGridLinesEnabled = false
         chart.leftAxis.axisLineDashLengths = [5, 5, 0]
         chart.rightAxis.enabled = false
         chart.xAxis.drawAxisLineEnabled = false
         chart.xAxis.labelPosition = .bottom
-        chart.xAxis.labelCount = curves.isEmpty ? 0 : curves[0].values.count - 1
         chart.xAxis.gridLineDashLengths = [5, 5, 0]
-        chart.xAxis.drawLabelsEnabled = false
-//        chart.xAxis.valueFormatter = XAxisFormatter(labels: curve.xAxisLabels)
         chart.legend.enabled = false
+        chart.setViewPortOffsets(left: 20, top: 30, right: 20, bottom: 30)
+        chart.xAxis.granularity = 1.0
+        chart.xAxis.wordWrapEnabled = true
+        chart.xAxis.wordWrapWidthPercent = 0.7
+        updateCurve(chart: chart)
         return chart
     }
     
@@ -44,11 +44,12 @@ struct ChartView: UIViewRepresentable {
             print("ChartView: curve:\(curve)")
             let dataSet = LineChartDataSet(
                 entries: curve.values.enumerated().map { idx, value in
-                    ChartDataEntry(x: Double(idx), y: value)
+                    ChartDataEntry(x: Double(idx), y: value == 0 ? 0.01 : value)
                 },
                 label: "abc"
             )
             dataSet.mode = .cubicBezier
+//            dataSet.cubicIntensity = 0.05
             dataSet.drawValuesEnabled = false
             dataSet.drawCirclesEnabled = false
             let color = colorForCurve(index: idx)
@@ -70,8 +71,16 @@ struct ChartView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
-        print("ChartView updateUIView")
-        uiView.data = curveToData()
+        updateCurve(chart: uiView)
+    }
+    
+    private func updateCurve(chart: LineChartView) {
+        chart.data = curveToData()
+        if !curves.isEmpty {
+            chart.xAxis.drawLabelsEnabled = true
+            chart.xAxis.labelCount = curves.isEmpty ? 0 : curves[0].values.count - 1
+            chart.xAxis.valueFormatter = XAxisFormatter(labels: curves[0].xAxisLabels)
+        }
     }
     
     typealias UIViewType = LineChartView
