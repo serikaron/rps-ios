@@ -164,6 +164,36 @@ struct RoomDetail {
         }
     }
     var position: String {
+        switch estateType {
+        case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .industrialSmallGarden:
+            guard let position = networkRoomDetail.fvPosition else { return nilText }
+            return hasRoom ?
+            DictType.position.label(of: position) ?? nilText :
+            DictType.noRoomPosition.label(of: position) ?? nilText
+        case .landingRoom:
+            guard let position = networkRoomDetail.fvLandingroomPosition else { return nilText }
+            return hasRoom ?
+            DictType.landingroomPosition.label(of: position) ?? nilText :
+            DictType.noRoomPosition.label(of: position) ?? nilText
+        case .shopStreet:
+            guard let position = networkRoomDetail.fvShopPosition else { return nilText }
+            return hasRoom ?
+            DictType.shopPosition.label(of: position) ?? nilText :
+            DictType.noRoomPosition.label(of: position) ?? nilText
+        case .industrialFactory:
+            fallthrough
+        case nil: return nilText
+        }
+    }
+    var positionKey: String? {
         get {
             switch estateType {
             case .commApartment:
@@ -175,23 +205,14 @@ struct RoomDetail {
             case .office:
                 fallthrough
             case .industrialSmallGarden:
-                guard let position = networkRoomDetail.fvPosition else { return nilText }
-                return hasRoom ?
-                DictType.position.label(of: position) ?? nilText :
-                DictType.noRoomPosition.label(of: position) ?? nilText
+                return networkRoomDetail.fvPosition
             case .landingRoom:
-                guard let position = networkRoomDetail.fvLandingroomPosition else { return nilText }
-                return hasRoom ?
-                DictType.landingroomPosition.label(of: position) ?? nilText :
-                DictType.noRoomPosition.label(of: position) ?? nilText
+                return networkRoomDetail.fvLandingroomPosition
             case .shopStreet:
-                guard let position = networkRoomDetail.fvShopPosition else { return nilText }
-                return hasRoom ?
-                DictType.shopPosition.label(of: position) ?? nilText :
-                DictType.noRoomPosition.label(of: position) ?? nilText
+                return networkRoomDetail.fvShopPosition
             case .industrialFactory:
                 fallthrough
-            case nil: return nilText
+            case nil: return nil
             }
         }
         set(value) {
@@ -200,6 +221,7 @@ struct RoomDetail {
             networkRoomDetail.fvShopPosition = value
         }
     }
+
     enum PositionType: String {
         case position, noRoomPosition, landingroomPosition, shopPosition
     }
@@ -250,6 +272,31 @@ struct RoomDetail {
         }
     }
     var facing: String {
+        switch estateType {
+        case .commApartment:
+            fallthrough
+        case .singleApartment:
+            fallthrough
+        case .villa:
+            fallthrough
+        case .office:
+            fallthrough
+        case .landingRoom:
+            fallthrough
+        case .industrialSmallGarden:
+            return hasRoom ?
+            DictType.orientation.label(of: networkRoomDetail.fvOrientation ?? "") ?? nilText :
+            DictType.buildDirection.label(of: dcBuilding.fvBuildDirection ?? "") ?? nilText
+            
+        case .shopStreet:
+            return DictType.buildDirection.label(of: dcBuilding.fvBuildDirection ?? "") ?? nilText
+            
+        case .industrialFactory:
+            fallthrough
+        case nil: return nilText
+        }
+    }
+    var facingKey: String? {
         get {
             switch estateType {
             case .commApartment:
@@ -264,15 +311,15 @@ struct RoomDetail {
                 fallthrough
             case .industrialSmallGarden:
                 return hasRoom ?
-                DictType.orientation.label(of: networkRoomDetail.fvOrientation ?? "") ?? nilText :
-                DictType.buildDirection.label(of: dcBuilding.fvBuildDirection ?? "") ?? nilText
+                networkRoomDetail.fvOrientation :
+                dcBuilding.fvBuildDirection
                 
             case .shopStreet:
-                return DictType.buildDirection.label(of: dcBuilding.fvBuildDirection ?? "") ?? nilText
+                return dcBuilding.fvBuildDirection
                 
             case .industrialFactory:
                 fallthrough
-            case nil: return nilText
+            case nil: return nil
             }
         }
         set(value) {

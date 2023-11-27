@@ -19,7 +19,7 @@ struct RoomDetailView: View {
     let areaCode: Int
     let estateType: String
     let buildingId: Int
-    let floor: String
+    @State var floor: String
     var roomId: String { roomDetail.id }
     
     @State private var inquiry: Inquiry?
@@ -59,7 +59,7 @@ struct RoomDetailView: View {
                 }
             }
             if isInfoFixShown {
-                InfoFixView(inquiry: $inquiry, roomDetail: $roomDetail, isInfoFixShown: $isInfoFixShown)
+                InfoFixView(inquiry: $inquiry, roomDetail: $roomDetail, buildingFloor: $floor, isInfoFixShown: $isInfoFixShown)
             }
         }
         .setupNavigationBar(title: "系统询价详情") {
@@ -81,6 +81,9 @@ struct RoomDetailView: View {
             }
         }
         .showTabBar()
+        .onTapGesture {
+            hideKeyboard()
+        }
     }
     
     @State private var selectedTab: RoomDetailTab = .inquiryDetail
@@ -1605,6 +1608,7 @@ private struct BuildListView: View {
 private struct InfoFixView: View {
     @Binding var inquiry: Inquiry?
     @Binding var roomDetail: RoomDetail
+    @Binding var buildingFloor: String
     
     @Binding var isInfoFixShown: Bool
     
@@ -1725,32 +1729,31 @@ private struct InfoFixView: View {
         case .position:
             switch roomDetail.positionType {
             case .position:
-                data.position = .position(DictType.Position(rawValue: roomDetail.position))
+                data.position = .position(DictType.Position(rawValue: roomDetail.positionKey))
             case .noRoomPosition:
-                data.position = .noRoomPosition(DictType.NoRoomPosition(rawValue: roomDetail.position))
+                data.position = .noRoomPosition(DictType.NoRoomPosition(rawValue: roomDetail.positionKey))
             case .landingroomPosition:
-                data.position = .landingroomPosition(DictType.LandingroomPosition(rawValue: roomDetail.position))
+                data.position = .landingroomPosition(DictType.LandingroomPosition(rawValue: roomDetail.positionKey))
             case .shopPosition:
-                data.position = .shopPosition(DictType.ShopPosition(rawValue: roomDetail.position))
+                data.position = .shopPosition(DictType.ShopPosition(rawValue: roomDetail.positionKey))
             }
         case .facing:
             switch roomDetail.facingType {
             case .orientation:
-                data.facing = .orientation(DictType.Orientation(rawValue: roomDetail.facing))
+                data.facing = .orientation(DictType.Orientation(rawValue: roomDetail.facingKey))
             case .buildDirection:
-                data.facing = .buildDirection(DictType.BuildDirection(rawValue: roomDetail.facing))
+                data.facing = .buildDirection(DictType.BuildDirection(rawValue: roomDetail.facingKey))
             default:
                 data.facing = nil
             }
         case .height:
             data.height = roomDetail.height
         case .floor:
-            if let floor = roomDetail.floor {
-               let l = floor.components(separatedBy: "-")
-                if l.count == 2 {
-                    data.floor1 = l[0]
-                    data.floor2 = l[1]
-                }
+            let floor = roomDetail.floor == nil ? buildingFloor : roomDetail.floor!
+            let l = floor.components(separatedBy: "-")
+            if l.count == 2 {
+                data.floor1 = l[0]
+                data.floor2 = l[1]
             }
         case .completionDate:
             data.completionDate = roomDetail.completionDate
@@ -1767,24 +1770,24 @@ private struct InfoFixView: View {
             case .position(let position):
                 inquiry?.position = position?.dictKey
                 if let p = position {
-                    roomDetail.position = p.dictKey
+                    roomDetail.positionKey = p.dictKey
                 }
             case .noRoomPosition(let noRoomPosition):
                 inquiry?.position = noRoomPosition?.dictKey
                 if let p = noRoomPosition {
-                    roomDetail.position = p.dictKey
+                    roomDetail.positionKey = p.dictKey
                 }
 
             case .landingroomPosition(let landingroomPosition):
                 inquiry?.position = landingroomPosition?.dictKey
                 if let p = landingroomPosition {
-                    roomDetail.position = p.dictKey
+                    roomDetail.positionKey = p.dictKey
                 }
 
             case .shopPosition(let shopPosition):
                 inquiry?.position = shopPosition?.dictKey
                 if let p = shopPosition {
-                    roomDetail.position = p.dictKey
+                    roomDetail.positionKey = p.dictKey
                 }
             case .none: break
             }
@@ -1793,12 +1796,12 @@ private struct InfoFixView: View {
             case .orientation(let orientation):
                 inquiry?.facing = orientation?.dictKey
                 if let f = orientation {
-                    roomDetail.facing = f.dictKey
+                    roomDetail.facingKey = f.dictKey
                 }
             case .buildDirection(let buildDirection):
                 inquiry?.facing = buildDirection?.dictKey
                 if let f = buildDirection {
-                    roomDetail.facing = f.dictKey
+                    roomDetail.facingKey = f.dictKey
                 }
             case .none: break
             }
@@ -1813,6 +1816,7 @@ private struct InfoFixView: View {
             let floor = "\(data.floor1)-\(data.floor2)"
             inquiry?.floor = floor
             roomDetail.floor = floor
+            buildingFloor = floor
         case .completionDate:
             inquiry?.completionDate = data.completionDate
             roomDetail.completionDate = data.completionDate

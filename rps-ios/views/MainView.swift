@@ -59,6 +59,7 @@ struct MainView: View {
                         .frame(maxHeight: .infinity, alignment: .bottom)
                         .ignoresSafeArea()
                 )
+                .ignoresSafeArea(.keyboard)
             }
         }
         .onAppear {
