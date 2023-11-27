@@ -80,20 +80,21 @@ struct AddInquiryView: View {
             presentationMode.wrappedValue.dismiss()
         }
         .onAppear {
-            guard let inquiry = inquiry else { return }
-            sheet.address = inquiry.address ?? ""
-            sheet.estateType = inquiry.estateType
-            sheet.buildingArea = inquiry.buildingArea
-            sheet.contact = inquiry.contact ?? ""
-            sheet.phone = inquiry.phone ?? ""
-            sheet.buildingYear = inquiry.buildingYear ?? ""
-            sheet.structure = inquiry.structure
-            if let floor = inquiry.floor {
-                let l = floor.components(separatedBy: "-")
-                sheet.beginFloor = Int(l[0])
-                sheet.endFloor = Int(l[1])
+            if let inquiry = inquiry {
+                sheet.address = inquiry.address ?? ""
+                sheet.estateType = inquiry.estateType
+                sheet.buildingArea = inquiry.buildingArea
+                sheet.contact = inquiry.contact ?? ""
+                sheet.phone = inquiry.phone ?? ""
+                sheet.buildingYear = inquiry.buildingYear ?? ""
+                sheet.structure = inquiry.structure
+                if let floor = inquiry.floor {
+                    let l = floor.components(separatedBy: "-")
+                    sheet.beginFloor = Int(l[0])
+                    sheet.endFloor = Int(l[1])
+                }
+                sheet.valuationDate = inquiry.valuationDate ?? ""
             }
-            sheet.valuationDate = inquiry.valuationDate ?? ""
             
             Task {
                 areaTree = await AreaTree.root
