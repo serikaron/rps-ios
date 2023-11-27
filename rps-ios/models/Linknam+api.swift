@@ -35,7 +35,7 @@ extension Linkman {
         return try await Request()
             .with(\.path, setTo: "/auth/rps/smsLogin")
             .with(\.method, setTo: .POST)
-            .with(\.bodyDict, setTo: ["username": phone, "smdCode": smsCode, "deviceType": "APP"])
+            .with(\.bodyDict, setTo: ["phonenumber": phone, "smdCode": smsCode, "deviceType": "APP"])
             .with(\.standaloneResponse, setTo: standaloneResponse(LoginResponse(access_token: "mockToken")))
             .make()
             .response() as LoginResponse
