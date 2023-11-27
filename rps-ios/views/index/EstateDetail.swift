@@ -26,6 +26,8 @@ struct EstateDetailView : View {
             return OfficeApartmentDetailView(detail: $detail).earseToAnyView()
         case .villa:
             return VillaApartmentDetailView(detail: $detail).earseToAnyView()
+        case .shopStreet:
+            return ShopStreetApartmentDetailView(detail: $detail).earseToAnyView()
         default: return EmptyView().earseToAnyView()
         }
     }
@@ -532,6 +534,91 @@ private struct VillaApartmentDetailView: View {
                 itemView(title: "物业管理种类", keypath: \.compoundPropertyManageType)
                 itemView(title: "物业管理公司名称", keypath: \.compoundPropertyCompany)
                 itemView(title: "物业费", keypath: \.compoundPropertyFee)
+            }
+        }
+    }
+    
+    private func itemView(title: String, content: String?) -> some View {
+        _ItemView(title: title, content: content)
+    }
+    
+    private func itemView(title: String, keypath: KeyPath<RoomDetail, String>) -> some View {
+        _ItemView(title: title, content: detail[keyPath: keypath])
+    }
+    
+    private func section(_ sectionTitle: String, @ViewBuilder _ builder: @escaping () -> some View) -> some View {
+        _Section(sectionTitle) {
+            builder()
+        }
+    }
+}
+
+private struct ShopStreetApartmentDetailView: View {
+    @Binding var detail: RoomDetail
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            section("特殊情况说明") {
+                itemView(title: "小区特殊情况说明", keypath: \.compoundSpecialCircumstances)
+                itemView(title: "楼幢特殊情况说明", keypath: \.buildingSpecialCircumstances)
+                itemView(title: "户特殊情况说明", keypath: \.specialCircumstances)
+            }
+            section("户室具体情况") {
+                itemView(title: "层高", keypath: \.height)
+                itemView(title: "户型", keypath: \.typeOfHouse)
+                itemView(title: "采光", keypath: \.daylighting)
+                itemView(title: "噪声", keypath: \.noise)
+                itemView(title: "装修评分", keypath: \.decoration)
+                itemView(title: "主要景观因素", keypath: \.landscape)
+            }
+            section("路段区划信息") {
+                itemView(title: "地市", keypath: \.compoundCityName)
+                itemView(title: "区县", keypath: \.compoundAreaName)
+                itemView(title: "商圈类型", keypath: \.compoundBussinessType)
+                itemView(title: "路段名称", keypath: \.compoundCompoundName)
+                itemView(title: "路段别名", keypath: \.compoundNameAlias)
+            }
+            section("路段位置信息") {
+                itemView(title: "路段东至", keypath: \.compoundToEast)
+                itemView(title: "路段南至", keypath: \.compoundToSouth)
+                itemView(title: "路段西至", keypath: \.compoundToWest)
+                itemView(title: "路段北至", keypath: \.compoundToNorth)
+                itemView(title: "起始门牌", keypath: \.compoundStartHouseRules)
+                itemView(title: "结束门牌", keypath: \.compoundEndHouseRules)
+            }
+            section("路段概况信息") {
+                itemView(title: "商圈级别", keypath: \.compoundBusinessLevel)
+                itemView(title: "土地级别", keypath: \.compoundLandLevelLabel)
+                itemView(title: "繁华猩度", keypath: \.compoundBusinessMating)
+                itemView(title: "商业成熟度", keypath: \.compoundBusinessRating)
+                itemView(title: "商业前景", keypath: \.compoundBusinessProspects)
+            }
+            section("路段建筑信息") {
+                itemView(title: "商铺撞数", keypath: \.compoundBuildingNumber)
+                itemView(title: "幢数描述", keypath: \.compoundBuildingDesc)
+                itemView(title: "建筑概况", keypath: \.compoundBuildingGeneralSituation)
+                itemView(title: "商铺密度", keypath: \.compoundBuildingDensity)
+                itemView(title: "总套数", keypath: \.compoundHouseCount)
+            }
+            section("路段交通配套") {
+                itemView(title: "距离CBD距离", keypath: \.compoundCbdDistance)
+                itemView(title: "商圈距离", keypath: \.compoundBusinessDistance)
+                itemView(title: "商圈距离", keypath: \.compoundRoadLevel)
+                itemView(title: "交通干道", keypath: \.compoundOutsideMainRoad)
+                itemView(title: "普通公交", keypath: \.compoundBusLine)
+                itemView(title: "快速公交", keypath: \.compoundFastBus)
+                itemView(title: "站点距离", keypath: \.compoundBusStopDistance)
+                itemView(title: "地铁距离", keypath: \.compoundSubwayDistance)
+                itemView(title: "地铁站名", keypath: \.compoundSubway)
+            }
+            section("路段外部配套") {
+                itemView(title: "路段附近商场超市", keypath: \.compoundBusinessSet)
+                itemView(title: "路段附近餐饮酒店", keypath: \.compoundHotelRestaurant)
+                itemView(title: "路段附近文体场馆", keypath: \.compoundStadium)
+                itemView(title: "路段附近金融机构", keypath: \.compoundFinaceOrg)
+                itemView(title: "路段附近行政机关", keypath: \.compoundAdminOffice)
+                itemView(title: "路段附近教育设施", keypath: \.compoundEduHospital)
+                itemView(title: "路段附近医疔设施", keypath: \.compoundHospital)
             }
         }
     }

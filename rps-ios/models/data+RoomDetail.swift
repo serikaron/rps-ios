@@ -484,7 +484,7 @@ struct RoomDetail {
     var compoundAdjacentEstate: String { dcCompound.fvAdjacentEstate ?? "" }
     var compoundLandNo: String { dcCompound.fvLandNo ?? "" }
     var compoundBusinessDistrict: String { dcCompound.fvBusinessDistrict ?? "" }
-    var compoundBusinessLevel: String { dcCompound.fvBusinessLevel ?? "" }
+    var compoundBusinessLevel: String { DictType.fv_business_level.label(of: dcCompound.fvBusinessLevel ?? "") ?? "" }
     var compoundPlate: String { dcCompound.fvPlate ?? "" }
     var compoundResidentialArea: String { "\(dcCompound.fbResidentialArea ?? 0)" }
     var compoundBuildingNumber: String { "\(dcCompound.fiBuildingNumber ?? 0)" }
@@ -521,6 +521,16 @@ struct RoomDetail {
     var compoundPropertyCompany: String { dcCompound.fvPropertyCompany ?? "" }
     var compoundPropertyFee: String { dcCompound.fvPropertyFee ?? "" }
     var compoundBuildingArea: String { "\(dcCompound.fbBuildingArea ?? 0)" }
+    var compoundBussinessType: String { DictType.fv_business_type.label(of: dcCompound.fvBussinessType ?? "") ?? "" }
+    var compoundStartHouseRules: String { dcCompound.fvStartHouseRules ?? "" }
+    var compoundEndHouseRules: String { dcCompound.fvEndHouseRules ?? "" }
+    var compoundBusinessRating: String { dcCompound.fvBusinessRating ?? "" }
+    var compoundBusinessProspects: String { dcCompound.fvBusinessProspects ?? "" }
+    var compoundBuildingGeneralSituation: String { dcCompound.fvBuildingGeneralSituation ?? "" }
+    var compoundHouseCount: String { "\(dcCompound.fiHouseCount ?? 0)" }
+    var compoundBusinessDistance: String { dcCompound.fvBusinessDistance ?? "" }
+    var compoundHotelRestaurant: String { dcCompound.fvHotelRestaurant ?? "" }
+    var compoundEduHospital: String { dcCompound.fvEduHospital ?? "" }
 
     
     var buildingLevelDecorate: DictType.LevelDecorate? {

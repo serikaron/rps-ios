@@ -401,6 +401,16 @@ extension Linkman {
         var fvPropertyCompany: String?
         var fvPropertyFee: String?
         var fbBuildingArea: Double?
+        var fvBussinessType: String?
+        var fvStartHouseRules: String?
+        var fvEndHouseRules: String?
+        var fvBusinessRating: String?
+        var fvBusinessProspects: String?
+        var fvBuildingGeneralSituation: String?
+        var fiHouseCount: Int?
+        var fvBusinessDistance: String?
+        var fvHotelRestaurant: String?
+        var fvEduHospital: String?
     }
     
     struct NetworkRoomDetail: Codable {
