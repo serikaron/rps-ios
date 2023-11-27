@@ -338,7 +338,7 @@ extension Linkman {
         var fvSubdistrictName: String?
         var fvCompoundName: String?
         var fvNameAlias: String?
-        var fbLandArea: Double?
+        var fbLandArea: String?
         var fvToEast: String?
         var fvToWest: String?
         var fvToSouth: String?
@@ -366,7 +366,7 @@ extension Linkman {
         var fvBusinessDistrict: String?
         var fvBusinessLevel: String?
         var fvPlate: String?
-        var fbResidentialArea: Double?
+        var fbResidentialArea: String?
         var fiBuildingNumber: Int?
         var fvBuildingDesc: String?
         var fvBuildingType: String?
@@ -407,10 +407,15 @@ extension Linkman {
         var fvBusinessRating: String?
         var fvBusinessProspects: String?
         var fvBuildingGeneralSituation: String?
-        var fiHouseCount: Int?
+        var fiHouseCount: String?
         var fvBusinessDistance: String?
         var fvHotelRestaurant: String?
         var fvEduHospital: String?
+        var fvLifeMating: String?
+        var fvEduComplete: String?
+        var fvBusComplete: String?
+        var fvHospitalComplete: String?
+        var fvAllAround: String?
     }
     
     struct NetworkRoomDetail: Codable {

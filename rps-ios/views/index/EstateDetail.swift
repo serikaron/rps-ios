@@ -28,6 +28,8 @@ struct EstateDetailView : View {
             return VillaApartmentDetailView(detail: $detail).earseToAnyView()
         case .shopStreet:
             return ShopStreetApartmentDetailView(detail: $detail).earseToAnyView()
+        case .landingRoom:
+            return LandingRoomApartmentDetailView(detail: $detail).earseToAnyView()
         default: return EmptyView().earseToAnyView()
         }
     }
@@ -114,7 +116,6 @@ private struct CommApartmentDetailView: View {
             }
             section("小区外部配套") {
                 itemView(title: "小区附近菜场", keypath: \.compoundVegeMarket)
-                itemView(title: "社区商业配套", keypath: \.compoundBusinessMating)
                 itemView(title: "社区商业配套", keypath: \.compoundBusinessMating)
                 itemView(title: "小区附近金融机构", keypath: \.compoundFinaceOrg)
                 itemView(title: "小区附近文体场馆", keypath: \.compoundStadium)
@@ -619,6 +620,76 @@ private struct ShopStreetApartmentDetailView: View {
                 itemView(title: "路段附近行政机关", keypath: \.compoundAdminOffice)
                 itemView(title: "路段附近教育设施", keypath: \.compoundEduHospital)
                 itemView(title: "路段附近医疔设施", keypath: \.compoundHospital)
+            }
+        }
+    }
+    
+    private func itemView(title: String, content: String?) -> some View {
+        _ItemView(title: title, content: content)
+    }
+    
+    private func itemView(title: String, keypath: KeyPath<RoomDetail, String>) -> some View {
+        _ItemView(title: title, content: detail[keyPath: keypath])
+    }
+    
+    private func section(_ sectionTitle: String, @ViewBuilder _ builder: @escaping () -> some View) -> some View {
+        _Section(sectionTitle) {
+            builder()
+        }
+    }
+}
+
+private struct LandingRoomApartmentDetailView: View {
+    @Binding var detail: RoomDetail
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            section("特殊情况说明") {
+                itemView(title: "小区特殊情况说明", keypath: \.compoundSpecialCircumstances)
+                itemView(title: "楼幢特殊情况说明", keypath: \.buildingSpecialCircumstances)
+                itemView(title: "户特殊情况说明", keypath: \.specialCircumstances)
+            }
+            section("户室具体情况") {
+                itemView(title: "层高", keypath: \.height)
+                itemView(title: "户型", keypath: \.typeOfHouse)
+                itemView(title: "采光", keypath: \.daylighting)
+                itemView(title: "噪声", keypath: \.noise)
+                itemView(title: "装修评分", keypath: \.decoration)
+                itemView(title: "主要景观因素", keypath: \.landscape)
+            }
+            section("小区区划信息") {
+                itemView(title: "地市", keypath: \.compoundCityName)
+                itemView(title: "区县", keypath: \.compoundAreaName)
+                itemView(title: "镇/街道", keypath: \.compoundSubdistrictName)
+                itemView(title: "村/社区", keypath: \.compoundCompoundName)
+                itemView(title: "小区名称", keypath: \.compoundCompoundName)
+                itemView(title: "小区别名", keypath: \.compoundNameAlias)
+            }
+            section("小区位置信息") {
+                itemView(title: "东至", keypath: \.compoundToEast)
+                itemView(title: "南至", keypath: \.compoundToSouth)
+                itemView(title: "西至", keypath: \.compoundToWest)
+                itemView(title: "北至", keypath: \.compoundToNorth)
+                itemView(title: "相邻小区", keypath: \.compoundAdjacentEstate)
+            }
+            section("小区概况信息") {
+                itemView(title: "小区类型", keypath: \.estateTypeLabel)
+                itemView(title: "建筑类型", keypath: \.compoundBuildingType)
+                itemView(title: "楼幢数", keypath: \.compoundBuildingNumber)
+                itemView(title: "相邻小区", keypath: \.compoundAdjacentEstate)
+            }
+            section("小区配套信息") {
+                itemView(title: "商业配套", keypath: \.compoundBusinessMating)
+                itemView(title: "生活配套", keypath: \.compoundLifeMating)
+                itemView(title: "教育配套", keypath: \.compoundEduComplete)
+                itemView(title: "公交配套", keypath: \.compoundBusComplete)
+                itemView(title: "医疗配套", keypath: \.compoundHospitalComplete)
+            }
+            section("小区环境信息") {
+                itemView(title: "周边景点", keypath: \.compoundAllAround)
+            }
+            section("小区物业信息") {
+                itemView(title: "物业管理", keypath: \.compoundPropertyCompany)
             }
         }
     }

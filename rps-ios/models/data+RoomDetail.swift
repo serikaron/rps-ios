@@ -457,7 +457,7 @@ struct RoomDetail {
     var compoundSubdistrictName: String { dcCompound.fvSubdistrictName ?? "" }
     var compoundCompoundName: String { dcCompound.fvCompoundName ?? "" }
     var compoundNameAlias: String { dcCompound.fvNameAlias ?? "" }
-    var compoundLandAreaString: String { "\(dcCompound.fbLandArea ?? 0)" }
+    var compoundLandAreaString: String { dcCompound.fbLandArea ?? "" }
     var compoundLandUserLabel: String { DictType.landUser.label(of: dcCompound.fvLandUser ?? "") ?? "" }
     var compoundLandLevelLabel: String { DictType.landUser.label(of: dcCompound.fvLandLevel ?? "") ?? "" }
     var compoundToEast: String { dcCompound.fvToEast ?? "" }
@@ -486,7 +486,7 @@ struct RoomDetail {
     var compoundBusinessDistrict: String { dcCompound.fvBusinessDistrict ?? "" }
     var compoundBusinessLevel: String { DictType.fv_business_level.label(of: dcCompound.fvBusinessLevel ?? "") ?? "" }
     var compoundPlate: String { dcCompound.fvPlate ?? "" }
-    var compoundResidentialArea: String { "\(dcCompound.fbResidentialArea ?? 0)" }
+    var compoundResidentialArea: String { dcCompound.fbResidentialArea ?? "" }
     var compoundBuildingNumber: String { "\(dcCompound.fiBuildingNumber ?? 0)" }
     var compoundBuildingDesc: String { dcCompound.fvBuildingDesc ?? "" }
     var compoundBuildingType: String { dcCompound.fvBuildingType ?? "" }
@@ -527,10 +527,15 @@ struct RoomDetail {
     var compoundBusinessRating: String { dcCompound.fvBusinessRating ?? "" }
     var compoundBusinessProspects: String { dcCompound.fvBusinessProspects ?? "" }
     var compoundBuildingGeneralSituation: String { dcCompound.fvBuildingGeneralSituation ?? "" }
-    var compoundHouseCount: String { "\(dcCompound.fiHouseCount ?? 0)" }
+    var compoundHouseCount: String { dcCompound.fiHouseCount ?? "" }
     var compoundBusinessDistance: String { dcCompound.fvBusinessDistance ?? "" }
     var compoundHotelRestaurant: String { dcCompound.fvHotelRestaurant ?? "" }
     var compoundEduHospital: String { dcCompound.fvEduHospital ?? "" }
+    var compoundLifeMating: String { dcCompound.fvLifeMating ?? "" }
+    var compoundEduComplete: String { dcCompound.fvEduComplete ?? "" }
+    var compoundBusComplete: String { dcCompound.fvBusComplete ?? "" }
+    var compoundHospitalComplete: String { dcCompound.fvHospitalComplete ?? "" }
+    var compoundAllAround: String { dcCompound.fvAllAround ?? "" }
 
     
     var buildingLevelDecorate: DictType.LevelDecorate? {
