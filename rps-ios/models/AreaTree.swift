@@ -30,6 +30,17 @@ struct AreaTree {
             return _root
         }
     }
+    
+    func name(by codeList: [String]) -> String {
+        guard !Self._root.code.isEmpty else { return "" }
+        
+        let foundNode = codeList.reduce(Self._root) { treeNode, currCode -> AreaTree? in
+            guard let treeNode = treeNode else { return nil }
+            return treeNode.children.first { $0.code == currCode }
+        }
+        
+        return foundNode?.name ?? ""
+    }
 }
 
 private extension AreaTree {

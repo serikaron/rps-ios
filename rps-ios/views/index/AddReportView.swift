@@ -35,6 +35,18 @@ struct AddReportView: View {
             fillSheet()
             Task {
                 areaTree = await AreaTree.root
+                if sheet.provinceCode != 0 {
+                    let pCode = "\(sheet.provinceCode)"
+                    sheet.provinceName = areaTree.name(by: [pCode])
+                    if sheet.cityCode != 0 {
+                        let cCode = "\(sheet.cityCode)"
+                        sheet.cityName = areaTree.name(by: [pCode, cCode])
+                        if sheet.areaCode != 0 {
+                            let aCode = "\(sheet.areaCode)"
+                            sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+                        }
+                    }
+                }
             }
         }
     }
@@ -416,6 +428,24 @@ struct AddReportView: View {
         
         sheet.organ = accountService.account?.placeUnit ?? ""
         sheet.organDept = accountService.account?.placeOrganization ?? ""
+        
+        sheet.provinceCode = detail.provinceCode
+        print(detail.provinceCode)
+        print(sheet.provinceCode)
+        sheet.cityCode = detail.cityCode
+        sheet.areaCode = detail.areaCode
+        if sheet.provinceCode != 0 {
+            let pCode = "\(sheet.provinceCode)"
+            sheet.provinceName = areaTree.name(by: [pCode])
+            if sheet.cityCode != 0 {
+                let cCode = "\(sheet.cityCode)"
+                sheet.cityName = areaTree.name(by: [pCode, cCode])
+                if sheet.areaCode != 0 {
+                    let aCode = "\(sheet.areaCode)"
+                    sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+                }
+            }
+        }
     }
 }
 

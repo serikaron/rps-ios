@@ -479,6 +479,15 @@ struct RoomDetail {
         get { networkRoomDetail.fvAreaName ?? "" }
         set(value) { networkRoomDetail.fvAreaName = value }
     }
+    var provinceCode: Int {
+        networkRoomDetail.fiProvinceCode ?? 0
+    }
+    var cityCode: Int {
+        networkRoomDetail.fiCityCode ?? 0
+    }
+    var areaCode: Int {
+        networkRoomDetail.fiAreaCode ?? 0
+    }
     var specialCircumstances: String { networkRoomDetail.fvSpecialCircumstances ?? "" }
     var buildingSpecialCircumstances: String { dcBuilding.fvSpecialCircumstances ?? "" }
     var compoundSpecialCircumstances: String { dcCompound.fvSpecialCircumstances ?? "" }

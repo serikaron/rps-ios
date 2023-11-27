@@ -12,6 +12,7 @@ struct AddInquiryView: View {
     @EnvironmentObject var estateService: EstateService
 
     let inquiry: Inquiry?
+    let detail: RoomDetail?
     
     @State private var sheet: InquirySheet = .empty
     @State private var areaTree = AreaTree(code: "", name: "", children: [])
@@ -87,7 +88,7 @@ struct AddInquiryView: View {
                 sheet.contact = inquiry.contact ?? ""
                 sheet.phone = inquiry.phone ?? ""
                 sheet.buildingYear = inquiry.buildingYear ?? ""
-                sheet.structure = inquiry.structure
+//                sheet.structure = inquiry.structure
                 if let floor = inquiry.floor {
                     let l = floor.components(separatedBy: "-")
                     sheet.beginFloor = Int(l[0])
@@ -95,9 +96,41 @@ struct AddInquiryView: View {
                 }
                 sheet.valuationDate = inquiry.valuationDate ?? ""
             }
+            if let detail = detail {
+                sheet.structure = DictType.BuildingStructure(rawValue: detail.structure)
+                sheet.provinceCode = detail.provinceCode
+                print(detail.provinceCode)
+                print(sheet.provinceCode)
+                sheet.cityCode = detail.cityCode
+                sheet.areaCode = detail.areaCode
+                if sheet.provinceCode != 0 {
+                    let pCode = "\(sheet.provinceCode)"
+                    sheet.provinceName = areaTree.name(by: [pCode])
+                    if sheet.cityCode != 0 {
+                        let cCode = "\(sheet.cityCode)"
+                        sheet.cityName = areaTree.name(by: [pCode, cCode])
+                        if sheet.areaCode != 0 {
+                            let aCode = "\(sheet.areaCode)"
+                            sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+                        }
+                    }
+                }
+            }
             
             Task {
                 areaTree = await AreaTree.root
+                if sheet.provinceCode != 0 {
+                    let pCode = "\(sheet.provinceCode)"
+                    sheet.provinceName = areaTree.name(by: [pCode])
+                    if sheet.cityCode != 0 {
+                        let cCode = "\(sheet.cityCode)"
+                        sheet.cityName = areaTree.name(by: [pCode, cCode])
+                        if sheet.areaCode != 0 {
+                            let aCode = "\(sheet.areaCode)"
+                            sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+                        }
+                    }
+                }
             }
         }
     }
@@ -399,7 +432,7 @@ struct AddInquiryView: View {
 }
 
 #Preview {
-    AddInquiryView(inquiry: .empty)
+    AddInquiryView(inquiry: .empty, detail: .empty)
         .environmentObject(EstateService.preview)
 }
 

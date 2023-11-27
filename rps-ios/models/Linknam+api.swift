@@ -463,6 +463,9 @@ extension Linkman {
         var fv_terrace: String?
         var fv_attic: String?
         var fv_basement: String?
+        var fiProvinceCode: Int?
+        var fiCityCode: Int?
+        var fiAreaCode: Int?
         
         var buildingImageList: [RoomDetailImage]
         var compoundImageList: [RoomDetailImage]

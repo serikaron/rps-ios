@@ -211,7 +211,7 @@ struct RoomDetailView: View {
                 }
                 Spacer()
                 NavigationLink {
-                    AddInquiryView(inquiry: inquiry)
+                    AddInquiryView(inquiry: inquiry, detail: roomDetail)
                 } label: {
                     actionItem(title: "估价师询价")
                 }
