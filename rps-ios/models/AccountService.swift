@@ -89,15 +89,32 @@ class AccountService: ObservableObject {
         )
     }
     
-    func register(account: String, name: String, gender: Gender, birthday: String,
-                  company: String, department: String, position: String,
-                  phone: String, mobile: String, email: String, contact: String,
-                  address: String
+    func register(
+        account: String, name: String,
+        gender: Gender, birthday: String,
+        registerCode: String,
+        company: String, department: String, position: String,
+        phone: String, mobile: String, email: String, contact: String,
+        provinceCode: Int, cityCode: Int, areaCode: Int,
+        proviceName: String, cityName: String, areaName: String
     ) async {
         do {
-            try await Linkman.shared.register(account: account, name: name, gender: gender,
-                                        birthday: birthday, company: company, department: department, position: position,
-                                        phone: phone, mobile: mobile, email: email, contact: contact, address: address)
+            guard !account.isEmpty, !name.isEmpty,
+                  !registerCode.isEmpty,
+                  !company.isEmpty, !department.isEmpty, !position.isEmpty,
+                  !mobile.isEmpty,
+                  areaCode != 0
+            else {
+                Box.sendError("请输入必填信息")
+                return
+            }
+            
+            try await Linkman.shared.register(
+                account: account, name: name, gender: gender, birthday: birthday,
+                registerCode: registerCode,
+                company: company, department: department, position: position,
+                phone: phone, mobile: mobile, email: email, contact: contact,
+                areaCode: "\(areaCode)", areaName: areaName)
         } catch {
             
         }

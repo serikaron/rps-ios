@@ -20,7 +20,8 @@ struct AreaTree {
             if _root.code.isEmpty {
                 do {
                     let rsp = try await Linkman.shared.getAreaTree()
-                    _root = .from(network: rsp)
+                    guard !rsp.isEmpty else { throw "area tree is empty"}
+                    _root = .from(network: rsp[0])
                 } catch {
                     print("getAreaTree FAILED!!! \(error)")
                 }
@@ -35,7 +36,7 @@ private extension AreaTree {
     static func from(network: Linkman.NetworkArea) -> AreaTree {
         AreaTree(
             code: network.id, name: network.label,
-            children: network.children.map { AreaTree.from(network: $0) }
+            children: network.children?.map { AreaTree.from(network: $0) } ?? []
         )
     }
 }

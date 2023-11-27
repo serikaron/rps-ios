@@ -721,8 +721,8 @@ private struct IndustrialFactoryDetailView: View {
         VStack(spacing: 20) {
             section("特殊情况说明") {
                 itemView(title: "片区特殊情况说明", keypath: \.compoundSpecialCircumstances)
-                itemView(title: "厂区特殊情况说明", content: "")
-                itemView(title: "楼幢特殊情况说明", keypath: \.buildingSpecialCircumstances)
+//                itemView(title: "厂区特殊情况说明", content: "")
+//                itemView(title: "楼幢特殊情况说明", keypath: \.buildingSpecialCircumstances)
             }
             section("工业厂区具体情况") {
                 itemView(title: "宗地数", content: "")

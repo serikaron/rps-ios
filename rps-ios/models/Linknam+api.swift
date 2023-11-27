@@ -72,9 +72,10 @@ extension Linkman {
     }
     
     func register(account: String, name: String, gender: Gender, birthday: String,
+                  registerCode: String,
                   company: String, department: String, position: String,
                   phone: String, mobile: String, email: String, contact: String,
-                  address: String
+                  areaCode: String, areaName: String
     ) async throws {
         try await Request()
             .with(\.path, setTo: "/account/rps/account/clientUser/applyLoginClientUser")
@@ -91,7 +92,9 @@ extension Linkman {
                 "fiCellphone": mobile,
                 "fvEmail": email,
                 "fvQqMsn": contact,
-                "fvPlaceArea": address
+                "fvPlaceArea": areaCode,
+                "fvPlaceAreaName": areaName,
+                "fvRegisterCode": registerCode
             ])
             .make()
     }
@@ -798,17 +801,23 @@ extension Linkman {
     struct NetworkArea: Codable {
         let id: String
         let label: String
-        let children: [NetworkArea]
+        let children: [NetworkArea]?
     }
     
-    typealias AreaTreeResponse = NetworkArea
+    typealias AreaTreeResponse = [NetworkArea]
     
     func getAreaTree() async throws -> AreaTreeResponse {
-        try await Request()
+        let req = try await Request()
             .with(\.path, setTo: "/system/rps/rdsArea/getAllAreaTree")
             .with(\.method, setTo: .GET)
+            .with(\.checkResponse, setTo: false)
             .make()
-            .response() as AreaTreeResponse
+        
+        guard let r = req._response else {
+            throw "response not exists"
+        }
+        
+        return try r.decoded() as AreaTreeResponse
     }
     
     struct NetworkRecord: Codable {
