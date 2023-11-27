@@ -520,6 +520,7 @@ struct RoomDetail {
     var compoundPropertyManageType: String { DictType.fv_property_manage_type.label(of: dcCompound.fvPropertyManageType ?? "") ?? "" }
     var compoundPropertyCompany: String { dcCompound.fvPropertyCompany ?? "" }
     var compoundPropertyFee: String { dcCompound.fvPropertyFee ?? "" }
+    var compoundBuildingArea: String { "\(dcCompound.fbBuildingArea ?? 0)" }
 
     
     var buildingLevelDecorate: DictType.LevelDecorate? {

@@ -400,6 +400,7 @@ extension Linkman {
         var fvPropertyManageType: String?
         var fvPropertyCompany: String?
         var fvPropertyFee: String?
+        var fbBuildingArea: Double?
     }
     
     struct NetworkRoomDetail: Codable {
