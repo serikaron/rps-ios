@@ -542,6 +542,7 @@ struct RoomDetail {
     var compoundParkFeatures: String { dcCompound.fvParkFeatures ?? "" }
     var compoundIndustrialConcentrationRating: String { DictType.fv_industrial_concentration_rating.label(of: dcCompound.fvIndustrialConcentrationRating ?? "") ?? "" }
     var compoundParkKeyEnterprises: String { dcCompound.fvParkKeyEnterprises ?? "" }
+    var compoundIndustryLimit: String { dcCompound.fvIndustryLimit ?? "" }
 
     
     var buildingLevelDecorate: DictType.LevelDecorate? {

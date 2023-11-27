@@ -32,7 +32,10 @@ struct EstateDetailView : View {
             return LandingRoomApartmentDetailView(detail: $detail).earseToAnyView()
         case .industrialFactory:
             return IndustrialFactoryDetailView(detail: $detail).earseToAnyView()
-        default: return EmptyView().earseToAnyView()
+        case .industrialSmallGarden:
+            return IndustrialSmallGardenDetailView(detail: $detail).earseToAnyView()
+        case .none:
+            return EmptyView().earseToAnyView()
         }
     }
 }
@@ -90,9 +93,9 @@ private struct CommApartmentDetailView: View {
                 itemView(title: "销售时间", keypath: \.compoundSaleTime)
             }
             section("小区建筑信息") {
-                itemView(title: "总建筑面积", content: "")
+                itemView(title: "总建筑面积", keypath: \.compoundBuildingArea)
                 itemView(title: "住宅面积", keypath: \.compoundResidentialArea)
-                itemView(title: "总户数", content: "")
+//                itemView(title: "总户数", content: "")
                 itemView(title: "住宅幢数", keypath: \.compoundBuildingNumber)
                 itemView(title: "幢数描述", keypath: \.compoundBuildingDesc)
                 itemView(title: "建筑类型", keypath: \.compoundBuildingType)
@@ -745,8 +748,8 @@ private struct IndustrialFactoryDetailView: View {
             section("工业片区概况信息") {
                 itemView(title: "片区规模", keypath: \.compoundIndustrialSize)
                 itemView(title: "片区产业类别", keypath: \.estateTypeLabel)
-                itemView(title: "片区精色", keypath: \.compoundParkFeatures)
-                itemView(title: "工业聚集皮评分", keypath: \.compoundIndustrialConcentrationRating)
+                itemView(title: "片区特色", keypath: \.compoundParkFeatures)
+                itemView(title: "工业聚集度评分", keypath: \.compoundIndustrialConcentrationRating)
                 itemView(title: "片区重点企业", keypath: \.compoundParkKeyEnterprises)
             }
             section("工业片区外部配套") {
@@ -768,6 +771,89 @@ private struct IndustrialFactoryDetailView: View {
                 itemView(title: "站点距离", keypath: \.compoundBusStopDistance)
                 itemView(title: "地铁距离", keypath: \.compoundSubwayDistance)
                 itemView(title: "地铁站名", keypath: \.compoundSubway)
+            }
+        }
+    }
+    
+    private func itemView(title: String, content: String?) -> some View {
+        _ItemView(title: title, content: content)
+    }
+    
+    private func itemView(title: String, keypath: KeyPath<RoomDetail, String>) -> some View {
+        _ItemView(title: title, content: detail[keyPath: keypath])
+    }
+    
+    private func section(_ sectionTitle: String, @ViewBuilder _ builder: @escaping () -> some View) -> some View {
+        _Section(sectionTitle) {
+            builder()
+        }
+    }
+}
+
+private struct IndustrialSmallGardenDetailView: View {
+    @Binding var detail: RoomDetail
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            section("特殊情况说明") {
+                itemView(title: "园区特殊情况说明", keypath: \.compoundSpecialCircumstances)
+                itemView(title: "楼幢特殊情况说明", keypath: \.buildingSpecialCircumstances)
+                itemView(title: "户特殊情况说明", keypath: \.specialCircumstances)
+            }
+            section("户室具体情况") {
+                itemView(title: "最高评分", content: "")
+                itemView(title: "可转化利用评分", content: "")
+                itemView(title: "户型", keypath: \.typeOfHouse)
+                itemView(title: "装修评分", keypath: \.decoration)
+            }
+            section("园区区划信息") {
+                itemView(title: "地市", keypath: \.compoundCityName)
+                itemView(title: "区县", keypath: \.compoundAreaName)
+                itemView(title: "区域位置", keypath: \.compoundAreaLocation)
+                itemView(title: "园区名称", keypath: \.compoundCompoundName)
+                itemView(title: "园区别名", keypath: \.compoundNameAlias)
+            }
+            section("园区位置信息") {
+                itemView(title: "园区东至", keypath: \.compoundToEast)
+                itemView(title: "园区南至", keypath: \.compoundToSouth)
+                itemView(title: "园区西至", keypath: \.compoundToWest)
+                itemView(title: "园区北至", keypath: \.compoundToNorth)
+                itemView(title: "路牌号", keypath: \.compoundStreetMark)
+                itemView(title: "界址街牌", keypath: \.compoundAddrMark)
+            }
+            section("园区概况信息") {
+                itemView(title: "园区规模", keypath: \.compoundIndustrialSize)
+                itemView(title: "园区产业类别", keypath: \.estateTypeLabel)
+                itemView(title: "园区特色", keypath: \.compoundParkFeatures)
+                itemView(title: "园区聚集度", keypath: \.compoundIndustrialConcentrationRating)
+                itemView(title: "园区重点企业", keypath: \.compoundParkKeyEnterprises)
+            }
+            section("园区建筑信息") {
+                itemView(title: "园区撞数", keypath: \.compoundBuildingNumber)
+                itemView(title: "幢数描述", keypath: \.compoundBuildingDesc)
+                itemView(title: "建筑结构", keypath: \.compoundBuildingStructure)
+                itemView(title: "行业限制", keypath: \.compoundIndustryLimit)
+                itemView(title: "总套数", keypath: \.compoundHouseCount)
+            }
+            section("园区区交通配套") {
+                itemView(title: "CBD距离", keypath: \.compoundCbdDistance)
+                itemView(title: "商圈距离", keypath: \.compoundBusinessDistance)
+                itemView(title: "道路等级", keypath: \.compoundRoadLevel)
+                itemView(title: "交通干道", keypath: \.compoundOutsideMainRoad)
+                itemView(title: "普通公交", keypath: \.compoundBusLine)
+                itemView(title: "快速公交", keypath: \.compoundFastBus)
+                itemView(title: "站点距离", keypath: \.compoundBusStopDistance)
+                itemView(title: "地铁距离", keypath: \.compoundSubwayDistance)
+                itemView(title: "地铁站名", keypath: \.compoundSubway)
+            }
+            section("园区片区外部配套") {
+                itemView(title: "园区附近商场超市", keypath: \.compoundBusinessSet)
+                itemView(title: "园区附近餐饮酒店", keypath: \.compoundHotelRestaurant)
+                itemView(title: "园区附近文体场馆", keypath: \.compoundStadium)
+                itemView(title: "园区附近金融机构", keypath: \.compoundFinaceOrg)
+                itemView(title: "园区附近行政机关", keypath: \.compoundAdminOffice)
+                itemView(title: "园区附近教育设施", keypath: \.compoundEduHospital)
+                itemView(title: "园区附近医疔设施", keypath: \.compoundHospital)
             }
         }
     }

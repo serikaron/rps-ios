@@ -422,6 +422,7 @@ extension Linkman {
         var fvParkFeatures: String?
         var fvIndustrialConcentrationRating: String?
         var fvParkKeyEnterprises: String?
+        var fvIndustryLimit: String?
     }
     
     struct NetworkRoomDetail: Codable {
