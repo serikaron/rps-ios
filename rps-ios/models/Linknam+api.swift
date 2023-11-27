@@ -416,6 +416,12 @@ extension Linkman {
         var fvBusComplete: String?
         var fvHospitalComplete: String?
         var fvAllAround: String?
+        var fvAreaLocation: String?
+        var fvDistanceCityCentre: String?
+        var fbIndustrialSize: String?
+        var fvParkFeatures: String?
+        var fvIndustrialConcentrationRating: String?
+        var fvParkKeyEnterprises: String?
     }
     
     struct NetworkRoomDetail: Codable {

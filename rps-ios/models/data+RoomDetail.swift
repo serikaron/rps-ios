@@ -536,6 +536,12 @@ struct RoomDetail {
     var compoundBusComplete: String { dcCompound.fvBusComplete ?? "" }
     var compoundHospitalComplete: String { dcCompound.fvHospitalComplete ?? "" }
     var compoundAllAround: String { dcCompound.fvAllAround ?? "" }
+    var compoundAreaLocation: String { dcCompound.fvAreaLocation ?? "" }
+    var compoundDistanceCityCentre: String { dcCompound.fvDistanceCityCentre ?? "" }
+    var compoundIndustrialSize: String { dcCompound.fbIndustrialSize ?? "" }
+    var compoundParkFeatures: String { dcCompound.fvParkFeatures ?? "" }
+    var compoundIndustrialConcentrationRating: String { DictType.fv_industrial_concentration_rating.label(of: dcCompound.fvIndustrialConcentrationRating ?? "") ?? "" }
+    var compoundParkKeyEnterprises: String { dcCompound.fvParkKeyEnterprises ?? "" }
 
     
     var buildingLevelDecorate: DictType.LevelDecorate? {

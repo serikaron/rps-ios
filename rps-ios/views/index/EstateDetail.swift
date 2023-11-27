@@ -30,6 +30,8 @@ struct EstateDetailView : View {
             return ShopStreetApartmentDetailView(detail: $detail).earseToAnyView()
         case .landingRoom:
             return LandingRoomApartmentDetailView(detail: $detail).earseToAnyView()
+        case .industrialFactory:
+            return IndustrialFactoryDetailView(detail: $detail).earseToAnyView()
         default: return EmptyView().earseToAnyView()
         }
     }
@@ -604,7 +606,7 @@ private struct ShopStreetApartmentDetailView: View {
             section("路段交通配套") {
                 itemView(title: "距离CBD距离", keypath: \.compoundCbdDistance)
                 itemView(title: "商圈距离", keypath: \.compoundBusinessDistance)
-                itemView(title: "商圈距离", keypath: \.compoundRoadLevel)
+                itemView(title: "遵路级别", keypath: \.compoundRoadLevel)
                 itemView(title: "交通干道", keypath: \.compoundOutsideMainRoad)
                 itemView(title: "普通公交", keypath: \.compoundBusLine)
                 itemView(title: "快速公交", keypath: \.compoundFastBus)
@@ -690,6 +692,82 @@ private struct LandingRoomApartmentDetailView: View {
             }
             section("小区物业信息") {
                 itemView(title: "物业管理", keypath: \.compoundPropertyCompany)
+            }
+        }
+    }
+    
+    private func itemView(title: String, content: String?) -> some View {
+        _ItemView(title: title, content: content)
+    }
+    
+    private func itemView(title: String, keypath: KeyPath<RoomDetail, String>) -> some View {
+        _ItemView(title: title, content: detail[keyPath: keypath])
+    }
+    
+    private func section(_ sectionTitle: String, @ViewBuilder _ builder: @escaping () -> some View) -> some View {
+        _Section(sectionTitle) {
+            builder()
+        }
+    }
+}
+
+private struct IndustrialFactoryDetailView: View {
+    @Binding var detail: RoomDetail
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            section("特殊情况说明") {
+                itemView(title: "片区特殊情况说明", keypath: \.compoundSpecialCircumstances)
+                itemView(title: "厂区特殊情况说明", content: "")
+                itemView(title: "楼幢特殊情况说明", keypath: \.buildingSpecialCircumstances)
+            }
+            section("工业厂区具体情况") {
+                itemView(title: "宗地数", content: "")
+                itemView(title: "临路状况", content: "")
+                itemView(title: "宗地形状评分", content: "")
+                itemView(title: "宗地开发利用评分", content: "")
+                itemView(title: "中心距离评分", content: "")
+            }
+            section("工业片区区划信息") {
+                itemView(title: "地市", keypath: \.compoundCityName)
+                itemView(title: "区县", keypath: \.compoundAreaName)
+                itemView(title: "区域位置", keypath: \.compoundAreaLocation)
+                itemView(title: "片区名称", keypath: \.compoundCompoundName)
+                itemView(title: "片区别名", keypath: \.compoundNameAlias)
+            }
+            section("工业片区位置信息") {
+                itemView(title: "片区东至", keypath: \.compoundToEast)
+                itemView(title: "片区南至", keypath: \.compoundToSouth)
+                itemView(title: "片区西至", keypath: \.compoundToWest)
+                itemView(title: "片区北至", keypath: \.compoundToNorth)
+                itemView(title: "距市中心距离", keypath: \.compoundDistanceCityCentre)
+            }
+            section("工业片区概况信息") {
+                itemView(title: "片区规模", keypath: \.compoundIndustrialSize)
+                itemView(title: "片区产业类别", keypath: \.estateTypeLabel)
+                itemView(title: "片区精色", keypath: \.compoundParkFeatures)
+                itemView(title: "工业聚集皮评分", keypath: \.compoundIndustrialConcentrationRating)
+                itemView(title: "片区重点企业", keypath: \.compoundParkKeyEnterprises)
+            }
+            section("工业片区外部配套") {
+                itemView(title: "片区附近商场超市", keypath: \.compoundBusinessSet)
+                itemView(title: "片区附近餐饮酒店", keypath: \.compoundHotelRestaurant)
+                itemView(title: "片区附近文体场馆", keypath: \.compoundStadium)
+                itemView(title: "片区附近金融机构", keypath: \.compoundFinaceOrg)
+                itemView(title: "片区附近行政机关", keypath: \.compoundAdminOffice)
+                itemView(title: "片区附近教育设施", keypath: \.compoundEduHospital)
+                itemView(title: "片区附近医疔设施", keypath: \.compoundHospital)
+            }
+            section("工业片区交通配套") {
+                itemView(title: "CBD距离", keypath: \.compoundCbdDistance)
+                itemView(title: "商圈距离", keypath: \.compoundBusinessDistance)
+                itemView(title: "道路等级", keypath: \.compoundRoadLevel)
+                itemView(title: "交通干道", keypath: \.compoundOutsideMainRoad)
+                itemView(title: "普通公交", keypath: \.compoundBusLine)
+                itemView(title: "快速公交", keypath: \.compoundFastBus)
+                itemView(title: "站点距离", keypath: \.compoundBusStopDistance)
+                itemView(title: "地铁距离", keypath: \.compoundSubwayDistance)
+                itemView(title: "地铁站名", keypath: \.compoundSubway)
             }
         }
     }
