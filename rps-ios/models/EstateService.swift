@@ -332,147 +332,155 @@ class EstateService: ObservableObject {
             return false
         }
         
-        var dict = [String: Any]()
-        dict["fiReportState"] = state
-        
-        dict["fvPropertyCertificateAddr"] = sheet.certificateAddress
-        dict["fvEstateType"] = estateType.dictKey
-        dict["fvWtNickName"] = sheet.clientName
-        dict["fvWtPhone"] = sheet.phone
-        dict["fvValuationPurpose"] = purpose.dictKey
-        
-        if sheet.provinceCode != 0 {
-            dict["fiProvinceCode"] = sheet.provinceCode
-            dict["fvProvinceName"] = sheet.provinceName
-        }
-        if sheet.cityCode != 0 {
-            dict["fiCityCode"] = sheet.cityCode
-            dict["fvCityName"] = sheet.cityName
-        }
-        if sheet.areaCode != 0 {
-            dict["fiAreaCode"] = sheet.areaCode
-            dict["fvAreaName"] = sheet.areaName
-        }
-        if !sheet.address.isEmpty {
-            dict["fvPropertyRightAddr"] = sheet.address
-        }
-        if let area = sheet.buildingArea {
-            dict["fbBuildingArea"] = area
-        }
-        if let year = sheet.buildingYear {
-            dict["fdCompletionDate"] = "\(year)"
-        }
-        if let structure = sheet.structure {
-            dict["fvBuildingStructure"] = structure.dictKey
-        }
-        if let landArea = sheet.landArea {
-            dict["fdLandArea"] = landArea
-        }
+//        var dict = [String: Any]()
+//        dict["fiReportState"] = state
+//        
+//        dict["fvPropertyCertificateAddr"] = sheet.certificateAddress
+//        dict["fvEstateType"] = estateType.dictKey
+//        dict["fvWtNickName"] = sheet.clientName
+//        dict["fvWtPhone"] = sheet.phone
+//        dict["fvValuationPurpose"] = purpose.dictKey
+//        
+//        if sheet.provinceCode != 0 {
+//            dict["fiProvinceCode"] = sheet.provinceCode
+//            dict["fvProvinceName"] = sheet.provinceName
+//        }
+//        if sheet.cityCode != 0 {
+//            dict["fiCityCode"] = sheet.cityCode
+//            dict["fvCityName"] = sheet.cityName
+//        }
+//        if sheet.areaCode != 0 {
+//            dict["fiAreaCode"] = sheet.areaCode
+//            dict["fvAreaName"] = sheet.areaName
+//        }
+//        if !sheet.address.isEmpty {
+//            dict["fvPropertyRightAddr"] = sheet.address
+//        }
+//        if let area = sheet.buildingArea {
+//            dict["fbBuildingArea"] = area
+//        }
+//        if let year = sheet.buildingYear {
+//            dict["fdCompletionDate"] = "\(year)"
+//        }
+//        if let structure = sheet.structure {
+//            dict["fvBuildingStructure"] = structure.dictKey
+//        }
+//        if let landArea = sheet.landArea {
+//            dict["fdLandArea"] = landArea
+//        }
+//        if let beginFloor = sheet.beginFloor,
+//           let endFloor = sheet.endFloor {
+//            dict["fvInFloor"] = "\(beginFloor)-\(endFloor)"
+//        }
+//        if !sheet.valuationDate.isEmpty {
+//            dict["fvValuationDate"] = sheet.valuationDate
+//        }
+//        if let price = sheet.price {
+//            dict["fvValuationPrice"] = "\(price * 10000)"
+//        }
+//        if let totalPrice = sheet.totalPrice {
+//            dict["fvValuationTotalPrice"] = "\(totalPrice * 10000)"
+//        }
+//        if !sheet.owner.isEmpty {
+//            dict["fvOwnershipHouseOwner"] = sheet.owner
+//        }
+//        if !sheet.ownerNumber.isEmpty {
+//            dict["fvOwnershipHouseNumber"] = sheet.ownerNumber
+//        }
+//        if let housingUse = sheet.housingUse {
+//            dict["fvDesignPurposeOfHouse"] = housingUse.dictKey
+//        }
+//        if let facing = sheet.facing {
+//            dict["fvBuildDirection"] = facing.dictKey
+//        }
+//        if let landSe = sheet.landSe {
+//            dict["fvClassToUse"] = landSe.dictKey
+//        }
+//        if let landUser = sheet.landUser {
+//            dict["fvUseRightType"] = landUser.dictKey
+//        }
+//        if !sheet.landEndDate.isEmpty {
+//            dict["fvLandEndDate"] = sheet.landEndDate
+//        }
+//        if !sheet.landNumber.isEmpty {
+//            dict["fvLandUseRightNumber"] = sheet.landNumber
+//        }
+//        if !sheet.northTo.isEmpty {
+//            dict["fvToNorth"] = sheet.northTo
+//        }
+//        if !sheet.southTo.isEmpty {
+//            dict["fvToSouth"] = sheet.southTo
+//        }
+//        if !sheet.eastTo.isEmpty {
+//            dict["fvToEast"] = sheet.eastTo
+//        }
+//        if !sheet.westTo.isEmpty {
+//            dict["fvToWest"] = sheet.westTo
+//        }
+//        if !sheet.traffic.isEmpty {
+//            dict["fvTraffic"] = sheet.traffic
+//        }
+//        if !sheet.publicFacilities.isEmpty {
+//            dict["fvPublicFacilities"] = sheet.publicFacilities
+//        }
+//        if let decoration = sheet.decoration {
+//            dict["fvDecoreate"] = decoration.dictKey
+//        }
+//        if let levelDecorate = sheet.levelDecorate {
+//            dict["fvDecoreate"] = levelDecorate.dictKey
+//        }
+//        if let degree = sheet.buildingNewDegree {
+//            dict["fvBuildingNewDegree"] = "\(degree)"
+//        }
+//        if !sheet.houseTransferee.isEmpty {
+//            dict["fvHouseTransferee"] = sheet.houseTransferee
+//        }
+//        if let houseTransferAmount = sheet.houseTransferAmount {
+//            dict["fvHouseTransferAmount"] = "\(houseTransferAmount)"
+//        }
+//        if let propertyCoOwnershipSituation = sheet.propertyCoOwnershipSituation {
+//            dict["fvPropertyCoOwnershipSituation"] = propertyCoOwnershipSituation.dictKey
+//        }
+//        if !sheet.propertyCoOwnership.isEmpty {
+//            dict["fvPropertyCoOwnership"] = sheet.propertyCoOwnership
+//        }
+//        if !sheet.jointOwnershipCertificateNumber.isEmpty {
+//            dict["fvJointOwnershipCertificateNumber"] = sheet.jointOwnershipCertificateNumber
+//        }
+//        if let spatialLayout = sheet.spatialLayout {
+//            dict["fvSpatialLayout"] = spatialLayout.dictKey
+//        }
+//        if !sheet.houseUse.isEmpty {
+//            dict["fvHouseUseStatusQuo"] = sheet.houseUse
+//        }
+//        if !sheet.compensation.isEmpty {
+//            dict["fvStatutoryPriorityRightToCompensation"] = sheet.compensation
+//        }
+//        if !sheet.bkLander.isEmpty {
+//            dict["fvBkLender"] = sheet.bkLander
+//        }
+//        if !sheet.bkLandType.isEmpty {
+//            dict["fvBkLendType"] = sheet.bkLandType
+//        }
+//        if !sheet.organ.isEmpty {
+//            dict["fvWtOrgan"] = sheet.organ
+//        }
+//        if !sheet.organDept.isEmpty {
+//            dict["fvWtOrganDept"] = sheet.organDept
+//        }
+//        if !sheet.bankBranchCode.isEmpty {
+//            dict["fvBkBankBranchCode"] = sheet.bankBranchCode
+//        }
+//        if !sheet.comment.isEmpty {
+//            dict["fvWtRemark"] = sheet.comment
+//        }
+
+        var dict = sheet.networkReportSheet
         if let beginFloor = sheet.beginFloor,
            let endFloor = sheet.endFloor {
             dict["fvInFloor"] = "\(beginFloor)-\(endFloor)"
-        }
-        if !sheet.valuationDate.isEmpty {
-            dict["fvValuationDate"] = sheet.valuationDate
-        }
-        if let price = sheet.price {
-            dict["fvValuationPrice"] = "\(price * 10000)"
-        }
-        if let totalPrice = sheet.totalPrice {
-            dict["fvValuationTotalPrice"] = "\(totalPrice * 10000)"
-        }
-        if !sheet.owner.isEmpty {
-            dict["fvOwnershipHouseOwner"] = sheet.owner
-        }
-        if !sheet.ownerNumber.isEmpty {
-            dict["fvOwnershipHouseNumber"] = sheet.ownerNumber
-        }
-        if let housingUse = sheet.housingUse {
-            dict["fvDesignPurposeOfHouse"] = housingUse.dictKey
-        }
-        if let facing = sheet.facing {
-            dict["fvBuildDirection"] = facing.dictKey
-        }
-        if let landSe = sheet.landSe {
-            dict["fvClassToUse"] = landSe.dictKey
-        }
-        if let landUser = sheet.landUser {
-            dict["fvUseRightType"] = landUser.dictKey
-        }
-        if !sheet.landEndDate.isEmpty {
-            dict["fvLandEndDate"] = sheet.landEndDate
-        }
-        if !sheet.landNumber.isEmpty {
-            dict["fvLandUseRightNumber"] = sheet.landNumber
-        }
-        if !sheet.northTo.isEmpty {
-            dict["fvToNorth"] = sheet.northTo
-        }
-        if !sheet.southTo.isEmpty {
-            dict["fvToSouth"] = sheet.southTo
-        }
-        if !sheet.eastTo.isEmpty {
-            dict["fvToEast"] = sheet.eastTo
-        }
-        if !sheet.westTo.isEmpty {
-            dict["fvToWest"] = sheet.westTo
-        }
-        if !sheet.traffic.isEmpty {
-            dict["fvTraffic"] = sheet.traffic
-        }
-        if !sheet.publicFacilities.isEmpty {
-            dict["fvPublicFacilities"] = sheet.publicFacilities
-        }
-        if let decoration = sheet.decoration {
-            dict["fvDecoreate"] = decoration.dictKey
-        }
-        if let levelDecorate = sheet.levelDecorate {
-            dict["fvDecoreate"] = levelDecorate.dictKey
-        }
-        if let degree = sheet.buildingNewDegree {
-            dict["fvBuildingNewDegree"] = "\(degree)"
-        }
-        if !sheet.houseTransferee.isEmpty {
-            dict["fvHouseTransferee"] = sheet.houseTransferee
-        }
-        if let houseTransferAmount = sheet.houseTransferAmount {
-            dict["fvHouseTransferAmount"] = "\(houseTransferAmount)"
-        }
-        if let propertyCoOwnershipSituation = sheet.propertyCoOwnershipSituation {
-            dict["fvPropertyCoOwnershipSituation"] = propertyCoOwnershipSituation.dictKey
-        }
-        if !sheet.propertyCoOwnership.isEmpty {
-            dict["fvPropertyCoOwnership"] = sheet.propertyCoOwnership
-        }
-        if !sheet.jointOwnershipCertificateNumber.isEmpty {
-            dict["fvJointOwnershipCertificateNumber"] = sheet.jointOwnershipCertificateNumber
-        }
-        if let spatialLayout = sheet.spatialLayout {
-            dict["fvSpatialLayout"] = spatialLayout.dictKey
-        }
-        if !sheet.houseUse.isEmpty {
-            dict["fvHouseUseStatusQuo"] = sheet.houseUse
-        }
-        if !sheet.compensation.isEmpty {
-            dict["fvStatutoryPriorityRightToCompensation"] = sheet.compensation
-        }
-        if !sheet.bkLander.isEmpty {
-            dict["fvBkLender"] = sheet.bkLander
-        }
-        if !sheet.bkLandType.isEmpty {
-            dict["fvBkLendType"] = sheet.bkLandType
-        }
-        if !sheet.organ.isEmpty {
-            dict["fvWtOrgan"] = sheet.organ
-        }
-        if !sheet.organDept.isEmpty {
-            dict["fvWtOrganDept"] = sheet.organDept
-        }
-        if !sheet.bankBranchCode.isEmpty {
-            dict["fvBkBankBranchCode"] = sheet.bankBranchCode
-        }
-        if !sheet.comment.isEmpty {
-            dict["fvWtRemark"] = sheet.comment
+        } else {
+            dict.removeValue(forKey: "fvInFloor")
         }
 
         
@@ -760,6 +768,20 @@ class EstateService: ObservableObject {
             try await Linkman.shared.sendReportToEmail(id: id, email: email)
         } catch {
             print("sendReportToMail FAILED!!! \(error)")
+        }
+    }
+    
+    func getReportSheet(by inquiryId: Int) async -> ReportSheet {
+        guard inquiryId != 0 else {
+            return ReportSheet()
+        }
+        
+        do {
+            let rsp = try await Linkman.shared.getReportSheet(by: inquiryId)
+            return ReportSheet(networkReportSheet: rsp)
+        } catch {
+            print("getReportSheet FAILED!!! \(error)")
+            return ReportSheet()
         }
     }
 }

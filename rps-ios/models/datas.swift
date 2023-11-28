@@ -497,63 +497,6 @@ struct InquirySheet {
     }
 }
 
-struct ReportSheet {
-    var certificateAddress: String = ""
-    var estateType: DictType.EstateType? = nil
-    var clientName: String = ""
-    var phone: String = ""
-    var purpose: DictType.ValuationPurpose? = nil
-    
-    var provinceCode: Int = 0
-    var cityCode: Int = 0
-    var areaCode: Int = 0
-    var provinceName: String = ""
-    var cityName: String = ""
-    var areaName: String = ""
-    var address: String = ""
-    var buildingArea: Double? = nil
-    var buildingYear: Int? = nil
-    var structure: DictType.BuildingStructure? = nil
-    var landArea: Double? = nil
-    var beginFloor: Int? = nil
-    var endFloor: Int? = nil
-    var valuationDate: String = ""
-    var price: Int? = nil
-    var totalPrice: Int? = nil
-    var owner: String = ""
-    var ownerNumber: String = ""
-    var housingUse: DictType.HousingUse? = nil
-    var facing: DictType.BuildDirection? = nil
-    var landSe: DictType.LandSe? = nil
-    var landUser: DictType.LandUser? = nil
-    var landEndDate: String = ""
-    var landNumber: String = ""
-    var northTo: String = ""
-    var southTo: String = ""
-    var eastTo: String = ""
-    var westTo: String = ""
-    var traffic: String = ""
-    var publicFacilities: String = ""
-    var decoration: DictType.Decoration? = nil
-    var levelDecorate: DictType.LevelDecorate? = nil
-    var buildingNewDegree: Double? = nil
-    var houseTransferee: String = ""
-    var houseTransferAmount: Int? = nil
-    var propertyCoOwnershipSituation: DictType.CoOwnershipSituation? = nil
-    var propertyCoOwnership: String = ""
-    var jointOwnershipCertificateNumber: String = ""
-    var spatialLayout: DictType.SpatialLayout? = nil
-    var houseUse: String = ""
-    var compensation: String = ""
-    var bkLander: String = ""
-    var bkLandType: String = ""
-    var organ: String = ""
-    var organDept: String = ""
-    var bankBranchCode: String = ""
-    var comment: String = ""
-    var images: [RpsImage] = []
-}
-
 enum RecordPage {
     case inquiry(SearchFilter), report(SearchFilter)
 }

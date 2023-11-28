@@ -376,6 +376,18 @@ struct AddReportView: View {
     }
     
     private func fillSheet() {
+        guard let inquiryId = inquiry?.id,
+              inquiryId != 0
+        else {
+            return
+        }
+        
+        Task {
+            sheet = await estateService.getReportSheet(by: inquiryId)
+        }
+    }
+    
+    private func fillSheet1() {
         guard let inquiry = inquiry,
               let detail = detail
         else { return }
