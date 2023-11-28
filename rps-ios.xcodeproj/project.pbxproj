@@ -49,6 +49,7 @@
 		72D810232B0A73950035355A /* YearMonthPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D810222B0A73950035355A /* YearMonthPicker.swift */; };
 		72DE5A222B15849200CE36AA /* data+ReportSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DE5A212B15849200CE36AA /* data+ReportSheet.swift */; };
 		72DE5A242B15975900CE36AA /* data+Inquiry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DE5A232B15975900CE36AA /* data+Inquiry.swift */; };
+		72DE5A262B15B66500CE36AA /* PDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DE5A252B15B66500CE36AA /* PDF.swift */; };
 		72DFCEE92AFA00F50001831F /* rps_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCEE82AFA00F50001831F /* rps_iosApp.swift */; };
 		72DFCEEB2AFA00F50001831F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCEEA2AFA00F50001831F /* ContentView.swift */; };
 		72DFCEED2AFA00F60001831F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72DFCEEC2AFA00F60001831F /* Assets.xcassets */; };
@@ -147,6 +148,7 @@
 		72D810222B0A73950035355A /* YearMonthPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearMonthPicker.swift; sourceTree = "<group>"; };
 		72DE5A212B15849200CE36AA /* data+ReportSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "data+ReportSheet.swift"; sourceTree = "<group>"; };
 		72DE5A232B15975900CE36AA /* data+Inquiry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "data+Inquiry.swift"; sourceTree = "<group>"; };
+		72DE5A252B15B66500CE36AA /* PDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDF.swift; sourceTree = "<group>"; };
 		72DFCEE52AFA00F50001831F /* rps-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rps-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		72DFCEE82AFA00F50001831F /* rps_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rps_iosApp.swift; sourceTree = "<group>"; };
 		72DFCEEA2AFA00F50001831F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 		722DA2362B0CE7EA00C0A3DF /* RecordsCenter */ = {
 			isa = PBXGroup;
 			children = (
+				72DE5A252B15B66500CE36AA /* PDF.swift */,
 				722DA2372B0CE82300C0A3DF /* RecordsCenterView.swift */,
 				72749E892B0DD10D000258C2 /* ReportSheetView.swift */,
 			);
@@ -556,6 +559,7 @@
 				722DA22D2B0AFD0500C0A3DF /* AddInquiryView.swift in Sources */,
 				72D8101A2B09207C0035355A /* Curve.swift in Sources */,
 				720C96B52B10850300E85AC5 /* data+RoomDetail.swift in Sources */,
+				72DE5A262B15B66500CE36AA /* PDF.swift in Sources */,
 				72F9BF962AFDE1C40040C6D2 /* EstateService.swift in Sources */,
 				72C004782B0078D50084D3FA /* FloorsView.swift in Sources */,
 				72F9BF9A2AFE63080040C6D2 /* SearchInputView.swift in Sources */,

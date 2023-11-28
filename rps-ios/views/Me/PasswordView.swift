@@ -19,16 +19,21 @@ struct PasswordView: View {
         VStack {
             VStack {
                 itemView(title: "原密码", placeholder: "请输入原密码", binding: $orgPassword)
+                    .textContentType(.password)
                 Divider()
                 itemView(title: "新密码", placeholder: "请输入新密码", binding: $newPassword)
+                    .textContentType(.password)
                 Divider()
                 itemView(title: "重复新密码", placeholder: "请再次输入新密码", binding: $newPassword2)
+                    .textContentType(.newPassword)
             }
             .sectionStyle()
             Spacer()
             Button {
                 Task {
                     await accountService.resetPassword(orgPassword: orgPassword, newPassword: newPassword, newPassword2: newPassword2)
+                    Box.sendError("修改成功")
+                    presentationMode.wrappedValue.dismiss()
                 }
             } label: {
                 Text("保存")
@@ -49,7 +54,7 @@ struct PasswordView: View {
     private func itemView(title: String, placeholder: String, binding: Binding<String>) -> some View {
         HStack {
             Text(title).itemTitle()
-            TextField(placeholder, text: binding)
+            SecureField(placeholder, text: binding)
                 .itemContent()
                 .multilineTextAlignment(.trailing)
         }

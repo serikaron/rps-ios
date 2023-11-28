@@ -237,6 +237,7 @@ struct RoomDetailView: View {
 询价时间:\(inquiry?.valuationDate ?? "")
 """
                     UIPasteboard.general.string = s
+                    Box.sendError("已复制到剪贴板")
                 } label: {
                     actionItem(title: "复制询价")
                 }

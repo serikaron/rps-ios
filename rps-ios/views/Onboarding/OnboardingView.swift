@@ -147,7 +147,7 @@ private struct LoginView: View {
             )
             .textContentType(.oneTimeCode)
                 .overlay (
-                    Text("获到验证码")
+                    Text("获取验证码")
                         .customText(size: 14, color: .main)
                         .padding(.trailing, 8)
                         .frame(maxWidth: .infinity, alignment: .trailing)
@@ -238,13 +238,16 @@ private struct RegisterView: View {
             HStack {
                 Button {
                     Task {
-                        await accountService.register(
+                        let success = await accountService.register(
                             account: account, name: name, gender: gender, birthday: birthday,
                             registerCode: registerCode,
                             company: company, department: department, position: position,
                             phone: phone, mobile: mobile, email: email, contact: contact,
                             provinceCode: provinceCode, cityCode: cityCode, areaCode: areaCode,
                             proviceName: provinceName, cityName: cityName, areaName: areaName)
+                        if success {
+                            viewType = .login
+                        }
                     }
                 } label: {
                     buttonLabel(text: "保存")

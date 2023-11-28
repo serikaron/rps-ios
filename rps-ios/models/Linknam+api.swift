@@ -1008,7 +1008,7 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/account/rps/account/clientUser/updatePwd")
             .with(\.method, setTo: .PUT)
-            .with(\.bodyDict, setTo: [
+            .with(\.query, setTo: [
                 "oldPassword": oldPassword,
                 "newPassword": newPassword
             ])
@@ -1062,7 +1062,7 @@ extension Linkman {
     
     func getReportSheet(by inquiryId: Int) async throws -> NetworkReportSheet {
         let req = try await Request()
-            .with(\.path, setTo: "/inquiry//rps/complexReport/getReportInfoByInquiryId/\(inquiryId)")
+            .with(\.path, setTo: "/inquiry/rps/complexReport/getReportInfoByInquiryId/\(inquiryId)")
             .with(\.method, setTo: .GET)
             .make()
         
@@ -1077,6 +1077,28 @@ extension Linkman {
         }
         
         return out
+    }
+    
+    struct PdfResponse: Codable {
+        let ossId: Int?
+        let name: String?
+        let url: String?
+    }
+    
+    func complexReportPdf(id: Int) async throws -> PdfResponse {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/complexReport/pdfInfo/\(id)")
+            .with(\.method, setTo: .GET)
+            .make()
+            .response() as PdfResponse
+    }
+    
+    func consultReportPdf(inquiryId: Int) async throws -> PdfResponse {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/consultReport/pdfInfo/\(inquiryId)")
+            .with(\.method, setTo: .POST)
+            .make()
+            .response() as PdfResponse
     }
 }
 

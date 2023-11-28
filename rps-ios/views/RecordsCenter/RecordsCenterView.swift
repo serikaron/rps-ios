@@ -16,7 +16,7 @@ struct RecordsCenterView: View {
     @State private var param = SearchFilter()
     @State private var moreSheetShown = false
     @State private var maskAlpha: Double = .zero
-    @State private var sheetOffset: Double = 300
+    @State private var sheetOffset: Double = 500
     @State private var popupRecord: Record?
     
     var body: some View {
@@ -596,6 +596,8 @@ private struct RecordListView: View {
             getRecord()
         }
         .onChange(of: filter) { _ in
+            pageNum = 0
+            records = []
             getRecord()
         }
     }
@@ -618,9 +620,13 @@ private struct RecordPopupView: View {
     @EnvironmentObject var accountService: AccountService
     
     @Binding var record: Record?
+    @State private var showPdf = false
     
     var body: some View {
         ZStack {
+            NavigationLink(destination: ComplexPDF(id: record?.id ?? 0), isActive: $showPdf) {
+                EmptyView()
+            }
             Color.black.opacity(0.6)
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
@@ -649,6 +655,9 @@ private struct RecordPopupView: View {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.main, lineWidth: 1)
                             )
+                            .onTapGesture {
+                                showPdf = true
+                            }
                     }
                     Text("发送邮箱")
                         .customText(size: 16, color: .white)

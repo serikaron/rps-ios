@@ -67,7 +67,7 @@ struct AddReportView: View {
     
     private var optionalSection: some View {
         SectionView(title: "委托基本信息") {
-            itemView(title: "物业地址", isRequire: false) { addressPicker }
+            itemView(title: "物业地址", isRequire: true) { addressPicker }
             Divider()
             textItemView(title: "详细地址", isRequire: false, binding: $sheet.address)
             Divider()

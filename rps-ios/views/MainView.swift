@@ -12,6 +12,9 @@ struct MainView: View {
     @StateObject var estateService = EstateService()
     @StateObject var tabService = TabService()
     
+    init() {
+        print("MainView init")
+    }
     
     var body: some View {
         ZStack {

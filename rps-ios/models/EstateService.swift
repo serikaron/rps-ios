@@ -29,7 +29,9 @@ class EstateService: ObservableObject {
     private var fuzzySearchTask: Task<Void, Never>?
     @Published var fuzzySearchResult: SearchResultList = []
     
-    var isPreview = false
+    private var isPreview: Bool {
+        Box.isPreview
+    }
     
     @Published var fuzzyKeyword = ""
     
@@ -322,11 +324,14 @@ class EstateService: ObservableObject {
     }
     
     func addReport(sheet: ReportSheet, state: Int) async -> Bool {
-        guard let estateType = sheet.estateType,
+        guard sheet.estateType != nil,
               !sheet.certificateAddress.isEmpty,
               !sheet.clientName.isEmpty,
               !sheet.phone.isEmpty,
-              let purpose = sheet.purpose
+              sheet.purpose != nil,
+              sheet.provinceCode != 0,
+              sheet.cityCode != 0,
+              sheet.areaCode != 0
         else {
             Box.sendError("请完成必填信息")
             return false
@@ -689,7 +694,7 @@ class EstateService: ObservableObject {
             }
             dict["fileList"] = imageList
             
-            try await Linkman.shared.addReport(reportDict: dict)
+            try await Linkman.shared.addConsultReport(dict: dict)
         } catch {
             print("addReport FAILED!!! \(error)")
         }
@@ -790,6 +795,31 @@ class EstateService: ObservableObject {
             return ReportSheet()
         }
     }
+    
+    func complexReportPdf(id: Int) async -> String {
+        guard id != 0 else { return "" }
+        
+        do {
+            let rsp = try await Linkman.shared.complexReportPdf(id: id)
+            return rsp.url ?? ""
+        } catch {
+            print("complexReportPdf FAILED!!! \(error)")
+            return ""
+        }
+    }
+    
+    func consultReportPdf(inquiryId: Int) async -> String {
+        guard inquiryId != 0 else { return "" }
+        
+        do {
+            let rsp = try await Linkman.shared.consultReportPdf(inquiryId: inquiryId)
+            return rsp.url ?? ""
+        } catch {
+            print("complexReportPdf FAILED!!! \(error)")
+            return ""
+        }
+    }
+
 }
 
 // MARK: -
@@ -845,7 +875,7 @@ extension EstateService {
     static var preview: EstateService {
         Box.isPreview = true
         let out = EstateService()
-        out.isPreview = true
+//        out.isPreview = true
         out.exactSearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
         out.fuzzySearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
         out.buildings = (0..<10).map { _ in Building.mock }

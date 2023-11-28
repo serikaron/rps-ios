@@ -16,6 +16,8 @@ struct ContentView: View {
 //            await DictType.getDict()
 //        }
         MapService.initMAMapKit()
+        
+        print("ContentView init")
     }
     
 //    var body: some View {

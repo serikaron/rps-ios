@@ -17,19 +17,28 @@ class AccountService: ObservableObject {
         }
     }
     
-    var cancelable: Cancellable?
+    private var cancelable = Set<AnyCancellable>()
     
     init() {
+        print("AccountService init")
+        
+        Box.shared.tokenSubject
+            .sink { token in
+                print("token \(String(describing: token))")
+            }
+            .store(in: &cancelable)
+        
         Box.shared.tokenSubject
             .map { $0 != nil }
             .receive(on: RunLoop.main)
             .assign(to: &$isLoggedIn)
         
-        cancelable = Box.shared.tokenSubject
+        Box.shared.tokenSubject
             .dropFirst()
             .sink(receiveValue: { token in
                 UserDefaults.token = token
             })
+            .store(in: &cancelable)
         
         account = UserDefaults.account
     }
@@ -97,7 +106,7 @@ class AccountService: ObservableObject {
         phone: String, mobile: String, email: String, contact: String,
         provinceCode: Int, cityCode: Int, areaCode: Int,
         proviceName: String, cityName: String, areaName: String
-    ) async {
+    ) async -> Bool {
         do {
             guard !account.isEmpty, !name.isEmpty,
                   !registerCode.isEmpty,
@@ -106,7 +115,7 @@ class AccountService: ObservableObject {
                   areaCode != 0
             else {
                 Box.sendError("请输入必填信息")
-                return
+                return false
             }
             
             try await Linkman.shared.register(
@@ -115,8 +124,9 @@ class AccountService: ObservableObject {
                 company: company, department: department, position: position,
                 phone: phone, mobile: mobile, email: email, contact: contact,
                 areaCode: "\(areaCode)", areaName: areaName)
+            return true
         } catch {
-            
+            return false
         }
     }
     

@@ -18,34 +18,43 @@ struct ReportSheetView: View {
     let inquiryId: Int
     let reportState: Int
     
+    @State private var showPdf = false
+    
     var body: some View {
-        ScrollView {
-            VStack {
-                TemplateView(type: type, estateType: estateType, selectedTemplate: $sheet.template)
-                SectionView(title: "选择照片") {
-                    ReportImageListView(images: $sheet.images)
-                }
-                InputView(sheet: $sheet)
-                SectionView(title: "备注") {
-                    TextEditor(text: $sheet.comment)
-                        .frame(height: 100)
-                }
-                Text("报告预览")
-                    .customText(size: 16, color: .white)
-                    .frame(height: 40)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.main)
-                    .cornerRadius(8)
-                    .padding(.horizontal, 12)
-                    .onTapGesture {
-                        Task {
-                            await estateService.addConsultReport(sheet: sheet, inquiryId: inquiryId, reportState: reportState)
-                        }
-                    }
+        ZStack {
+            NavigationLink(destination: ConsultPDF(inquiryId: inquiryId), isActive: $showPdf) {
+                EmptyView()
             }
-            .padding(.vertical, 10)
+            
+            ScrollView {
+                VStack {
+                    TemplateView(type: type, estateType: estateType, selectedTemplate: $sheet.template)
+                    SectionView(title: "选择照片") {
+                        ReportImageListView(images: $sheet.images)
+                    }
+                    InputView(sheet: $sheet)
+                    SectionView(title: "备注") {
+                        TextEditor(text: $sheet.comment)
+                            .frame(height: 100)
+                    }
+                    Text("报告预览")
+                        .customText(size: 16, color: .white)
+                        .frame(height: 40)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.main)
+                        .cornerRadius(8)
+                        .padding(.horizontal, 12)
+                        .onTapGesture {
+                            Task {
+                                await estateService.addConsultReport(sheet: sheet, inquiryId: inquiryId, reportState: reportState)
+                                showPdf = true
+                            }
+                        }
+                }
+                .padding(.vertical, 10)
+            }
+            .background(Color.view.background)
         }
-        .background(Color.view.background)
         .setupNavigationBar(title: "获取报告单") {
             presentationMode.wrappedValue.dismiss()
         }
