@@ -336,8 +336,14 @@ extension Record {
             totalPrice: "3149400", price: "39311", area: "80",
             roomId: "",
             buildingId: 0,
+            provinceCode: 0,
+            cityCode: 0,
             areaCode: 0,
-            floor: ""
+            floor: "",
+            contact: "",
+            contactPhone: "",
+            buildingYear: "",
+            structure: ._1
         )
     }
 }

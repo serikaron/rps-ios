@@ -12,7 +12,7 @@ struct AddInquiryView: View {
     @EnvironmentObject var estateService: EstateService
 
     let inquiry: Inquiry?
-    let detail: RoomDetail?
+    let record: Record?
     
     @State private var sheet: InquirySheet = .empty
     @State private var areaTree = AreaTree(code: "", name: "", children: [])
@@ -91,18 +91,47 @@ struct AddInquiryView: View {
 //                sheet.structure = inquiry.structure
                 if let floor = inquiry.floor {
                     let l = floor.components(separatedBy: "-")
+                    if l.count == 2 {
+                        sheet.beginFloor = Int(l[0])
+                        sheet.endFloor = Int(l[1])
+                    }
+                }
+                sheet.valuationDate = inquiry.valuationDate ?? ""
+                sheet.structure = inquiry.structure
+                
+                sheet.provinceCode = inquiry.provinceCode ?? 0
+                sheet.cityCode = inquiry.cityCode ?? 0
+                sheet.areaCode = inquiry.areaCode ?? 0
+                if sheet.provinceCode != 0 {
+                    let pCode = "\(sheet.provinceCode)"
+                    sheet.provinceName = areaTree.name(by: [pCode])
+                    if sheet.cityCode != 0 {
+                        let cCode = "\(sheet.cityCode)"
+                        sheet.cityName = areaTree.name(by: [pCode, cCode])
+                        if sheet.areaCode != 0 {
+                            let aCode = "\(sheet.areaCode)"
+                            sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+                        }
+                    }
+                }
+            }
+            if let record = record {
+                sheet.address = record.address
+                sheet.estateType = record.estateType
+                sheet.buildingArea = Double(record.area)
+                sheet.contact = record.contact
+                sheet.phone = record.contactPhone
+                sheet.buildingYear = record.buildingYear
+                sheet.structure = record.structure
+                sheet.valuationDate = record.valuationDate
+                let l = record.floor.components(separatedBy: "-")
+                if l.count == 2 {
                     sheet.beginFloor = Int(l[0])
                     sheet.endFloor = Int(l[1])
                 }
-                sheet.valuationDate = inquiry.valuationDate ?? ""
-            }
-            if let detail = detail {
-                sheet.structure = DictType.BuildingStructure(rawValue: detail.structure)
-                sheet.provinceCode = detail.provinceCode
-                print(detail.provinceCode)
-                print(sheet.provinceCode)
-                sheet.cityCode = detail.cityCode
-                sheet.areaCode = detail.areaCode
+                sheet.provinceCode = record.provinceCode
+                sheet.cityCode = record.cityCode
+                sheet.areaCode = record.areaCode
                 if sheet.provinceCode != 0 {
                     let pCode = "\(sheet.provinceCode)"
                     sheet.provinceName = areaTree.name(by: [pCode])
@@ -432,7 +461,7 @@ struct AddInquiryView: View {
 }
 
 #Preview {
-    AddInquiryView(inquiry: .empty, detail: .empty)
+    AddInquiryView(inquiry: .empty, record: nil)
         .environmentObject(EstateService.preview)
 }
 

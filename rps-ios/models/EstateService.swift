@@ -583,8 +583,14 @@ class EstateService: ObservableObject {
                         area: r.fbBuildingArea == nil ? "" : "\(r.fbBuildingArea!)",
                         roomId: r.fiRoomId ?? "",
                         buildingId: r.fiBuildingId ?? 0,
+                        provinceCode: r.fiProvinceCode ?? 0,
+                        cityCode: r.fiCityCode ?? 0,
                         areaCode: r.fiAreaCode ?? 0,
-                        floor: "\(r.fiBeginFloor ?? 0)-\(r.fiEndFloor ?? 0)"
+                        floor: "\(r.fiBeginFloor ?? 0)-\(r.fiEndFloor ?? 0)",
+                        contact: r.fvContact ?? "",
+                        contactPhone: r.fvContactPhone ?? "",
+                        buildingYear: r.fvBuildingYear ?? "",
+                        structure: DictType.BuildingStructure(rawValue: r.fvBuildingStructure)
                     )
                 })
         } catch {

@@ -840,9 +840,15 @@ extension Linkman {
         let fbBuildingArea: Double?
         let fiRoomId: String?
         let fiBuildingId: Int?
+        let fiProvinceCode: Int?
+        let fiCityCode: Int?
         let fiAreaCode: Int?
         let fiBeginFloor: Int?
         let fiEndFloor: Int?
+        let fvContact: String?
+        let fvContactPhone: String?
+        let fvBuildingYear: String?
+        let fvBuildingStructure: String?
     }
     
     struct NetworkRecordImage: Codable {

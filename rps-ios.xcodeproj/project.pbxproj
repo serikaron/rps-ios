@@ -48,6 +48,7 @@
 		72D8101E2B09E7EA0035355A /* AlwaysPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D8101D2B09E7EA0035355A /* AlwaysPopover.swift */; };
 		72D810232B0A73950035355A /* YearMonthPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D810222B0A73950035355A /* YearMonthPicker.swift */; };
 		72DE5A222B15849200CE36AA /* data+ReportSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DE5A212B15849200CE36AA /* data+ReportSheet.swift */; };
+		72DE5A242B15975900CE36AA /* data+Inquiry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DE5A232B15975900CE36AA /* data+Inquiry.swift */; };
 		72DFCEE92AFA00F50001831F /* rps_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCEE82AFA00F50001831F /* rps_iosApp.swift */; };
 		72DFCEEB2AFA00F50001831F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DFCEEA2AFA00F50001831F /* ContentView.swift */; };
 		72DFCEED2AFA00F60001831F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72DFCEEC2AFA00F60001831F /* Assets.xcassets */; };
@@ -145,6 +146,7 @@
 		72D8101D2B09E7EA0035355A /* AlwaysPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlwaysPopover.swift; sourceTree = "<group>"; };
 		72D810222B0A73950035355A /* YearMonthPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearMonthPicker.swift; sourceTree = "<group>"; };
 		72DE5A212B15849200CE36AA /* data+ReportSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "data+ReportSheet.swift"; sourceTree = "<group>"; };
+		72DE5A232B15975900CE36AA /* data+Inquiry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "data+Inquiry.swift"; sourceTree = "<group>"; };
 		72DFCEE52AFA00F50001831F /* rps-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rps-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		72DFCEE82AFA00F50001831F /* rps_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rps_iosApp.swift; sourceTree = "<group>"; };
 		72DFCEEA2AFA00F50001831F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 				728697E62AFF1F0500CA31C5 /* DictType.swift */,
 				728697F72AFF346600CA31C5 /* sequence+.swift */,
 				72A9644D2AFF9060006E503A /* datas.swift */,
+				72DE5A232B15975900CE36AA /* data+Inquiry.swift */,
 				72DE5A212B15849200CE36AA /* data+ReportSheet.swift */,
 				720C96B42B10850300E85AC5 /* data+RoomDetail.swift */,
 				722DA22E2B0B029C00C0A3DF /* AreaTree.swift */,
@@ -520,6 +523,7 @@
 				72DFCF1C2AFCB7FB0001831F /* Box.swift in Sources */,
 				72DE5A222B15849200CE36AA /* data+ReportSheet.swift in Sources */,
 				72D8101C2B0924530035355A /* ChartView.swift in Sources */,
+				72DE5A242B15975900CE36AA /* data+Inquiry.swift in Sources */,
 				72DFCEFD2AFA09770001831F /* IndexView.swift in Sources */,
 				72F9BF8E2AFD044C0040C6D2 /* Notice.swift in Sources */,
 				72D810232B0A73950035355A /* YearMonthPicker.swift in Sources */,
