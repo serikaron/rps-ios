@@ -228,7 +228,18 @@ struct RoomDetailView: View {
                         tabService.selectedTab = .cs
                     }
                 Spacer()
-                actionItem(title: "复制询价")
+                Button {
+                    let s = """
+地址:\(roomDetail.roomName)
+面积:\(inquiry?.area ?? 0)(㎡)
+房产总价:\(inquiry?.totalPrice ?? "")
+询价人:\(inquiry?.contact ?? "")
+询价时间:\(inquiry?.valuationDate ?? "")
+"""
+                    UIPasteboard.general.string = s
+                } label: {
+                    actionItem(title: "复制询价")
+                }
                 Spacer()
                 actionItem(title: "历史信息")
             }
