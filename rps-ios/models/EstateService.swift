@@ -797,7 +797,7 @@ class EstateService: ObservableObject {
     }
     
     func complexReportPdf(id: Int) async -> String {
-        guard id != 0 else { return "" }
+        guard id != 0 else { return "https://image.xuboren.com/image/2023/11/29/ce4e0a3a2cbf4c408b5721fc1d6bec0f.pdf" }
         
         do {
             let rsp = try await Linkman.shared.complexReportPdf(id: id)
@@ -809,7 +809,7 @@ class EstateService: ObservableObject {
     }
     
     func consultReportPdf(inquiryId: Int) async -> String {
-        guard inquiryId != 0 else { return "" }
+        guard inquiryId != 0 else { return "https://image.xuboren.com/image/2023/11/29/ce4e0a3a2cbf4c408b5721fc1d6bec0f.pdf" }
         
         do {
             let rsp = try await Linkman.shared.consultReportPdf(inquiryId: inquiryId)

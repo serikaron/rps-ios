@@ -58,6 +58,9 @@ struct ReportSheetView: View {
         .setupNavigationBar(title: "获取报告单") {
             presentationMode.wrappedValue.dismiss()
         }
+        .onTapGesture {
+            hideKeyboard()
+        }
     }
 }
 
@@ -81,7 +84,9 @@ private struct TemplateView: View {
         VStack(spacing: 0) {
             Text("选择模板").headerText()
             Spacer().frame(height: 20)
-            HStack {
+            HStack(spacing: 0) {
+                Text("*")
+                    .customText(size: 14, color: .hex("#FF3030"))
                 Text("模板名称").itemTitle()
                 Menu {
                     ForEach(templateList, id: \.id) { t in
