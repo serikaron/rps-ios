@@ -10,7 +10,20 @@ import Combine
 
 @MainActor
 class AccountService: ObservableObject {
-    @Published var isLoggedIn: Bool = false
+    @Published var isLoggedIn: Bool = false {
+        didSet {
+//            if isLoggedIn {
+//                account = UserDefaults.account
+//                if account == nil {
+//                    Task {
+//                        do {
+//                            try await getInfo()
+//                        } catch {}
+//                    }
+//                }
+//            }
+        }
+    }
     @Published var account: Account? {
         didSet {
             UserDefaults.account = account
@@ -20,16 +33,18 @@ class AccountService: ObservableObject {
     private var cancelable = Set<AnyCancellable>()
     
     init() {
-        print("AccountService init")
+//        print("AccountService init")
+//        
+//        Box.shared.tokenSubject
+//            .sink { token in
+//                print("token \(String(describing: token))")
+//            }
+//            .store(in: &cancelable)
         
         Box.shared.tokenSubject
-            .sink { token in
-                print("token \(String(describing: token))")
-            }
-            .store(in: &cancelable)
-        
-        Box.shared.tokenSubject
+            .print("token1")
             .map { $0 != nil }
+            .print("token2")
             .receive(on: RunLoop.main)
             .assign(to: &$isLoggedIn)
         
@@ -40,7 +55,23 @@ class AccountService: ObservableObject {
             })
             .store(in: &cancelable)
         
-        account = UserDefaults.account
+        Box.shared.tokenSubject
+            .filter { $0 != nil }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let strongSelf = self else { return }
+                strongSelf.account = UserDefaults.account
+                if strongSelf.account == nil {
+                    Task {
+                        do {
+                            try await strongSelf.getInfo()
+                        } catch {}
+                    }
+                }
+            }
+            .store(in: &cancelable)
+        
+//        account = UserDefaults.account
     }
     
     func login(username: String, password: String) async {
@@ -239,6 +270,8 @@ class AccountService: ObservableObject {
             } else {
                 try await getInfo()
             }
+            
+            Box.sendError("修改成功")
         } catch {
             print("updateInfo FAILED!!! \(error)")
         }

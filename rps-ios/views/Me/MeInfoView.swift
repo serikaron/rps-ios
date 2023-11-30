@@ -145,7 +145,7 @@ private struct MeEditView: View {
         .onAppear {
             if let account = accountService.account {
                 editAccount.gender = account.gender
-                editAccount.birthday = account.birthday
+                editAccount.birthday = account.birthday.toDate()?.toString(format: "YYYY-MM") ?? account.birthday
                 editAccount.phone = account.phone
                 editAccount.workPhone = account.workPhone
                 editAccount.email = account.email
@@ -183,7 +183,7 @@ private struct MeEditView: View {
                         DatePicker("",
                             selection: Binding(
                                 get: { editAccount.birthday.toDate() ?? Date() },
-                                set: { editAccount.birthday = $0.toString() }),
+                                set: { editAccount.birthday = $0.toString(format: "YYYY-MM") }),
                             in: ...Date(),
                             displayedComponents: [.date]
                         )

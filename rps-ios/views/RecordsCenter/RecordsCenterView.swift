@@ -95,7 +95,24 @@ struct RecordsCenterView: View {
             .padding(.horizontal, 16)
             
             HStack {
-                menu(title: "记录类型", allCases: RecordType.allCases, binding: $param.recordType)
+//                menu(title: "记录类型", allCases: RecordType.allCases, binding: $param.recordType)
+                Menu {
+                    Picker("", selection: $param.recordType) {
+                        ForEach(RecordType.allCases, id: \.self) { type in
+                            Text(type.label)
+                                .customText(size: 14, color: param.recordType == type ? .main : .green)
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 0) {
+                        Text("记录类型")
+                            .customText(size: 14, color: .main)
+                        Image.main.arrowIconDown
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                    }
+                }
+
                 menu(title: "物业类型", allCases: DictType.EstateType.allCases, binding: $param.estateType)
                 menu(title: "询价系统", allCases: InquiryType.allCases, binding: $param.inquiryType)
                 menu(title: "业务状态", allCases: InquiryState.allCases, binding: $param.inquiryState)

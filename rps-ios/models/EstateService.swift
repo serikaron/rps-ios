@@ -519,9 +519,9 @@ class EstateService: ObservableObject {
         if !filter.address.isEmpty {
             dict["fvPropertyRightAddr"] = filter.address
         }
-        if let type = filter.recordType {
-            dict["dataType"] = type.dictKty
-        }
+//        if let type = filter.recordType {
+        dict["dataType"] = filter.recordType.dictKty
+//        }
         if let estateType = filter.estateType {
             dict["fvEstateType"] = estateType.dictKey
         }

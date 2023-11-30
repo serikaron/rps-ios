@@ -25,7 +25,9 @@ extension UserDefaults {
     static var account: Account? {
         get {
             let hasAccount = UserDefaults.rps.bool(forKey: "account.has")
+            let id = UserDefaults.rps.integer(forKey: "account.id")
             guard hasAccount,
+                  id != 0,
                   let nickname = UserDefaults.rps.string(forKey: "account.nickname"),
                   let phone = UserDefaults.rps.string(forKey: "account.phone"),
                   let organ = UserDefaults.rps.string(forKey: "account.organ"),
@@ -43,7 +45,7 @@ extension UserDefaults {
             let orgId = UserDefaults.rps.integer(forKey: "account.orgId")
             let unitId = UserDefaults.rps.integer(forKey: "account.unitId")
             return Account(
-                id: 0, orgId: orgId, unitId: unitId, nickname: nickname,
+                id: id, orgId: orgId, unitId: unitId, nickname: nickname,
                 phone: phone, placeOrganization: organ, placeUnit: unit,
                 clientName: clientName, position: position,
                 status: DictType.CommonStatus(rawValue: status) ?? ._0,
@@ -54,6 +56,7 @@ extension UserDefaults {
         set(account) {
             if account == nil {
                 UserDefaults.rps.setValue(false, forKey: "account.has")
+                UserDefaults.rps.removeObject(forKey: "account.id")
                 UserDefaults.rps.removeObject(forKey: "account.orgId")
                 UserDefaults.rps.removeObject(forKey: "account.unitId")
                 UserDefaults.rps.removeObject(forKey: "account.nickname")
@@ -69,6 +72,7 @@ extension UserDefaults {
                 UserDefaults.rps.removeObject(forKey: "account.workPhone")
             } else {
                 UserDefaults.rps.setValue(true, forKey: "account.has")
+                UserDefaults.rps.setValue(account!.id, forKey: "account.id")
                 UserDefaults.rps.setValue(account!.orgId, forKey: "account.orgId")
                 UserDefaults.rps.setValue(account!.unitId, forKey: "account.unitId")
                 UserDefaults.rps.setValue(account!.nickname, forKey: "account.nickname")
