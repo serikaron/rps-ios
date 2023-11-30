@@ -654,9 +654,55 @@ extension DictType {
     }
 
     enum ValuationPurpose: String, CaseIterable, HasLabel {
-        case mortgageLoanLoanValuation, realEstateInsuranceValuation, realEstateDemolitionAndResettlementValuation, valuationOfCompensationForRealEstateDemolition, realEstateSegmentationAndConsolidationValuation, realEstateTransactionTaxValuation, realEstateDisputeValuation, realEstateFeasibilityStudy, realEstateAuctionLowPriceValuation, realEstateJudicialAppraisalIncludingDecorationValuation, realEstateJudicialAppraisalAndValuation, realEstateReplacementValuation, valuationOfRealEstateTransferPrice, realEstateTransferAndLoanValuation, realEstateRentalPriceValuation, otherPurposesOfRealEstateValuationAndEquityValuation
+//        case mortgageLoanLoanValuation, realEstateInsuranceValuation, realEstateDemolitionAndResettlementValuation, valuationOfCompensationForRealEstateDemolition, realEstateSegmentationAndConsolidationValuation, realEstateTransactionTaxValuation, realEstateDisputeValuation, realEstateFeasibilityStudy, realEstateAuctionLowPriceValuation, realEstateJudicialAppraisalIncludingDecorationValuation, realEstateJudicialAppraisalAndValuation, realEstateReplacementValuation, valuationOfRealEstateTransferPrice, realEstateTransferAndLoanValuation, realEstateRentalPriceValuation, otherPurposesOfRealEstateValuationAndEquityValuation
         
-        var dictKey: String { rawValue }
+//        var dictKey: String { rawValue }
+        
+        case _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            case "6": self = ._6
+            case "7": self = ._7
+            case "8": self = ._8
+            case "9": self = ._9
+            case "10": self = ._10
+            case "11": self = ._11
+            case "12": self = ._12
+            case "13": self = ._13
+            case "14": self = ._14
+            case "15": self = ._15
+            case "16": self = ._16
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            case ._6: return "6"
+            case ._7: return "7"
+            case ._8: return "8"
+            case ._9: return "9"
+            case ._10: return "10"
+            case ._11: return "11"
+            case ._12: return "12"
+            case ._13: return "13"
+            case ._14: return "14"
+            case ._15: return "15"
+            case ._16: return "16"
+            }
+        }
+
         var label: String { DictType.valuation_purpose.label(of: dictKey) ?? "" }
     }
     
