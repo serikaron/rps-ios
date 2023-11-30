@@ -394,8 +394,7 @@ struct AddInquiryView: View {
                 Button {
                     sheet.purpose = type
                 } label: {
-                    print("purposePicker - \(type)")
-                    return Text(type.label)
+                    Text(type.label)
                 }
             }
         } label: {
