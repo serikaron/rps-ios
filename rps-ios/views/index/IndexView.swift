@@ -121,7 +121,7 @@ struct IndexView: View {
             NavigationLink {
                 AddInquiryView(inquiry: nil, record: nil)
             } label: {
-                actionButtonView(title: "估价师询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
+                actionButtonView(title: "人工询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
             }
             Spacer()
             NavigationLink {

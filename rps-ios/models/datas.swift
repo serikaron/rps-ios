@@ -300,7 +300,7 @@ enum RecordType: CaseIterable, HasLabel {
 
 struct SearchFilter: Equatable {
     var address: String = ""
-    var recordType: RecordType?
+    var recordType: RecordType? = .personal
     var estateType: DictType.EstateType?
     var inquiryType: InquiryType?
     var inquiryState: InquiryState?

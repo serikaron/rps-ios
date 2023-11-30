@@ -129,6 +129,7 @@ private struct LoginView: View {
     
     @State private var phone: String = ""
     @State private var code: String = ""
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     private var phoneForm: some View {
         VStack {
             OnboardingInput(
@@ -147,15 +148,24 @@ private struct LoginView: View {
             )
             .textContentType(.oneTimeCode)
                 .overlay (
-                    Text("获取验证码")
+                    Group {
+                        if let countDown = accountService.smsCountDown {
+                            Text("\(countDown)秒后重试")
+                        } else {
+                            Text("获取验证码")
+                                .onTapGesture {
+                                    Task {
+                                        await accountService.getSms(phone: phone)
+                                    }
+                                }
+                        }
+                    }
+                        .onReceive(timer, perform: { _ in
+                            accountService.smsCount()
+                        })
                         .customText(size: 14, color: .main)
                         .padding(.trailing, 8)
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                        .onTapGesture {
-                            Task {
-                                await accountService.getSms(phone: phone)
-                            }
-                        }
                 )
             Spacer().frame(height: 30)
             Button {
@@ -486,5 +496,5 @@ private struct SheetBackground: View {
 
 #Preview {
     OnboardingView()
-        .environmentObject(AccountService())
+        .environmentObject(AccountService.preview)
 }

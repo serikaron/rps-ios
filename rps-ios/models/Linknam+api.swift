@@ -1016,11 +1016,12 @@ extension Linkman {
             .make()
     }
     
-    func editClientUser(gender: String, phone: String, birthday: String, email: String, workPhone: String) async throws {
+    func editClientUser(id: Int, gender: String, phone: String, birthday: String, email: String, workPhone: String) async throws {
         try await Request()
             .with(\.path, setTo: "/account/rps/account/clientUser/editClientUser")
             .with(\.method, setTo: .POST)
             .with(\.bodyDict, setTo: [
+                "id": id,
                 "fvClientGender": gender,
                 "fiCellphone": phone,
                 "fdDateBirth": birthday,

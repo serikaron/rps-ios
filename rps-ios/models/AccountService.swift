@@ -55,11 +55,26 @@ class AccountService: ObservableObject {
         }
     }
     
+    @Published var smsCountDown: Int?
+    
     func getSms(phone: String) async {
+        guard smsCountDown == nil else { return }
+        
         do {
-            try await Linkman.shared.getSms(phone: phone)
+            if !Box.isPreview {
+                try await Linkman.shared.getSms(phone: phone)
+            }
+            Box.sendError("获到成功，请留意手机短信")
+            smsCountDown = 60
         } catch {
             print("getSms FAILED!!! \(error)")
+        }
+    }
+    
+    func smsCount() {
+        if var cd = smsCountDown {
+            cd -= 1
+            smsCountDown = cd == 0 ? nil : cd
         }
     }
     
@@ -199,7 +214,11 @@ class AccountService: ObservableObject {
     
     func updateInfo(gender: Gender, phone: String, birthday: String, email: String, workPhone: String) async {
         do {
-            try await Linkman.shared.editClientUser(gender: gender.dictKey, phone: phone, birthday: birthday, email: email, workPhone: workPhone)
+            guard let id = account?.id, id != 0 else {
+                return
+            }
+            
+            try await Linkman.shared.editClientUser(id: id, gender: gender.dictKey, phone: phone, birthday: birthday, email: email, workPhone: workPhone)
             if let account = account {
                 self.account = Account(
                     id: account.id,
