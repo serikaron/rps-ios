@@ -36,18 +36,15 @@ class EstateService: ObservableObject {
     @Published var fuzzyKeyword = ""
     
     func fuzzySearch() {
-        guard !fuzzyKeyword.isEmpty else {
-            fuzzySearchResult = []
-            return
-        }
-        
         fuzzySearchTask?.cancel()
         
         fuzzySearchTask = Task {
             do {
                 try await Task.sleep(nanoseconds: 1_000_000_000)
                 
-                if Task.isCancelled {
+                guard !fuzzyKeyword.isEmpty,
+                        !Task.isCancelled
+                else {
                     fuzzySearchResult = []
                     return
                 }
@@ -205,6 +202,14 @@ class EstateService: ObservableObject {
     func getCaseList(compoundId: Int, estateType: String, price: Double) async -> [ReferenceCase] {
         if isPreview { return ReferenceCase.moclList }
         
+        func formatPrice(_ price: String?) -> String {
+            guard let priceString = price,
+                  let priceValue = Double(priceString)
+            else { return "" }
+            
+            return "\(priceValue / 10000)"
+        }
+        
         do {
             let rsp = try await Linkman.shared.getRoomCases(compoundId: compoundId, estateType: estateType, price: price)
             return rsp.map { c in
@@ -215,9 +220,9 @@ class EstateService: ObservableObject {
                     caseAddress: c.fvCaseAddress ?? "",
                     decorate: DictType.Decoration(rawValue: c.fvDecoration)?.label ?? "",
                     floor: c.fvInFloor ?? "",
-                    price: c.fbPrice == nil ? "" : "\(c.fbPrice! / 10000)",
-                    totalPrice: c.fbTotalPrice == nil ? "" : "\(c.fbTotalPrice! / 10000)",
-                    area: c.fbArea == nil ? "" : "\(c.fbArea!)",
+                    price: formatPrice(c.fbPrice),
+                    totalPrice: formatPrice(c.fbTotalPrice),
+                    area: c.fbArea ?? "",
                     compoundAddress: c.fvCompoundMatchAddress ?? "",
                     totalFloor: c.fiTotalFloor == nil ? "0" : "\(c.fiTotalFloor!)"
                 )

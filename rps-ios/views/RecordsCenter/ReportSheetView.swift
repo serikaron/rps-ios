@@ -18,13 +18,13 @@ struct ReportSheetView: View {
     let inquiryId: Int
     let reportState: Int
     
-    @State private var showPdf = false
+//    @State private var showPdf = false
     
     var body: some View {
         ZStack {
-            NavigationLink(destination: ConsultPDF(inquiryId: inquiryId), isActive: $showPdf) {
-                EmptyView()
-            }
+//            NavigationLink(destination: ConsultPDF(inquiryId: inquiryId), isActive: $showPdf) {
+//                EmptyView()
+//            }
             
             ScrollView {
                 VStack {
@@ -37,7 +37,7 @@ struct ReportSheetView: View {
                         TextEditor(text: $sheet.comment)
                             .frame(height: 100)
                     }
-                    Text("报告预览")
+                    Text("申请下载")
                         .customText(size: 16, color: .white)
                         .frame(height: 40)
                         .frame(maxWidth: .infinity)
@@ -47,7 +47,8 @@ struct ReportSheetView: View {
                         .onTapGesture {
                             Task {
                                 await estateService.addConsultReport(sheet: sheet, inquiryId: inquiryId, reportState: reportState)
-                                showPdf = true
+                                Box.sendError("申请成功")
+                                presentationMode.wrappedValue.dismiss()
                             }
                         }
                 }

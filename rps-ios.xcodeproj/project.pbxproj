@@ -766,6 +766,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "rps-ios/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "RPS评估";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "请求定位功能";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "请求定位功能";
 				INFOPLIST_KEY_NSLocationUsageDescription = "请求定位功能";
@@ -782,7 +783,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.0.10;
 				OTHER_LDFLAGS = (
 					"-Xlinker",
 					"-no_fixup_chains",
@@ -813,6 +814,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "rps-ios/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "RPS评估";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "请求定位功能";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "请求定位功能";
 				INFOPLIST_KEY_NSLocationUsageDescription = "请求定位功能";
@@ -829,7 +831,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.0.10;
 				OTHER_LDFLAGS = (
 					"-Xlinker",
 					"-no_fixup_chains",

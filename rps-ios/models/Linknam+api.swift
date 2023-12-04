@@ -152,6 +152,7 @@ extension Linkman {
                 "fvFamilyRoomName": keyword
             ])
             .with(\.standaloneResponse, setTo: standaloneResponse([NetworkSearchResult.mock]))
+            .with(\.sendError, setTo: false)
             .make()
             .response() as FuzzySearchResopnse
     }
@@ -583,9 +584,9 @@ extension Linkman {
         let fvCaseTime: String?
         let fvCaseAddress: String?
         let fvDecoration: String?
-        let fbPrice: Double?
-        let fbTotalPrice: Double?
-        let fbArea: Double?
+        let fbPrice: String?
+        let fbTotalPrice: String?
+        let fbArea: String?
         let fvInFloor: String?
         let fvCompoundMatchAddress: String?
         let fiTotalFloor: Int?
