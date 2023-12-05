@@ -590,13 +590,16 @@ extension Linkman {
         let fvInFloor: String?
         let fvCompoundMatchAddress: String?
         let fiTotalFloor: Int?
+        let fvCompoundName: String?
     }
     
-    typealias RoomCasesResponse = [RoomCase]
+    struct RoomCasesResponse: Codable {
+        let records: [RoomCase]
+    }
     
     func getRoomCases(compoundId: Int, estateType: String, price: Double) async throws -> RoomCasesResponse {
         try await Request()
-            .with(\.path, setTo: "/cases/rps/CcCase/listRoomMatchCases")
+            .with(\.path, setTo: "/cases/rps/CcCase/getCcCasePageList")
             .with(\.method, setTo: .POST)
             .with(\.bodyDict, setTo: [
                 "fiCompoundId": compoundId,

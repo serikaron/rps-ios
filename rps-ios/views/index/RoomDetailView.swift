@@ -123,10 +123,9 @@ struct RoomDetailView: View {
         Group {
             switch selectedTab {
             case .inquiryDetail:
-                inquiryDetailPage
-                .earseToAnyView()
+                inquiryDetailPage.earseToAnyView()
             case .reference:
-                ReferenceCaseView(inquiry: inquiry).earseToAnyView()
+                ReferenceCaseView(inquiry: inquiry, detail: roomDetail).earseToAnyView()
             case .chart:
                 ChartPage(inquiry: $inquiry, roomDetail: $roomDetail)
             case .estateDetail:
@@ -2100,6 +2099,7 @@ private struct ReferenceCaseView: View {
     @EnvironmentObject var estateService: EstateService
     
     let inquiry: Inquiry?
+    let detail: RoomDetail
     @State private var caseList: [ReferenceCase] = []
     
     var body: some View {
@@ -2126,7 +2126,7 @@ private struct ReferenceCaseView: View {
     
     private func view(for item: ReferenceCase, isHeader: Bool) -> some View {
         HStack(spacing: 4) {
-            caseText(item.compoundAddress, isHeader: isHeader)
+            caseText(item.compoundName.isEmpty ? detail.compoundName : item.compoundName, isHeader: isHeader)
             caseText(item.caseAddress, isHeader: isHeader)
             caseText(item.tradeType, isHeader: isHeader)
             caseText(item.area, isHeader: isHeader)
@@ -2157,7 +2157,8 @@ private struct ReferenceCaseView: View {
             totalPrice: "案例总价(万元)",
             area: "面积(m²)",
             compoundAddress: "小区地址",
-            totalFloor: "总楼层"
+            totalFloor: "总楼层",
+            compoundName: "小区名称"
         )
     }
     
@@ -2167,7 +2168,7 @@ private struct ReferenceCaseView: View {
 }
 
 #Preview("ReferenceCase") {
-    ReferenceCaseView(inquiry: .empty)
+    ReferenceCaseView(inquiry: .empty, detail: .empty)
         .environmentObject(EstateService.preview)
 }
 

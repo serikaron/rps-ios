@@ -109,6 +109,7 @@ struct ReferenceCase {
     let area: String
     let compoundAddress: String
     let totalFloor: String
+    let compoundName: String
 }
 
 struct RpsImage {

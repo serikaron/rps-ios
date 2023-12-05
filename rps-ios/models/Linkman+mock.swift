@@ -244,7 +244,8 @@ extension ReferenceCase {
             totalPrice: "\(num * 10000)",
             area: "\(num * 100)",
             compoundAddress: "compoundAddress\(num)",
-            totalFloor: "\(num)"
+            totalFloor: "\(num)",
+            compoundName: "compoundName\(num)"
         )
     }
     
@@ -260,7 +261,8 @@ extension ReferenceCase {
                 totalPrice: "20000",
                 area: "200",
                 compoundAddress: "杭州市余杭区良渚街道博园西路8号",
-                totalFloor: "100"
+                totalFloor: "100",
+                compoundName: "博园"
             ),
             ReferenceCase(
                 tradeType: "挂牌",
@@ -272,7 +274,8 @@ extension ReferenceCase {
                 totalPrice: "20000",
                 area: "200",
                 compoundAddress: "杭州市余杭区良渚街道博园西路8号",
-                totalFloor: "100"
+                totalFloor: "100",
+                compoundName: "博园"
             ),
             ReferenceCase(
                 tradeType: "成交",
@@ -284,7 +287,8 @@ extension ReferenceCase {
                 totalPrice: "20000",
                 area: "200",
                 compoundAddress: "杭州市余杭区良渚街道博园西路8号",
-                totalFloor: "100"
+                totalFloor: "100",
+                compoundName: "博园"
             )
         ]
     }

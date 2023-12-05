@@ -212,7 +212,7 @@ class EstateService: ObservableObject {
         
         do {
             let rsp = try await Linkman.shared.getRoomCases(compoundId: compoundId, estateType: estateType, price: price)
-            return rsp.map { c in
+            return rsp.records.map { c in
                 ReferenceCase(
                     tradeType: c.fiTradeType == nil ? "" :
                         DictType.TradeType(rawValue: "\(c.fiTradeType!)")?.label ?? "",
@@ -224,7 +224,8 @@ class EstateService: ObservableObject {
                     totalPrice: formatPrice(c.fbTotalPrice),
                     area: c.fbArea ?? "",
                     compoundAddress: c.fvCompoundMatchAddress ?? "",
-                    totalFloor: c.fiTotalFloor == nil ? "0" : "\(c.fiTotalFloor!)"
+                    totalFloor: c.fiTotalFloor == nil ? "0" : "\(c.fiTotalFloor!)",
+                    compoundName: c.fvCompoundName ?? ""
                 )
             }
         } catch {
