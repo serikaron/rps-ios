@@ -759,15 +759,18 @@ class EstateService: ObservableObject {
         }
     }
     
-    func ocr(image: RpsImage) async -> String? {
+    func ocr(image: RpsImage) async -> (SearchResult?, String?) {
         do {
             let rsp = try await Linkman.shared.upload(image: image.image, filename: image.filename)
-            guard let url = rsp.url else { return nil }
+            guard let url = rsp.url else { return (nil, nil) }
             let ocrRsp = try await Linkman.shared.recognizeEstateCertificationWithOptions(ossUrl: url)
-            return ocrRsp.fvThePropertyIsLocated
+            guard let address = ocrRsp.fvThePropertyIsLocated else { return (nil, nil) }
+            let searchRsp = try await Linkman.shared.fuzzySearch(keyword: address)
+            guard !searchRsp.isEmpty else { return (nil, nil) }
+            return (SearchResult.fromNetwork(searchRsp[0]), ocrRsp.fvBuildingFloorArea)
         } catch {
             print("ocr FAILED!!! \(error)")
-            return nil
+            return (nil, nil)
         }
     }
     

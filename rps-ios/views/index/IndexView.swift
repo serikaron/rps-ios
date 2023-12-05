@@ -21,6 +21,8 @@ struct IndexView: View {
     @State private var ocrImage = ImagePicker.ImageInfo(image: UIImage(), imageURL: "")
     @State private var showImpagePicker = false
     @State private var navOcr = false
+    @State private var ocrResult: SearchResult?
+    @State private var ocrArea = ""
     
     var body: some View {
         ZStack {
@@ -36,7 +38,13 @@ struct IndexView: View {
                     }
                     .overlay (
                         NavigationLink(
-                            destination: FuzzySearchView(),
+                            destination: RoomDetailView(
+                                familyRoomName: ocrResult?.roomName ?? "",
+                                areaCode: ocrResult?.areacode ?? 0,
+                                estateType: ocrResult?.estateType ?? "",
+                                buildingId: ocrResult?.buildingId ?? 0,
+                                area: ocrArea,
+                                floor: ocrResult?.floor ?? ""),
                             isActive: $navOcr) {
                                 EmptyView()
                         }
@@ -193,9 +201,15 @@ struct IndexView: View {
                     .onChange(of: ocrImage) { _ in
                         guard !ocrImage.imageURL.isEmpty else { return }
                         Task {
-                            guard let searchResult = await estateService.ocr(image: .from(pickerImage: ocrImage))
-                            else { return }
-                            estateService.fuzzyKeyword = searchResult
+                            let (searchResult, area) = await estateService.ocr(image: .from(pickerImage: ocrImage))
+                            guard let searchResult = searchResult,
+                                  let area = area
+                            else {
+                                Box.sendError("识别失败")
+                                return
+                            }
+                            ocrResult = searchResult
+                            ocrArea = area
                             navOcr = true
                         }
                     }

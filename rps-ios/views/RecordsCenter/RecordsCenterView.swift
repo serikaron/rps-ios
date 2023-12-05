@@ -405,7 +405,13 @@ private struct RecordView: View {
                 }
                     .disabled(button1Disabled)
                 NavigationLink {
-                    RoomDetailView(familyRoomName: record.address, areaCode: record.areaCode, estateType: record.estateType.dictKey, buildingId: record.buildingId, floor: record.floor)
+                    RoomDetailView(
+                        familyRoomName: record.address,
+                        areaCode: record.areaCode,
+                        estateType: record.estateType.dictKey,
+                        buildingId: record.buildingId,
+                        area: "",
+                        floor: record.floor)
                 } label: {
                     Text("重新估价")
                 }

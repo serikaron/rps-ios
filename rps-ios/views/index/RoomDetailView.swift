@@ -19,6 +19,7 @@ struct RoomDetailView: View {
     let areaCode: Int
     let estateType: String
     let buildingId: Int
+    let area: String
     @State var floor: String
     var roomId: String { roomDetail.id }
     
@@ -77,6 +78,9 @@ struct RoomDetailView: View {
                     orgId: accountService.account?.orgId ?? 0
                 )
                 inquiry = await estateService.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: familyRoomName, orgId: accountService.account?.orgId ?? 0, roomId: Int(roomId) ?? 0)
+                if !area.isEmpty {
+                    inquiry?.area = Double(area) ?? 0
+                }
                 initialized = true
             }
         }
@@ -272,6 +276,7 @@ struct RoomDetailView: View {
                 areaCode: 300106,
                 estateType: "singleApartment",
                 buildingId: 1,
+                area: "",
                 floor: "1-1"
             )
             .environmentObject(

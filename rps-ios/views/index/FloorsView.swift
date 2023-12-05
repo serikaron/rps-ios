@@ -73,6 +73,7 @@ struct FloorsView: View {
                         areaCode: room.areaCode,
                         estateType: room.estateType,
                         buildingId: room.buildingId,
+                        area: "",
                         floor: room.floor
                     )
                         .environmentObject(estateService)

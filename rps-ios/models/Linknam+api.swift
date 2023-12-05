@@ -1035,6 +1035,7 @@ extension Linkman {
     
     struct OcrResponse: Codable {
         let fvThePropertyIsLocated: String?
+        let fvBuildingFloorArea: String?
     }
     
     func recognizeEstateCertificationWithOptions(ossUrl: String) async throws -> OcrResponse {
