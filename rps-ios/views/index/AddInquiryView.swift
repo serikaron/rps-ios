@@ -18,18 +18,12 @@ struct AddInquiryView: View {
     @State private var areaTree = AreaTree(code: "", name: "", children: [])
     
     private var landArea: Binding<String> {Binding(
-        get: { 
-            guard let a = sheet.landArea else { return "" }
-            return "\(a)"
-        },
-        set: { sheet.landArea = Double($0) }
+        get: { sheet.landArea },
+        set: { sheet.landArea = $0 }
     )}
     private var buildingArea: Binding<String> {Binding(
-        get: {
-            guard let a = sheet.buildingArea else { return "" }
-            return "\(a)"
-        },
-        set: { sheet.buildingArea = Double($0) }
+        get: { sheet.buildingArea ?? "" },
+        set: { sheet.buildingArea = $0 }
     )}
     private var valuationDate: Binding<Date> {Binding(
         get: { sheet.valuationDate.toDate() ?? Date() },
@@ -40,14 +34,14 @@ struct AddInquiryView: View {
             guard let a = sheet.upperFloor else { return "" }
             return "\(a)"
         },
-        set: { sheet.upperFloor = Double($0) }
+        set: { sheet.upperFloor = Int($0) }
     )}
     private var underFloor: Binding<String> {Binding(
         get: {
             guard let a = sheet.underFloor else { return "" }
             return "\(a)"
         },
-        set: { sheet.underFloor = Double($0) }
+        set: { sheet.underFloor = Int($0) }
     )}
     private var beginFloor: Binding<String> {Binding(
         get: {
@@ -84,7 +78,7 @@ struct AddInquiryView: View {
             if let inquiry = inquiry {
                 sheet.address = inquiry.address ?? ""
                 sheet.estateType = inquiry.estateType
-                sheet.buildingArea = inquiry.buildingArea
+                sheet.buildingArea = inquiry.buildingArea == nil ? nil : "\(inquiry.buildingArea!)"
                 sheet.contact = inquiry.contact ?? ""
                 sheet.phone = inquiry.phone ?? ""
                 sheet.buildingYear = inquiry.buildingYear ?? ""
@@ -118,7 +112,7 @@ struct AddInquiryView: View {
             if let record = record {
                 sheet.address = record.address
                 sheet.estateType = record.estateType
-                sheet.buildingArea = Double(record.area)
+                sheet.buildingArea = record.area
                 sheet.contact = record.contact
                 sheet.phone = record.contactPhone
                 sheet.buildingYear = record.buildingYear

@@ -166,7 +166,7 @@ struct Inquiry {
                     propertyAttribute: attribute,
                     commonHas: commonHas,
                     unit: unit,
-                    area: area
+                    area: areaString
                 )
             }
         }
@@ -206,7 +206,7 @@ struct Inquiry {
             return l.map { land in
                 LandIndustrialFactory(
                     name: land["landName"] as? String,
-                    area: Double(land["landArea"] as? String ?? ""),
+                    area: land["landArea"] as? String,
                     landUser: DictType.LandUser(rawValue: land["fvLandUser"] as? String),
                     endDate: land["fvLandEndDate"] as? String,
                     roadCondition: DictType.TemporaryRoadConditions(rawValue: land["fvTemporaryRoadConditions"] as? String)
@@ -238,7 +238,7 @@ struct Inquiry {
             return l.map { building in
                 BuildIndustrialFactory(
                     name: building["fvBuildingVarNo"] as? String,
-                    area: Double(building["fbBuildingArea"] as? String ?? ""),
+                    area: building["fbBuildingArea"] as? String,
                     completionDate: building["fvCompletionDate"] as? String,
                     structure: DictType.BuildingStructure(rawValue: building["fvBuildingStructure"] as? String),
                     height: building["fvFloorHeight"] as? String

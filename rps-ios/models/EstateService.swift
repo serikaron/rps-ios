@@ -254,7 +254,8 @@ class EstateService: ObservableObject {
               !sheet.address.isEmpty,
               !sheet.contact.isEmpty,
               !sheet.phone.isEmpty,
-              sheet.buildingArea != 0,
+              let inputBA = sheet.buildingArea,
+              let buildingArea = Double(inputBA),
               let fvValuationPurpose = sheet.purpose,
               !sheet.valuationDate.isEmpty
         else {
@@ -275,15 +276,15 @@ class EstateService: ObservableObject {
         dict["fvPropertyRightAddr"] = sheet.address
         dict["fvContact"] = sheet.contact
         dict["fvContactPhone"] = sheet.phone
-        dict["fbBuildingArea"] = sheet.buildingArea
+        dict["fbBuildingArea"] = "\(buildingArea)"
         dict["fvValuationPurpose"] = fvValuationPurpose.dictKey
         dict["fvValuationDate"] = sheet.valuationDate
         
         if let structure = sheet.structure {
             dict["fvBuildingStructure"] = structure.dictKey
         }
-        if let landArea = sheet.landArea {
-            dict["fbLandArea"] = landArea
+        if !sheet.landArea.isEmpty {
+            dict["fbLandArea"] = sheet.landArea
         }
         if !sheet.buildingYear.isEmpty {
             dict["fvBuildingYear"] = sheet.buildingYear
@@ -646,8 +647,7 @@ class EstateService: ObservableObject {
     
     func addConsultReport(sheet: ConsultReportSheet, inquiryId: Int, reportState: Int) async {
         guard !sheet.clientName.isEmpty,
-              let landArea = sheet.landArea,
-              landArea != 0,
+              !sheet.landArea.isEmpty,
               inquiryId != 0,
               let template = sheet.template,
               template.id != 0
@@ -662,7 +662,7 @@ class EstateService: ObservableObject {
         dict["fiInquiryId"] = inquiryId
         dict["fiTemplateId"] = template.id
         dict["fvCustomerName"] = sheet.clientName
-        dict["fdLandArea"] = landArea
+        dict["fdLandArea"] = sheet.landArea
         
         if !sheet.bankManager.isEmpty {
             dict["fvCustomerManager"] = sheet.bankManager
@@ -674,8 +674,8 @@ class EstateService: ObservableObject {
         if !sheet.landNum.isEmpty {
             dict["fvLandUseRightNumber"] = sheet.landNum
         }
-        if let houseArea = sheet.houseArea {
-            dict["fbInsuitArea"] = houseArea
+        if !sheet.houseArea.isEmpty {
+            dict["fbInsuitArea"] = sheet.houseArea
         }
         if !sheet.quality.isEmpty {
             dict["fvBuildingQuality"] = sheet.quality

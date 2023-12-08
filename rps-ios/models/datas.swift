@@ -78,12 +78,12 @@ struct AuxiliaryRoom {
     }
     var commonHas: DictType.CommonHas?
     var unit: String?
-    var area: Double?
+    var area: String?
 }
 
 struct LandIndustrialFactory {
     var name: String?
-    var area: Double?
+    var area: String?
     var landUser: DictType.LandUser?
     var endDate: String?
     var landSe: DictType.LandSe?
@@ -92,7 +92,7 @@ struct LandIndustrialFactory {
 
 struct BuildIndustrialFactory {
     var name: String?
-    var area: Double?
+    var area: String?
     var completionDate: String?
     var structure: DictType.BuildingStructure?
     var height: String?
@@ -137,16 +137,16 @@ struct InquirySheet {
     var address: String
     var estateType: DictType.EstateType?
     var purpose: DictType.ValuationPurpose?
-    var buildingArea: Double?
+    var buildingArea: String?
     var structure: DictType.BuildingStructure?
     var contact: String
     var phone: String
     var valuationDate: String
     
-    var landArea: Double?
+    var landArea: String
     var buildingYear: String
-    var upperFloor: Double?
-    var underFloor: Double?
+    var upperFloor: Int?
+    var underFloor: Int?
     var beginFloor: Int?
     var endFloor: Int?
     var telephone: String
@@ -173,7 +173,7 @@ struct InquirySheet {
             contact: "",
             phone: "",
             valuationDate: "",
-            landArea: nil,
+            landArea: "",
             buildingYear: "",
             upperFloor: nil,
             underFloor: nil,
@@ -366,10 +366,10 @@ struct ConsultReportSheet {
     var bankManager: String = ""
     var dept: String = ""
     var clientName: String = ""
-    var landArea: Double?
+    var landArea: String = ""
     var houseNum: String = ""
     var landNum: String = ""
-    var houseArea: Double?
+    var houseArea: String = ""
     var quality: String = ""
     var landEndDate: String = ""
     var landUser: DictType.LandUser?

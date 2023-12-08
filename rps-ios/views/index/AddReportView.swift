@@ -71,13 +71,13 @@ struct AddReportView: View {
             Divider()
             textItemView(title: "详细地址", isRequire: false, binding: $sheet.address)
             Divider()
-            doubleInputView(title: "建筑面积", isRequire: false, binding: $sheet.buildingArea, subFix: "㎡")
+            textItemView(title: "建筑面积", isRequire: false, binding: $sheet.buildingArea, subFix: "㎡")
             Divider()
             intInputView(title: "建筑年代", isRequire: false, binding: $sheet.buildingYear, subFix: "年")
             Divider()
             dictTypeItemView(title: "建筑结构", isRequire: false, allCases: DictType.BuildingStructure.allCases, binding: $sheet.structure)
             Divider()
-            doubleInputView(title: "土地面积", isRequire: false, binding: $sheet.landArea, subFix: "㎡")
+            textItemView(title: "土地面积", isRequire: false, binding: $sheet.landArea, subFix: "㎡")
             Divider()
             itemView(title: "所在楼层", isRequire: false) { floorInput }
             Divider()
@@ -396,7 +396,7 @@ struct AddReportView: View {
         sheet.certificateAddress = inquiry.address ?? ""
         sheet.estateType = detail.estateType
         sheet.clientName = accountService.account?.nickname ?? ""
-        sheet.buildingArea = inquiry.buildingArea
+        sheet.buildingArea = inquiry.buildingArea == nil ? "" : "\(inquiry.buildingArea!)"
         sheet.phone = accountService.account?.phone ?? ""
         sheet.buildingYear = Int(inquiry.buildingYear ?? "0")
         sheet.structure = inquiry.structure

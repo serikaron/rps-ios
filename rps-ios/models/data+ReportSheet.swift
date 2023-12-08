@@ -78,7 +78,7 @@ struct ReportSheet {
         get { value(for: "fvPropertyRightAddr") }
         set(value) { set(value, for: "fvPropertyRightAddr") }
     }
-    var buildingArea: Double? {
+    var buildingArea: String {
         get { value(for: "fbBuildingArea") }
         set(value) { set(value, for: "fbBuildingArea") }
     }
@@ -90,7 +90,7 @@ struct ReportSheet {
         get { DictType.BuildingStructure(rawValue: value(for: "fvBuildingStructure")) }
         set(value) { set(value?.dictKey ?? "", for: "fvBuildingStructure") }
     }
-    var landArea: Double? {
+    var landArea: String {
         get { value(for: "fdLandArea") }
         set(value) { set(value, for: "fdLandArea") }
     }

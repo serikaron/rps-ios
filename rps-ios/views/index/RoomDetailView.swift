@@ -742,7 +742,7 @@ private struct AuxiliaryRoomListView: View {
     @Binding var inquiry: Inquiry?
     
     private var roomList: [AuxiliaryRoom] {
-        var out: [AuxiliaryRoom] = [.fixedRoom(with: inquiry?.area ?? 0)]
+        var out: [AuxiliaryRoom] = [.fixedRoom(with: inquiry?.area == nil ? "" : "\(inquiry!.area!)")]
         if inquiry != nil {
             out += inquiry!.auxiliaryRoomList
         }
@@ -829,7 +829,7 @@ private struct AuxiliaryRoomInfoView: View {
             Divider()
             ListItem(title: "有无产权", content: room.commonHas?.label ?? "")
             Divider()
-            ListItem(title: "计算面积", content: room.areaText)
+            ListItem(title: "计算面积", content: room.area ?? "")
         }
         .sectionStyle()
         .frame(maxHeight: .infinity, alignment: .top)
@@ -965,16 +965,8 @@ private struct AuxiliaryRoomCreateView: View {
     }
     
     private var areaText: Binding<String> { Binding(
-        get: {
-            if let area = newRoom.area {
-                return "\(area)"
-            } else {
-                return ""
-            }
-        },
-        set: { value in
-            newRoom.area = Double(value)
-        }
+        get: { newRoom.area ?? "" },
+        set: { newRoom.area = $0 }
     )}
     
     private var areaInputView: some View {
@@ -1002,7 +994,7 @@ private struct AuxiliaryRoomCreateView: View {
 //}
 
 private extension AuxiliaryRoom {
-    static func fixedRoom(with area: Double) -> AuxiliaryRoom {
+    static func fixedRoom(with area: String) -> AuxiliaryRoom {
         AuxiliaryRoom(
             propertyAttribute: .mainHouse,
             commonHas: .has, unit: "m²",
@@ -1177,7 +1169,7 @@ private struct LandInfoView: View {
     var body: some View {
         VStack {
             ListItem(title: "土地名称", content: land.name ?? "")
-            ListItem(title: "土地面积（m²）", content: "\(land.area ?? 0)m²")
+            ListItem(title: "土地面积（m²）", content: "\(land.area ?? "")m²")
             ListItem(title: "土地性质", content: land.landUser?.label ?? "")
             ListItem(title: "土地终止日期", content: land.endDate ?? "")
             ListItem(title: "土地用途", content: land.landSe?.label ?? "")
@@ -1216,14 +1208,8 @@ private struct LandCreateView: View {
     )}
     
     private var area: Binding<String> { Binding(
-        get: {
-            if let a = newLand.area {
-                return "\(a)"
-            } else {
-                return ""
-            }
-        },
-        set: { newLand.area = Double($0) }
+        get: { newLand.area ?? "" },
+        set: { newLand.area = $0 }
     )}
     
     private var date: Binding<Date> { Binding(
@@ -1373,7 +1359,7 @@ private struct LandListView: View {
             Spacer().frame(width: 50)
             Text(item.name ?? "")
             Spacer().frame(width: 50)
-            Text("\(item.area ?? 0)m²")
+            Text("\(item.area ?? "")m²")
                 .frame(maxWidth: .infinity, alignment: .leading)
             Spacer()
             if idx != 0 {
@@ -1408,7 +1394,7 @@ private struct BuildInfoView: View {
     var body: some View {
         VStack {
             ListItem(title: "建筑物", content: build.name ?? "")
-            ListItem(title: "建筑面积", content: "\(build.area ?? 0)m²")
+            ListItem(title: "建筑面积", content: "\(build.area ?? "")m²")
             ListItem(title: "建成年份", content: build.completionDate ?? "")
             ListItem(title: "建筑结构", content: build.structure?.label ?? "")
             ListItem(title: "厂房层高", content: build.height ?? "")
@@ -1444,14 +1430,8 @@ private struct BuildCreateView: View {
     )}
     
     private var area: Binding<String> {Binding(
-        get: {
-            if let area = newBuild.area {
-                return "\(area)"
-            } else {
-                return ""
-            }
-        },
-        set: { newBuild.area = Double($0) }
+        get: { newBuild.area ?? "" },
+        set: { newBuild.area = $0 }
     )}
     
     private var height: Binding<String> {Binding(
@@ -1590,7 +1570,7 @@ private struct BuildListView: View {
             Spacer().frame(width: 50)
             Text(item.name ?? "")
             Spacer().frame(width: 50)
-            Text("\(item.area ?? 0)m²")
+            Text("\(item.area ?? "")m²")
                 .frame(maxWidth: .infinity, alignment: .leading)
             Spacer()
             if idx != 0 {
@@ -2413,7 +2393,7 @@ private struct PreviewView<Content: View>: View {
 
 private extension Inquiry {
     mutating func prepareAuxiliaryRoomList() -> Inquiry {
-        addAuxiliaryRoom(.fixedRoom(with: 200))
+        addAuxiliaryRoom(.fixedRoom(with: "200"))
         return self
     }
     
@@ -2437,10 +2417,6 @@ private extension AuxiliaryRoom {
             return subType?.label ?? ""
         default: return ""
         }
-    }
-    
-    var areaText: String {
-        "\(area ?? 0)\(unit ?? "")"
     }
 }
 
