@@ -117,8 +117,6 @@ private struct MeEditView: View {
     }
     @State private var editAccount = EditAccount()
     
-    @State private var showYearMonth = false
-    
     var body: some View {
         VStack {
             input
@@ -178,29 +176,7 @@ private struct MeEditView: View {
             HStack {
                 Text("出生年月").itemTitle()
                 Spacer()
-                Text(editAccount.birthday.isEmpty ? "请选择" : editAccount.birthday)
-                    .foregroundColor(editAccount.birthday.isEmpty ? .text.grayCD : .text.gray3)
-                    .itemContent()
-                    .onTapGesture {
-                        showYearMonth = true
-                    }
-                    .alwaysPopover(isPresented: $showYearMonth) {
-                        YearMonthPicker(
-                            dateString: Binding(
-                                get: { editAccount.birthday },
-                                set: { editAccount.birthday = $0 ?? "" }),
-                            shown: $showYearMonth)
-                    }
-//                    .overlay(
-//                        DatePicker("",
-//                            selection: Binding(
-//                                get: { editAccount.birthday.toDate() ?? Date() },
-//                                set: { editAccount.birthday = $0.toString(format: "YYYY-MM") }),
-//                            in: ...Date(),
-//                            displayedComponents: [.date]
-//                        )
-//                        .blendMode(.destinationOver)
-//                    )
+                BirthdayButton(birthday: $editAccount.birthday)
             }.frame(height: 36)
             Divider()
             HStack {
@@ -231,6 +207,28 @@ private struct MeEditView: View {
         }
         .sectionStyle()
     }
+}
+
+private struct BirthdayButton: View {
+    @Binding var birthday: String
+    
+    @State private var isShown = false
+    
+    var body: some View {
+        Button {
+            isShown = true
+        } label: {
+            Text(birthday.isEmpty ? "请选择" : birthday)
+                .foregroundColor(birthday.isEmpty ? .text.grayCD : .text.gray3)
+                .itemContent()
+        }
+        .alwaysPopover(isPresented: $isShown) {
+            YearMonthPicker(
+                dateString: Binding(
+                    get: { birthday },
+                    set: { birthday = $0 ?? "" }),
+                shown: $isShown)
+        }    }
 }
 
 #Preview("edit") {
