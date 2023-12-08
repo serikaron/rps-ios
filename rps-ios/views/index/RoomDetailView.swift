@@ -527,11 +527,8 @@ private struct OverlayView: View {
     }
     
     private var areaText: Binding<String> {Binding(
-        get: {
-            guard let area = inquiry?.area else { return "" }
-            return "\(area)"
-        },
-        set: { inquiry?.area = Double($0) }
+        get: { inquiry?.areaString ?? "" },
+        set: { inquiry?.areaString = $0 }
     )}
     
     private var inquiryView: some View {

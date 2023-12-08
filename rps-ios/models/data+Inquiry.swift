@@ -54,6 +54,10 @@ struct Inquiry {
             networkInquiry["fbBuildingArea"] = value
         }
     }
+    var areaString: String? {
+        get { stringValue(of: "fbBuildingArea") }
+        set(value) { setString(value, of: "fbBuildingArea") }
+    }
     
     var price: String {
         networkInquiry["fvValuationPrice"] as? String ?? ""
