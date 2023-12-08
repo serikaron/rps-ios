@@ -537,6 +537,9 @@ class EstateService: ObservableObject {
         if let inquiryState = filter.inquiryState {
             dict["fiState"] = inquiryState.dictKey
         }
+        if let reportState = filter.reportState {
+            dict["fiReportState"] = reportState.dictKey
+        }
         if !filter.startDate.isEmpty {
             dict["fvValuationDateStart"] = filter.startDate
         }

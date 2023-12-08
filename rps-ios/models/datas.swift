@@ -305,6 +305,7 @@ struct SearchFilter: Equatable {
     var estateType: DictType.EstateType?
     var inquiryType: InquiryType?
     var inquiryState: InquiryState?
+    var reportState: ReportState?
     var startDate: String = ""
     var endDate: String = ""
     var startPrice: String = ""

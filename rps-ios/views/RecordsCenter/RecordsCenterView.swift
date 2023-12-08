@@ -115,7 +115,16 @@ struct RecordsCenterView: View {
 
                 menu(title: "物业类型", allCases: DictType.EstateType.allCases, binding: $param.estateType)
                 menu(title: "询价系统", allCases: InquiryType.allCases, binding: $param.inquiryType)
-                menu(title: "业务状态", allCases: InquiryState.allCases, binding: $param.inquiryState)
+                Group {
+                    switch page {
+                    case .inquiry:
+                        menu(title: "业务状态", allCases: InquiryState.allCases, binding: $param.inquiryState)
+                    case .report:
+                        menu(title: "业务状态", allCases: [
+                            ReportState._0, ._2, ._3, ._6, ._7
+                        ], binding: $param.reportState)
+                    }
+                }
                 Spacer()
                 Image.records.more
                     .onTapGesture {
@@ -175,6 +184,20 @@ struct RecordsCenterView: View {
     }
 }
 
+//private extension RecordPage {
+//    func stateMenu(: some View {
+//        switch self {
+//        case .inquiry:
+//            return menu(title: "业务状态", allCases: InquiryState.allCases, binding: $param.inquiryState)
+//                .earseToAnyView()
+//        case .report:
+//            return menu(title: "业务状态", allCases: [
+//                ReportState._0, ._2, ._3, ._6, ._7
+//            ], binding: $param.inquiryState)
+//            .earseToAnyView()
+//        }
+//    }
+//}
 
 
 #Preview("main") {
