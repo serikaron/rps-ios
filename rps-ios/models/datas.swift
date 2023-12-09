@@ -433,6 +433,10 @@ struct Account {
     let workPhone: String
 }
 
+extension Account: Equatable {
+    
+}
+
 struct MapCompound {
     let name: String
     let alias: String

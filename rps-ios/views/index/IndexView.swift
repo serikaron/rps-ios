@@ -71,6 +71,11 @@ struct IndexView: View {
                 curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
             }
         }
+        .onChange(of: accountService.account) { _ in
+            Task {
+                curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)
+            }
+        }
         .onAppear {
             Task {
                 curves = await chartCurveType.getCurve(unitId: accountService.account?.unitId ?? 0, estateType: estateType.dictKey)

@@ -18,6 +18,11 @@ struct Curve {
     
     static func districtCurve(unitId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
         if Box.isPreview { return .mock }
+        
+        guard unitId != 0, !startTime.isEmpty, !endTime.isEmpty, !estateType.isEmpty else {
+            return .empty
+        }
+        
         do {
             let districtRsp = try await Linkman.shared.getAuthAreaList(unitId: unitId)
             let districtId = districtRsp.compactMap { $0.fiAreaCode }
@@ -37,6 +42,9 @@ struct Curve {
     
     static func combinedCurve(unitId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
         if Box.isPreview { return .mock }
+        
+        guard unitId != 0, !startTime.isEmpty, !endTime.isEmpty, !estateType.isEmpty else { return .empty }
+        
         do {
             let districtRsp = try await Linkman.shared.getAuthAreaList(unitId: unitId)
             let districtId = districtRsp.compactMap { $0.fiAreaCode }
@@ -54,6 +62,9 @@ struct Curve {
     
     static func compoundCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
         if Box.isPreview { return .mock }
+        
+        guard compoundId != 0, !startTime.isEmpty, !endTime.isEmpty, !estateType.isEmpty else { return .empty }
+        
         do {
             let rsp = try await Linkman.shared.getCompoundCurve(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType)
             return Curve(
