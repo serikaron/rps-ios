@@ -34,6 +34,7 @@
 		72749ED82B0F933B000258C2 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72749ED72B0F933B000258C2 /* CoreTelephony.framework */; };
 		72749F0E2B0F97A6000258C2 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 72749F0D2B0F97A6000258C2 /* DGCharts */; };
 		72749F132B10359B000258C2 /* MapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72749F122B10359B000258C2 /* MapService.swift */; };
+		727D04E12B26B1D200A6C1C8 /* OCRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727D04E02B26B1D200A6C1C8 /* OCRButton.swift */; };
 		728697E72AFF1F0500CA31C5 /* DictType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E62AFF1F0500CA31C5 /* DictType.swift */; };
 		728697E92AFF209B00CA31C5 /* Linkman+mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697E82AFF209B00CA31C5 /* Linkman+mock.swift */; };
 		728697F12AFF24BE00CA31C5 /* rps_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728697F02AFF24BE00CA31C5 /* rps_iosTests.swift */; };
@@ -132,6 +133,7 @@
 		72749ED52B0F932E000258C2 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		72749ED72B0F933B000258C2 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		72749F122B10359B000258C2 /* MapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapService.swift; sourceTree = "<group>"; };
+		727D04E02B26B1D200A6C1C8 /* OCRButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRButton.swift; sourceTree = "<group>"; };
 		728697E62AFF1F0500CA31C5 /* DictType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictType.swift; sourceTree = "<group>"; };
 		728697E82AFF209B00CA31C5 /* Linkman+mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Linkman+mock.swift"; sourceTree = "<group>"; };
 		728697EE2AFF24BE00CA31C5 /* rps-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rps-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -351,6 +353,7 @@
 				72D8101D2B09E7EA0035355A /* AlwaysPopover.swift */,
 				722DA2302B0B05E600C0A3DF /* SectionView.swift */,
 				722DA2322B0B4F3000C0A3DF /* ImagePicker.swift */,
+				727D04E02B26B1D200A6C1C8 /* OCRButton.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -533,6 +536,7 @@
 				720C96B72B10862900E85AC5 /* MapView.swift in Sources */,
 				72D8101E2B09E7EA0035355A /* AlwaysPopover.swift in Sources */,
 				72749E8A2B0DD10D000258C2 /* ReportSheetView.swift in Sources */,
+				727D04E12B26B1D200A6C1C8 /* OCRButton.swift in Sources */,
 				72DFCF042AFA18620001831F /* images+.swift in Sources */,
 				72DFCF0F2AFC72A80001831F /* OnboardingView.swift in Sources */,
 				72A9644E2AFF9060006E503A /* datas.swift in Sources */,

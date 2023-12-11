@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SearchInputView: View {
     @Binding var text: String
-    var ocrAction: () -> Void = {}
     var searchAction: () -> Void = {}
     
     var body: some View {
@@ -24,11 +23,7 @@ struct SearchInputView: View {
     
     private var actionView: some View {
         HStack(spacing: 0) {
-            Button {
-                ocrAction()
-            } label: {
-                Image.index.searchOCR
-            }
+            OCRButton()
             Spacer().frame(width: 10)
             TextField("请输入物业名称或地址", text: $text)
                 .frame(maxWidth: .infinity, alignment: .leading)

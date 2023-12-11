@@ -18,11 +18,6 @@ struct IndexView: View {
     @State private var isChoisesShown = false
     @State private var chartCurveType = ChartCurveType.district(startTime: nil, endTime: nil)
     @State private var estateType = DictType.EstateType.commApartment
-    @State private var ocrImage = ImagePicker.ImageInfo(image: UIImage(), imageURL: "")
-    @State private var showImpagePicker = false
-    @State private var navOcr = false
-    @State private var ocrResult: SearchResult?
-    @State private var ocrArea = ""
     
     var body: some View {
         ZStack {
@@ -36,19 +31,6 @@ struct IndexView: View {
                             noticeList = await Notice.list(pageNum: 1, pageSize: 10, orgId: accountService.account?.orgId ?? 0)
                         }
                     }
-                    .overlay (
-                        NavigationLink(
-                            destination: RoomDetailView(
-                                familyRoomName: ocrResult?.roomName ?? "",
-                                areaCode: ocrResult?.areacode ?? 0,
-                                estateType: ocrResult?.estateType ?? "",
-                                buildingId: ocrResult?.buildingId ?? 0,
-                                area: ocrArea,
-                                floor: ocrResult?.floor ?? ""),
-                            isActive: $navOcr) {
-                                EmptyView()
-                        }
-                    )
             }
             if isChoisesShown {
                 Color.white.opacity(0.01)
@@ -196,28 +178,7 @@ struct IndexView: View {
             FuzzySearchView()
         } label: {
             HStack(spacing: 0) {
-                Image.index.searchOCR
-                    .onTapGesture {
-                        showImpagePicker = true
-                    }
-                    .sheet(isPresented: $showImpagePicker, content: {
-                        ImagePicker(selectedImage: $ocrImage)
-                    })
-                    .onChange(of: ocrImage) { _ in
-                        guard !ocrImage.imageURL.isEmpty else { return }
-                        Task {
-                            let (searchResult, area) = await estateService.ocr(image: .from(pickerImage: ocrImage))
-                            guard let searchResult = searchResult,
-                                  let area = area
-                            else {
-                                Box.sendError("识别失败")
-                                return
-                            }
-                            ocrResult = searchResult
-                            ocrArea = area
-                            navOcr = true
-                        }
-                    }
+                OCRButton()
                 Spacer().frame(width: 10)
                 Text("请输入物业名称或地址")
                     .customText(size: 14, color: .text.grayCD)

@@ -43,7 +43,7 @@ struct FuzzySearchView: View {
 
             VStack {
                 Spacer().frame(height: 10)
-                SearchInputView(text: $estateService.fuzzyKeyword, ocrAction: {}, searchAction: {
+                SearchInputView(text: $estateService.fuzzyKeyword, searchAction: {
                     guard !estateService.fuzzyKeyword.isEmpty else { return }
                     
                     switch nextAction {

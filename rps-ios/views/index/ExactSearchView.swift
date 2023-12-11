@@ -20,7 +20,7 @@ struct ExactSearchView: View {
     var body: some View {
         VStack {
             Spacer().frame(height: 10)
-            SearchInputView(text: $text, ocrAction: {}, searchAction: {
+            SearchInputView(text: $text, searchAction: {
                 guard !text.isEmpty else { return }
                 search()
             })
