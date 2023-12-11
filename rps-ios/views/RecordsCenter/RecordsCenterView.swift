@@ -114,7 +114,14 @@ struct RecordsCenterView: View {
                 }
 
                 menu(title: "物业类型", allCases: DictType.EstateType.allCases, binding: $param.estateType)
-                menu(title: "询价系统", allCases: InquiryType.allCases, binding: $param.inquiryType)
+                Group {
+                    switch page {
+                    case .inquiry:
+                        menu(title: "询价系统", allCases: InquiryType.allCases, binding: $param.inquiryType)
+                    case .report:
+                        EmptyView()
+                    }
+                }
                 Group {
                     switch page {
                     case .inquiry:

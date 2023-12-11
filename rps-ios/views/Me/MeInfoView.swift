@@ -128,9 +128,7 @@ private struct MeEditView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .onTapGesture {
                     Task {
-                        let birthday = editAccount.birthday.toDate()?.toString(format: "YYYY-MM") ?? ""
-                        print(birthday)
-                        await accountService.updateInfo(gender: editAccount.gender, phone: editAccount.phone, birthday: birthday, email: editAccount.email, workPhone: editAccount.workPhone)
+                        await accountService.updateInfo(gender: editAccount.gender, phone: editAccount.phone, birthday: editAccount.birthday, email: editAccount.email, workPhone: editAccount.workPhone)
                         
                         presentationMode.wrappedValue.dismiss()
                     }
@@ -145,7 +143,7 @@ private struct MeEditView: View {
         .onAppear {
             if let account = accountService.account {
                 editAccount.gender = account.gender
-                editAccount.birthday = account.birthday.toDate()?.toString(format: "YYYY-MM") ?? account.birthday
+                editAccount.birthday = account.birthday
                 editAccount.phone = account.phone
                 editAccount.workPhone = account.workPhone
                 editAccount.email = account.email
