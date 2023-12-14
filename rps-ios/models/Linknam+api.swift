@@ -60,16 +60,23 @@ extension Linkman {
         let fiWorkPhone: Int?
     }
     
+    struct RpsMenuUnitResponses: Codable {
+        let fvName: String?
+    }
+    
     struct GetInfoResponse: Codable {
         let user: NetworkUser
+        let rpsMenuUnitResponses: [RpsMenuUnitResponses]
     }
     
     func getInfo() async throws -> GetInfoResponse {
-        return try await Request()
+        let out = try await Request()
             .with(\.path, setTo: "/account/rps/account/clientUser/getInfo")
             .with(\.method, setTo: .GET)
             .make()
             .response() as GetInfoResponse
+        print(out)
+        return out
     }
     
     func register(account: String, name: String, gender: Gender, birthday: String,

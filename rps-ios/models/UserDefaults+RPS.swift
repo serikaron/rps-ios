@@ -39,7 +39,8 @@ extension UserDefaults {
                   let gender = UserDefaults.rps.string(forKey: "account.gender"),
                   let birthday = UserDefaults.rps.string(forKey: "account.birthday"),
                   let email = UserDefaults.rps.string(forKey: "account.email"),
-                  let workPhone = UserDefaults.rps.string(forKey: "account.workPhone")
+                  let workPhone = UserDefaults.rps.string(forKey: "account.workPhone"),
+                  let permissions = UserDefaults.rps.array(forKey: "account.permissions") as? [String]
             else { return nil }
             
             let orgId = UserDefaults.rps.integer(forKey: "account.orgId")
@@ -50,7 +51,8 @@ extension UserDefaults {
                 clientName: clientName, position: position,
                 status: DictType.CommonStatus(rawValue: status) ?? ._0,
                 date: date, gender: Gender(rawValue: gender) ?? .male,
-                birthday: birthday, email: email, workPhone: workPhone
+                birthday: birthday, email: email, workPhone: workPhone,
+                permissions: permissions
             )
         }
         set(account) {
@@ -70,6 +72,7 @@ extension UserDefaults {
                 UserDefaults.rps.removeObject(forKey: "account.birthday")
                 UserDefaults.rps.removeObject(forKey: "account.email")
                 UserDefaults.rps.removeObject(forKey: "account.workPhone")
+                UserDefaults.rps.removeObject(forKey: "account.permissions")
             } else {
                 UserDefaults.rps.setValue(true, forKey: "account.has")
                 UserDefaults.rps.setValue(account!.id, forKey: "account.id")
@@ -87,6 +90,7 @@ extension UserDefaults {
                 UserDefaults.rps.setValue(account!.birthday, forKey: "account.birthday")
                 UserDefaults.rps.setValue(account!.email, forKey: "account.email")
                 UserDefaults.rps.setValue(account!.workPhone, forKey: "account.workPhone")
+                UserDefaults.rps.setValue(account!.permissions, forKey: "account.permissions")
             }
         }
     }

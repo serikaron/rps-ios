@@ -42,9 +42,7 @@ class AccountService: ObservableObject {
 //            .store(in: &cancelable)
         
         Box.shared.tokenSubject
-            .print("token1")
             .map { $0 != nil }
-            .print("token2")
             .receive(on: RunLoop.main)
             .assign(to: &$isLoggedIn)
         
@@ -77,8 +75,8 @@ class AccountService: ObservableObject {
     func login(username: String, password: String) async {
         do {
             let loginRsp = try await Linkman.shared.login(phone: username, password: password)
+//            try await getInfo()
             Box.setToken(loginRsp.access_token)
-            try await getInfo()
         } catch {
             print("login failed: \(error)")
             account = nil
@@ -112,8 +110,8 @@ class AccountService: ObservableObject {
     func login(phone: String, smsCode: String) async {
         do {
             let loginRsp = try await Linkman.shared.login(phone: phone, smsCode: smsCode)
+//            try await getInfo()
             Box.setToken(loginRsp.access_token)
-            try await getInfo()
         } catch {
             print("login failed: \(error)")
             account = nil
@@ -140,7 +138,8 @@ class AccountService: ObservableObject {
             gender: Gender(rawValue: rsp.user.fvClientGender) ?? .male,
             birthday: rsp.user.fdDateBirth ?? "",
             email: rsp.user.fvEmail ?? "",
-            workPhone: rsp.user.fiWorkPhone == nil ? "" : "\(rsp.user.fiWorkPhone!)"
+            workPhone: rsp.user.fiWorkPhone == nil ? "" : "\(rsp.user.fiWorkPhone!)",
+            permissions: rsp.rpsMenuUnitResponses.compactMap { $0.fvName }
         )
     }
     
@@ -219,6 +218,7 @@ class AccountService: ObservableObject {
     func logout() async {
         do {
             try await Linkman.shared.logout()
+            account = nil
             Box.setToken(nil)
         } catch {
             print("logout FAILED!!! \(error)")
@@ -266,7 +266,9 @@ class AccountService: ObservableObject {
                     gender: gender,
                     birthday: birthday,
                     email: email,
-                    workPhone: workPhone)
+                    workPhone: workPhone,
+                    permissions: []
+                )
             } else {
                 try await getInfo()
             }
@@ -284,7 +286,8 @@ extension AccountService {
         let out = AccountService()
         out.account = Account(
             id: 0, orgId: 294, unitId: 0, nickname: "张三", phone: "13333333333", placeOrganization: "", placeUnit: "",
-            clientName: "hqb", position: "专员", status: ._0, date: "2024-11-30", gender: .male, birthday: "", email: "123456@qq.com", workPhone: "13344444444"
+            clientName: "hqb", position: "专员", status: ._0, date: "2024-11-30", gender: .male, birthday: "", email: "123456@qq.com", workPhone: "13344444444",
+            permissions: ["估价详情", "价格走势", "房产详情", "地图定位", "展开估价结果"]
         )
         return out
     }

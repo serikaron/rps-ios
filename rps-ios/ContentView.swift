@@ -34,7 +34,7 @@ struct ContentView: View {
     
     private var content: some View {
         Group {
-            if accountService.isLoggedIn {
+            if showMainView {
                 MainView()
             } else {
                 OnboardingView()
@@ -43,13 +43,9 @@ struct ContentView: View {
         .environmentObject(accountService)
     }
     
-//    private var content: some View {
-//        if Account.isLoggedIn {
-//            MainView().earseToAnyView()
-//        } else {
-//            LoginView().earseToAnyView()
-//        }
-//    }
+    private var showMainView: Bool {
+        accountService.isLoggedIn && accountService.account != nil
+    }
 }
 
 #Preview {

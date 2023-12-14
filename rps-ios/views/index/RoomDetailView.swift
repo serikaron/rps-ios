@@ -14,6 +14,8 @@ struct RoomDetailView: View {
     @EnvironmentObject var accountService: AccountService
     @EnvironmentObject var tabService: TabService
     
+    private var account: Account? { accountService.account }
+    
     
     let familyRoomName: String
     let areaCode: Int
@@ -83,6 +85,7 @@ struct RoomDetailView: View {
                 }
                 initialized = true
             }
+            selectedTab = accountService.account?.firstTab
         }
         .showTabBar()
         .onTapGesture {
@@ -90,7 +93,7 @@ struct RoomDetailView: View {
         }
     }
     
-    @State private var selectedTab: RoomDetailTab = .inquiryDetail
+    @State private var selectedTab: RoomDetailTab?
     
     private var upperView: some View {
         VStack(spacing: 0) {
@@ -130,6 +133,8 @@ struct RoomDetailView: View {
                 ChartPage(inquiry: $inquiry, roomDetail: $roomDetail)
             case .estateDetail:
                 EstateDetailView(detail: $roomDetail)
+            case .none:
+                EmptyView()
             }
         }
     }
@@ -140,7 +145,9 @@ struct RoomDetailView: View {
                 floor: floor, roomDetail: roomDetail,
                 isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
             )
-            mapView
+            if account?.canShowMapView ?? false {
+                mapView
+            }
             if inquiry?.estateType == .industrialFactory {
                 LandListView(inquiry: $inquiry)
                 BuildListView(inquiry: $inquiry)
@@ -159,9 +166,15 @@ struct RoomDetailView: View {
                 }
             }
             if detailExtened {
-                DecorateView(inquiry: $inquiry)
-                AuxiliaryRoomListView(inquiry: $inquiry)
-                ResultAdjustView(inquiry: $inquiry)
+                if account?.canShowDecorateView ?? false {
+                    DecorateView(inquiry: $inquiry)
+                }
+                if account?.canShowAuxiliaryView ?? false {
+                    AuxiliaryRoomListView(inquiry: $inquiry)
+                }
+                if account?.cahShowAdjustView ?? false {
+                    ResultAdjustView(inquiry: $inquiry)
+                }
             }
             if hasDetailResult {
                 DetailResultView(inquiry: $inquiry)
@@ -218,37 +231,42 @@ struct RoomDetailView: View {
                 } label: {
                     actionItem(title: "估价师询价")
                 }
-                Spacer()
+//                Spacer()
+
+            }
+            HStack {
+//                actionItem(title: "价格反馈")
+//                    .onTapGesture {
+//                        tabService.selectedTab = .cs
+//                    }
+//                Spacer()
                 NavigationLink {
                     AddReportView(inquiry: inquiry, detail: roomDetail)
                 } label: {
                     actionItem(title: "委托报告")
                 }
-            }
-            HStack {
-                actionItem(title: "价格反馈")
-                    .onTapGesture {
-                        tabService.selectedTab = .cs
-                    }
                 Spacer()
                 Button {
-                    let s = """
+                    UIPasteboard.general.string = copyText
+                    Box.sendError("已复制到剪贴板")
+                } label: {
+                    actionItem(title: "复制询价")
+                }
+//                Spacer()
+//                actionItem(title: "历史信息")
+            }
+        }
+        .sectionStyle()
+    }
+    
+    private var copyText: String {
+"""
 地址:\(roomDetail.roomName)
 面积:\(inquiry?.area ?? 0)(㎡)
 房产总价:\(inquiry?.totalPrice ?? "")
 询价人:\(inquiry?.contact ?? "")
 询价时间:\(inquiry?.valuationDate ?? "")
 """
-                    UIPasteboard.general.string = s
-                    Box.sendError("已复制到剪贴板")
-                } label: {
-                    actionItem(title: "复制询价")
-                }
-                Spacer()
-                actionItem(title: "历史信息")
-            }
-        }
-        .sectionStyle()
     }
     
     private func actionItem(title: String) -> some View {
@@ -256,6 +274,7 @@ struct RoomDetailView: View {
             .customText(size: 14, color: .main)
             .padding(.horizontal, 10)
             .frame(height: 30)
+            .frame(maxWidth: .infinity)
             .background(Color.white)
             .cornerRadius(15)
             .overlay (
@@ -281,7 +300,7 @@ struct RoomDetailView: View {
             .environmentObject(
                 EstateService()
             )
-            .environmentObject(AccountService())
+            .environmentObject(AccountService.preview)
             .environmentObject(TabService())
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -321,11 +340,12 @@ private enum RoomDetailTab: CaseIterable {
 }
 
 private struct RoomDetailTabView: View {
-    @Binding var selectedTab: RoomDetailTab
+    @EnvironmentObject var accountService: AccountService
+    @Binding var selectedTab: RoomDetailTab?
     
     var body: some View {
         HStack(alignment: .top) {
-            ForEach(RoomDetailTab.allCases, id: \.hashValue) { tab in
+            ForEach(accountService.account?.roomDetailTabs ?? [], id: \.hashValue) { tab in
                 Button {
                     selectedTab = tab
                 } label: {
@@ -344,6 +364,11 @@ private struct RoomDetailTabView: View {
         .padding(.horizontal, 10)
     }
 }
+
+//#Preview("tab view") {
+//    RoomDetailTabView(selectedTab: .constant(.chart))
+//        .environmentObject(AccountService.preview)
+//}
 
 private struct RoomInfoView: View {
     let floor: String
@@ -501,6 +526,7 @@ private struct RoomInfoView: View {
 
 private struct OverlayView: View {
     @EnvironmentObject var estateService: EstateService
+    @EnvironmentObject var accountService: AccountService
     
     @Binding var inquiry: Inquiry?
     @Binding var hasInquiryResult: Bool
@@ -512,7 +538,9 @@ private struct OverlayView: View {
             if canShowInquiry {
                 inquiryView
             }
-            if canShowExtendButton {
+            if canShowExtendButton &&
+                accountService.account?.canExtendDetail ?? false
+            {
                 extendButton
             }
             if canShowDetailButton {
@@ -2144,10 +2172,10 @@ private struct ReferenceCaseView: View {
     }
 }
 
-#Preview("ReferenceCase") {
-    ReferenceCaseView(inquiry: .empty, detail: .empty)
-        .environmentObject(EstateService.preview)
-}
+//#Preview("ReferenceCase") {
+//    ReferenceCaseView(inquiry: .empty, detail: .empty)
+//        .environmentObject(EstateService.preview)
+//}
 
 private struct BannerView: View {
     @State private var selected: Int = 1
@@ -2177,9 +2205,9 @@ private struct BannerView: View {
     }
 }
 
-#Preview("banner") {
-    BannerView(roomDetail: .constant(.empty))
-}
+//#Preview("banner") {
+//    BannerView(roomDetail: .constant(.empty))
+//}
 
 private struct ChartPage: View {
     @Binding var inquiry: Inquiry?
@@ -2417,6 +2445,53 @@ private extension AuxiliaryRoom {
             return subType?.label ?? ""
         default: return ""
         }
+    }
+}
+
+private extension Account {
+    func hasPermission(_ permission: String) -> Bool {
+        return permissions.contains(permission)
+    }
+    
+    var roomDetailTabs: [RoomDetailTab] {
+        var out = [RoomDetailTab]()
+        if hasPermission("估价详情") {
+            out.append(.inquiryDetail)
+        }
+        if hasPermission("参考案例") {
+            out.append(.reference)
+        }
+        if hasPermission("价格走势") {
+            out.append(.chart)
+        }
+        if hasPermission("房产详情") {
+            out.append(.estateDetail)
+        }
+        return out
+    }
+    
+    var firstTab: RoomDetailTab? {
+        return roomDetailTabs.first
+    }
+    
+    var canShowMapView: Bool {
+        return hasPermission("地图定位")
+    }
+    
+    var canExtendDetail: Bool {
+        return hasPermission("展开估价结果")
+    }
+    
+    var canShowDecorateView: Bool {
+        return hasPermission("室内因素")
+    }
+    
+    var canShowAuxiliaryView: Bool {
+        return hasPermission("辅房及其附属物")
+    }
+    
+    var cahShowAdjustView: Bool {
+        return hasPermission("结果调整")
     }
 }
 

@@ -431,6 +431,7 @@ struct Account {
     var birthday: String
     let email: String
     let workPhone: String
+    let permissions: [String]
 }
 
 extension Account: Equatable {
