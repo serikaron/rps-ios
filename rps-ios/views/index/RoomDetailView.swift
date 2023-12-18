@@ -668,6 +668,9 @@ private struct ResultView: View {
                 ListItem(title: "房产评估单价", content: "\(inquiry.price)元/m²")
                 ListItem(title: "房产评估总价", content: "\(inquiry.totalPrice)元")
                 ListItem(title: "估价时间", content: "\(inquiry.date)")
+                ForEach(Array(zip(inquiry.otherPriceInfos.indices, inquiry.otherPriceInfos)), id: \.0) { _, info in
+                    ListItem(title: info.name ?? "", content: "\(info.price ?? "0")")
+                }
             }
             if detailExtened {
                 Divider()
@@ -682,6 +685,12 @@ private struct ResultView: View {
         }
         .sectionStyle()
     }
+}
+
+#Preview("ResultView") {
+    ResultView(inquiry: Inquiry(networkInquiry: [
+        "fvOtherPriceInfo": "[{\"name\":\"额外金额2\",\"price\":\"1010\",\"totalPrice\":\"101000\"},{\"name\":\"额外金额\",\"price\":\"1010\",\"totalPrice\":\"101000\"}]"
+    ]), detailExtened: .constant(true))
 }
 
 private struct DecorateView: View {
@@ -1184,8 +1193,8 @@ private struct DetailResultView: View {
 }
 
 //#Preview("DetailResultView") {
-//    PreviewView {
-//        DetailResultView(inquiry: $0)
+//    PreviewView(inquiry: .init(networkInquiry: ["fvTotalPriceBeforeAdjustment": "123"])) { inquiry, roomDetail in
+//        DetailResultView(inquiry: inquiry)
 //    }
 //}
 
@@ -2396,10 +2405,6 @@ private extension View {
     }
 }
 
-//
-//#Preview("ResultView") {
-//    ResultView(inquiry: .empty, detailExtened: .constant(true))
-//}
 
 private struct PreviewView<Content: View>: View {
     @State var inquiry: Inquiry? = .empty

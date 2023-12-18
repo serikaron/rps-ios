@@ -329,4 +329,20 @@ struct Inquiry {
     var areaCode: Int? {
         networkInquiry["fiAreaCode"] as? Int
     }
+    var otherPriceInfos: [OtherPriceInfo] {
+        do {
+            guard let s = stringValue(of: "fvOtherPriceInfo"),
+                  let data = s.data(using: .utf8)
+            else { return [] }
+            
+            return try data.decoded() as [OtherPriceInfo]
+        } catch {
+            return []
+        }
+    }
+}
+
+struct OtherPriceInfo: Decodable {
+    let name: String?
+    let price: String?
 }
