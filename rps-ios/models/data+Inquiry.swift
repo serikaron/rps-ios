@@ -345,4 +345,5 @@ struct Inquiry {
 struct OtherPriceInfo: Decodable {
     let name: String?
     let price: String?
+    let totalPrice: String?
 }

@@ -669,7 +669,8 @@ private struct ResultView: View {
                 ListItem(title: "房产评估总价", content: "\(inquiry.totalPrice)元")
                 ListItem(title: "估价时间", content: "\(inquiry.date)")
                 ForEach(Array(zip(inquiry.otherPriceInfos.indices, inquiry.otherPriceInfos)), id: \.0) { _, info in
-                    ListItem(title: info.name ?? "", content: "\(info.price ?? "0")")
+                    ListItem(title: (info.name ?? "") + "单价", content: "\(info.price ?? "0")")
+                    ListItem(title: (info.name ?? "") + "总价", content: "\(info.totalPrice ?? "0")")
                 }
             }
             if detailExtened {
