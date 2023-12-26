@@ -471,6 +471,28 @@ struct RoomDetail {
         get { networkRoomDetail.wuYeFenLei ?? "" }
         set(value) { networkRoomDetail.wuYeFenLei = value }
     }
+    var wuYeFenLeiText: String {
+        switch estateType {
+        case .commApartment:
+            return DictType.fv_property_classify_third.label(of: wuYeFenLei) ?? ""
+        case .singleApartment:
+            return DictType.fv_property_classify_third_other.label(of: wuYeFenLei) ?? ""
+        case .villa:
+            return DictType.fv_property_classify_third_villa.label(of: wuYeFenLei) ?? ""
+        case .office:
+            return DictType.fv_property_classify_third_other.label(of: wuYeFenLei) ?? ""
+        case .landingRoom:
+            return DictType.fv_property_classify_third_landingroom.label(of: wuYeFenLei) ?? ""
+        case .shopStreet:
+            return DictType.fv_shops_property_classify_third_shopstreet.label(of: wuYeFenLei) ?? ""
+        case .industrialSmallGarden:
+            return DictType.fv_property_classify_third_other.label(of: wuYeFenLei) ?? ""
+        case .industrialFactory:
+            return ""
+        case nil:
+            return ""
+        }
+    }
     var compoundId: Int {
         get { networkRoomDetail.fiCompoundId ?? 0 }
         set(value) { networkRoomDetail.fiCompoundId = value }

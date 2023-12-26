@@ -2225,6 +2225,7 @@ private struct ChartPage: View {
     @EnvironmentObject var estateService: EstateService
     
     @State private var basePrice: Double = 0
+    @State private var basePriceDate: String = ""
     @State private var startTime: String?
     @State private var endTime: String?
     @State private var startTimePickerShown = false
@@ -2269,9 +2270,6 @@ private struct ChartPage: View {
             let date = Calendar.current.date(byAdding: dc, to: today)
             endTime = today.toString(format: "YYYY-MM")
             startTime = date?.toString(format: "YYYY-MM") ?? endTime
-            Task {
-                basePrice = await estateService.getBaseCompoundPrice(compoundId: roomDetail.compoundId, estateType: roomDetail.estateType?.dictKey ?? "")
-            }
             getCurve()
         }
         .onChange(of: startTime) { _ in
@@ -2282,9 +2280,12 @@ private struct ChartPage: View {
         }
     }
     
+    private var baseDate: String {
+        basePriceDate.isEmpty ? Date().toString(format: "YYYY-MM") : basePriceDate
+    }
     private var topView: some View {
         VStack(spacing: 0) {
-            Text("\(roomDetail.compoundName)\(Date().toString(format: "YYYY-MM"))月基准价")
+            Text("\(roomDetail.compoundName)\(baseDate)月基准价")
                 .headerText()
             Spacer().frame(height: 16)
             HStack {
@@ -2295,7 +2296,7 @@ private struct ChartPage: View {
                 Spacer()
                 Text("物业分类")
                     .customText(size: 14, color: .text.gray6)
-                Text(roomDetail.wuYeFenLei)
+                Text(roomDetail.wuYeFenLeiText)
                     .customText(size: 14, color: .text.gray3)
                 Spacer()
                 Text("基准价")
@@ -2320,25 +2321,26 @@ private struct ChartPage: View {
             let e = endTime ?? s
             compoundCurve = [await Curve.compoundCurve(compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
             districtCurve = [await Curve.baseDistrictCurve(compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
+            (basePriceDate, basePrice) = await estateService.getBaseCompoundPrice(compoundId: roomDetail.compoundId, estateType: roomDetail.estateType?.dictKey ?? "", startTime: s, endTime: e)
         }
     }
 }
 
-//#Preview("ChartPage") {
-//    PreviewView { inquiry, roomDetail in
-//        ChartPage(inquiry: inquiry, roomDetail: roomDetail)
-//            .onAppear {
-//                roomDetail.wrappedValue.compoundName = "杭州市壹号院"
-//                roomDetail.wrappedValue.estateType = DictType.EstateType.commApartment
-//                roomDetail.wrappedValue.wuYeFenLei = "多层"
-//                roomDetail.wrappedValue.compoundId = 2
-//                roomDetail.wrappedValue.areaName = "西湖区"
-//            }
-//            .frame(maxHeight: .infinity)
-//            .background(Color.black)
-//    }
-//    .environmentObject(EstateService.preview)
-//}
+#Preview("ChartPage") {
+    PreviewView { inquiry, roomDetail in
+        ChartPage(inquiry: inquiry, roomDetail: roomDetail)
+            .onAppear {
+                roomDetail.wrappedValue.compoundName = "杭州市壹号院"
+                roomDetail.wrappedValue.estateType = DictType.EstateType.commApartment
+                roomDetail.wrappedValue.wuYeFenLei = "多层"
+                roomDetail.wrappedValue.compoundId = 2
+                roomDetail.wrappedValue.areaName = "西湖区"
+            }
+            .frame(maxHeight: .infinity)
+            .background(Color.black)
+    }
+    .environmentObject(EstateService.preview)
+}
 
 
 // MARK: -

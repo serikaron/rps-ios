@@ -753,7 +753,7 @@ extension Linkman {
     
     func getCompoundCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async throws -> CompoundCurveResponse {
         try await Request()
-            .with(\.path, setTo: "/pricing/pcBaseCompoundPrice/getCompoundCommuntyCharts")
+            .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getCompoundCommuntyCharts")
             .with(\.method, setTo: .GET)
             .with(\.query, setTo: [
                 "fvCompoundId": "\(compoundId)",
@@ -1113,6 +1113,25 @@ extension Linkman {
             .with(\.method, setTo: .POST)
             .make()
             .response() as PdfResponse
+    }
+    
+    struct CompoundLastPriceRsp: Codable {
+        let evaluateTime: String?
+        let price: Double?
+    }
+    
+    func getCompoundLastPrice(compoundId: Int, startTime: String, endTime:String, estateType: String) async throws -> CompoundLastPriceRsp {
+        try await Request()
+            .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getCompoundLastPrice")
+            .with(\.method, setTo: .POST)
+            .with(\.bodyDict, setTo: [
+                "fvCompoundId": compoundId,
+                "fdEvaluateTimeStart": startTime,
+                "fdEvaluateTimeEnd": endTime,
+                "fvEstateType": estateType
+            ])
+            .make()
+            .response() as CompoundLastPriceRsp
     }
 }
 

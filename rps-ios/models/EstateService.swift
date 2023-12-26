@@ -234,15 +234,18 @@ class EstateService: ObservableObject {
         }
     }
     
-    func getBaseCompoundPrice(compoundId: Int, estateType: String) async -> Double {
+    func getBaseCompoundPrice(compoundId: Int, estateType: String, startTime: String, endTime: String) async -> (String, Double) {
         do {
-            let timeString = Date().toString(format: "YYYY-MM")
-            let rsp = try await Linkman.shared.getCompoundCurve(compoundId: compoundId, startTime: timeString, endTime: timeString, estateType: estateType)
-            guard !rsp.isEmpty else { return 0 }
-            return rsp[0].price ?? 0
+            let rsp = try await Linkman.shared.getCompoundLastPrice(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType)
+            return (rsp.evaluateTime ?? "", rsp.price ?? 0)
+            
+//            let timeString = Date().toString(format: "YYYY-MM")
+//            let rsp = try await Linkman.shared.getCompoundCurve(compoundId: compoundId, startTime: timeString, endTime: timeString, estateType: estateType)
+//            guard !rsp.isEmpty else { return 0 }
+//            return rsp[0].price ?? 0
         } catch {
             print("getBaseCompoundPrice FAILED: \(error)")
-            return 0
+            return ("", 0)
         }
     }
     
@@ -832,6 +835,14 @@ class EstateService: ObservableObject {
         }
     }
 
+    func getBasePrice(compoundId: Int, startTime: String, endTime: String, estateType: String) async {
+        do {
+            let rsp = try await Linkman.shared.getCompoundLastPrice(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType)
+            print("base price rsp: \(rsp)")
+        } catch {
+            print("getBasePrice FAILED!!! \(error)")
+        }
+    }
 }
 
 // MARK: -
