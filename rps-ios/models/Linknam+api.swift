@@ -753,9 +753,9 @@ extension Linkman {
     
     func getCompoundCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async throws -> CompoundCurveResponse {
         try await Request()
-            .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getCompoundCommuntyCharts")
-            .with(\.method, setTo: .GET)
-            .with(\.query, setTo: [
+            .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getCompoundLineChart")
+            .with(\.method, setTo: .POST)
+            .with(\.bodyDict, setTo: [
                 "fvCompoundId": "\(compoundId)",
                 "fdEvaluateTimeStart": startTime,
                 "fdEvaluateTimeEnd": endTime,
