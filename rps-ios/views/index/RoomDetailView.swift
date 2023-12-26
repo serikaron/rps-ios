@@ -2223,6 +2223,7 @@ private struct ChartPage: View {
     @Binding var inquiry: Inquiry?
     @Binding var roomDetail: RoomDetail
     @EnvironmentObject var estateService: EstateService
+    @EnvironmentObject var accountService: AccountService
     
     @State private var basePrice: Double = 0
     @State private var basePriceDate: String = ""
@@ -2319,9 +2320,13 @@ private struct ChartPage: View {
         Task {
             let s = startTime ?? Date().toString(format: "YYYY-MM")
             let e = endTime ?? s
-            compoundCurve = [await Curve.compoundCurve(compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
+            compoundCurve = [await Curve.compoundCurve(unitId: accountService.account?.unitId ?? 0, compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
             districtCurve = [await Curve.baseDistrictCurve(compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
-            (basePriceDate, basePrice) = await estateService.getBaseCompoundPrice(compoundId: roomDetail.compoundId, estateType: roomDetail.estateType?.dictKey ?? "", startTime: s, endTime: e)
+            (basePriceDate, basePrice) = await estateService.getBaseCompoundPrice(
+                unitId: accountService.account?.unitId ?? 0,
+                compoundId: roomDetail.compoundId,
+                estateType: roomDetail.estateType?.dictKey ?? "",
+                startTime: s, endTime: e)
         }
     }
 }

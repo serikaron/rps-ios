@@ -751,7 +751,7 @@ extension Linkman {
     
     typealias CompoundCurveResponse = [CompoundCurveData]
     
-    func getCompoundCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async throws -> CompoundCurveResponse {
+    func getCompoundCurve(compoundId: Int, startTime: String, endTime: String, estateType: String, districtId: Int) async throws -> CompoundCurveResponse {
         try await Request()
             .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getCompoundLineChart")
             .with(\.method, setTo: .POST)
@@ -759,7 +759,8 @@ extension Linkman {
                 "fvCompoundId": "\(compoundId)",
                 "fdEvaluateTimeStart": startTime,
                 "fdEvaluateTimeEnd": endTime,
-                "fvEstateType": estateType
+                "fvEstateType": estateType,
+                "fiDistrictId": districtId
             ])
             .make()
             .response() as CompoundCurveResponse
@@ -1120,7 +1121,7 @@ extension Linkman {
         let price: Double?
     }
     
-    func getCompoundLastPrice(compoundId: Int, startTime: String, endTime:String, estateType: String) async throws -> CompoundLastPriceRsp {
+    func getCompoundLastPrice(compoundId: Int, startTime: String, endTime:String, estateType: String, districtId: Int) async throws -> CompoundLastPriceRsp {
         try await Request()
             .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getCompoundLastPrice")
             .with(\.method, setTo: .POST)
@@ -1128,7 +1129,8 @@ extension Linkman {
                 "fvCompoundId": compoundId,
                 "fdEvaluateTimeStart": startTime,
                 "fdEvaluateTimeEnd": endTime,
-                "fvEstateType": estateType
+                "fvEstateType": estateType,
+                "fiDistrictId": districtId
             ])
             .make()
             .response() as CompoundLastPriceRsp
