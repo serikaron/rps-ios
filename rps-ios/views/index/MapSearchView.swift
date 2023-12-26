@@ -93,13 +93,14 @@ struct MapSearchView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                         Spacer()
                         NavigationLink {
-                            RoomDetailView(
-                                familyRoomName: compound.familyRoomName,
-                                areaCode: compound.areaCode,
-                                estateType: compound.estateType,
-                                buildingId: compound.buildingId,
-                                area: "",
-                                floor: compound.floor)
+                            BuildingsView(comId: compound.compoundId, estateType: compound.estateType)
+                            //                            RoomDetailView(
+//                                familyRoomName: compound.familyRoomName,
+//                                areaCode: compound.areaCode,
+//                                estateType: compound.estateType,
+//                                buildingId: compound.buildingId,
+//                                area: "",
+//                                floor: compound.floor)
                         } label: {
                             HStack {
                                 Text("查看楼幢")

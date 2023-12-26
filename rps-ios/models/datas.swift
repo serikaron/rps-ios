@@ -454,9 +454,10 @@ struct MapCompound {
     let estateType: String
     let buildingId: Int
     let floor: String
+    let compoundId: Int
     
     static var empty: Self {
-        MapCompound(name: "", alias: "", streetMark: "", north: "", south: "", east: "", west: "", location: "", coordinate: nil, picUrl: "", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "")
+        MapCompound(name: "", alias: "", streetMark: "", north: "", south: "", east: "", west: "", location: "", coordinate: nil, picUrl: "", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "", compoundId: 0)
     }
 }
 
