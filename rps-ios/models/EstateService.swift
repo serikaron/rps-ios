@@ -234,9 +234,9 @@ class EstateService: ObservableObject {
         }
     }
     
-    func getBaseCompoundPrice(districtId: Int, compoundId: Int, estateType: String, startTime: String, endTime: String) async -> (String, Double) {
+    func getBaseCompoundPrice(districtId: Int, compoundId: Int, estateType: String, startTime: String, endTime: String, wuYeFenLei: String) async -> (String, Double) {
         do {
-            let rsp = try await Linkman.shared.getCompoundLastPrice(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType, districtId: districtId)
+            let rsp = try await Linkman.shared.getCompoundLastPrice(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType, districtId: districtId, wuYeFenLei: wuYeFenLei)
             return (rsp.evaluateTime ?? "", rsp.price ?? 0)
         } catch {
             print("getBaseCompoundPrice FAILED: \(error)")

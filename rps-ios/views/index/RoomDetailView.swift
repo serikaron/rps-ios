@@ -2302,7 +2302,7 @@ private struct ChartPage: View {
                 Spacer()
                 Text("基准价")
                     .customText(size: 14, color: .text.gray6)
-                Text("\(basePrice)/m²")
+                Text("\(Int(basePrice))/m²")
                     .customText(size: 14, color: .text.gray3)
             }
             Spacer().frame(height: 16)
@@ -2338,7 +2338,9 @@ private struct ChartPage: View {
                 districtId: roomDetail.areaCode,
                 compoundId: roomDetail.compoundId,
                 estateType: roomDetail.estateType?.dictKey ?? "",
-                startTime: s, endTime: e)
+                startTime: s, endTime: e,
+                wuYeFenLei: roomDetail.wuYeFenLei
+            )
             task = nil
         }
     }

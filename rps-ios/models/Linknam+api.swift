@@ -1122,7 +1122,7 @@ extension Linkman {
         let price: Double?
     }
     
-    func getCompoundLastPrice(compoundId: Int, startTime: String, endTime:String, estateType: String, districtId: Int) async throws -> CompoundLastPriceRsp {
+    func getCompoundLastPrice(compoundId: Int, startTime: String, endTime:String, estateType: String, districtId: Int, wuYeFenLei: String) async throws -> CompoundLastPriceRsp {
         try await Request()
             .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getCompoundLastPrice")
             .with(\.method, setTo: .POST)
@@ -1131,7 +1131,8 @@ extension Linkman {
                 "fdEvaluateTimeStart": startTime,
                 "fdEvaluateTimeEnd": endTime,
                 "fvEstateType": estateType,
-                "fiDistrictId": districtId
+                "fiDistrictId": districtId,
+                "fvPropertyClassifyThird": wuYeFenLei
             ])
             .make()
             .response() as CompoundLastPriceRsp
