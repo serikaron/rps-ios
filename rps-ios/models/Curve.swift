@@ -60,15 +60,12 @@ struct Curve {
         }
     }
     
-    static func compoundCurve(unitId: Int, compoundId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
+    static func compoundCurve(districtId: Int, compoundId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
         if Box.isPreview { return .mock }
         
-        guard unitId != 0, compoundId != 0, !startTime.isEmpty, !endTime.isEmpty, !estateType.isEmpty else { return .empty }
+        guard districtId != 0, compoundId != 0, !startTime.isEmpty, !endTime.isEmpty, !estateType.isEmpty else { return .empty }
         
         do {
-            let districtRsp = try await Linkman.shared.getAuthAreaList(unitId: unitId)
-            let districtIds = districtRsp.compactMap { $0.fiAreaCode }
-            guard let districtId = districtIds.first else { return .empty }
             let rsp = try await Linkman.shared.getCompoundCurve(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType, districtId: districtId)
             return Curve(
                 name: "",
@@ -81,10 +78,10 @@ struct Curve {
         }
     }
     
-    static func baseDistrictCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
+    static func baseDistrictCurve(districtId: Int, compoundId: Int, startTime: String, endTime: String, estateType: String) async -> Curve {
         if Box.isPreview { return .mock }
         do {
-            let rsp = try await Linkman.shared.getBaseDistrictCurve(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType)
+            let rsp = try await Linkman.shared.getBaseDistrictCurve(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType, districtId: districtId)
             return Curve(
                 name: "",
                 values: rsp.map { $0.price ?? 0 },

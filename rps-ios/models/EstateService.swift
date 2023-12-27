@@ -234,11 +234,8 @@ class EstateService: ObservableObject {
         }
     }
     
-    func getBaseCompoundPrice(unitId: Int, compoundId: Int, estateType: String, startTime: String, endTime: String) async -> (String, Double) {
+    func getBaseCompoundPrice(districtId: Int, compoundId: Int, estateType: String, startTime: String, endTime: String) async -> (String, Double) {
         do {
-            let districtRsp = try await Linkman.shared.getAuthAreaList(unitId: unitId)
-            let districtIds = districtRsp.compactMap { $0.fiAreaCode }
-            guard let districtId = districtIds.first else { return ("", 0) }
             let rsp = try await Linkman.shared.getCompoundLastPrice(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType, districtId: districtId)
             return (rsp.evaluateTime ?? "", rsp.price ?? 0)
         } catch {

@@ -766,7 +766,7 @@ extension Linkman {
             .response() as CompoundCurveResponse
     }
     
-    func getBaseDistrictCurve(compoundId: Int, startTime: String, endTime: String, estateType: String) async throws -> CompoundCurveResponse {
+    func getBaseDistrictCurve(compoundId: Int, startTime: String, endTime: String, estateType: String, districtId: Int) async throws -> CompoundCurveResponse {
         try await Request()
             .with(\.path, setTo: "/pricing/rps/pcBaseCompoundPrice/getPcBasePriceDistrictLineChart")
             .with(\.method, setTo: .POST)
@@ -774,7 +774,8 @@ extension Linkman {
                 "fvCompoundId": "\(compoundId)",
                 "fdEvaluateTimeStart": startTime,
                 "fdEvaluateTimeEnd": endTime,
-                "fvEstateType": estateType
+                "fvEstateType": estateType,
+                "fiDistrictId": districtId
             ])
             .make()
             .response() as CompoundCurveResponse

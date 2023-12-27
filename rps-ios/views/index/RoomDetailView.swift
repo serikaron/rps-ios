@@ -2316,17 +2316,30 @@ private struct ChartPage: View {
         .sectionStyle(vPadding: 0)
     }
     
+    @State private var task: Task<Void, Never>?
+    
     private func getCurve() {
-        Task {
+        guard task == nil else { return }
+        
+        task = Task {
             let s = startTime ?? Date().toString(format: "YYYY-MM")
             let e = endTime ?? s
-            compoundCurve = [await Curve.compoundCurve(unitId: accountService.account?.unitId ?? 0, compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
-            districtCurve = [await Curve.baseDistrictCurve(compoundId: roomDetail.compoundId, startTime: s, endTime: e, estateType: roomDetail.estateType?.dictKey ?? "")]
+            compoundCurve = [await Curve.compoundCurve(
+                districtId: roomDetail.areaCode,
+                compoundId: roomDetail.compoundId,
+                startTime: s, endTime: e,
+                estateType: roomDetail.estateType?.dictKey ?? "")]
+            districtCurve = [await Curve.baseDistrictCurve(
+                districtId: roomDetail.areaCode,
+                compoundId: roomDetail.compoundId,
+                startTime: s, endTime: e,
+                estateType: roomDetail.estateType?.dictKey ?? "")]
             (basePriceDate, basePrice) = await estateService.getBaseCompoundPrice(
-                unitId: accountService.account?.unitId ?? 0,
+                districtId: roomDetail.areaCode,
                 compoundId: roomDetail.compoundId,
                 estateType: roomDetail.estateType?.dictKey ?? "",
                 startTime: s, endTime: e)
+            task = nil
         }
     }
 }
