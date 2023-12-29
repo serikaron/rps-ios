@@ -459,7 +459,7 @@ private struct RecordView: View {
                 }
                     .disabled(button4Disabled)
                 NavigationLink {
-                    AddInquiryView(inquiry: nil, record: record)
+                    AddInquiryView(roomDetail: nil, inquiry: nil, record: record)
                 } label: {
                     Text("提交询价")
                 }

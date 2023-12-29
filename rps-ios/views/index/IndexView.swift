@@ -114,7 +114,7 @@ struct IndexView: View {
     private var actionSection: some View {
         HStack {
             NavigationLink {
-                AddInquiryView(inquiry: nil, record: nil)
+                AddInquiryView(roomDetail: nil, inquiry: nil, record: nil)
             } label: {
                 actionButtonView(title: "人工询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
             }
