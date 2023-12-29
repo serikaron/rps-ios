@@ -389,3 +389,12 @@ extension MapCompound {
                     picUrl: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "", compoundId: 0)
     }
 }
+
+extension MapViewCoordinate {
+    static var mock: Self {
+//        let s = "[{\"longitude\":119.163347,\"latitude\":31.264013},{\"longitude\":119.165235,\"latitude\":29.245478},{\"longitude\":121.185148,\"latitude\":29.245478},{\"longitude\":121.187036,\"latitude\":31.262679}]"
+        let s = "[{\"longitude\":120.163347,\"latitude\":30.264013},{\"longitude\":120.165235,\"latitude\":30.245478},{\"longitude\":120.185148,\"latitude\":30.245478},{\"longitude\":120.187036,\"latitude\":30.262679}]"
+        let l = try! s.data(using: .utf8)!.decoded() as [Coordinate]
+        return .plane(l)
+    }
+}

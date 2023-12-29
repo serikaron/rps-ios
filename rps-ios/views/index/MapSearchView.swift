@@ -20,17 +20,10 @@ struct MapSearchView: View {
     @State private var showMap = true
     @State private var compound: MapCompound?
     
-    private var coordinate: Binding<Coordinate?> {Binding(
-        get: {
-            return compound?.coordinate
-        },
-        set: { _ in }
-    )}
-    
     var body: some View {
         ZStack {
 //            Color.gray
-            MapView(coordinate: coordinate)
+            MapView(mapViewCoordinate: compound?.coordinate)
             content
             Image.index.mapBack
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

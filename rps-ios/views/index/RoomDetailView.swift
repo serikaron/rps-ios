@@ -199,7 +199,8 @@ struct RoomDetailView: View {
             }
             Spacer().frame(height: 16)
             if mapShowing {
-                MapView(coordinate: $roomDetail.coordinate)
+//                MapView(coordinate: $roomDetail.coordinate)
+                MapView(mapViewCoordinate: roomDetail.mapViewCoordinate)
                     .frame(height: 138)
                     .cornerRadius(5)
             }

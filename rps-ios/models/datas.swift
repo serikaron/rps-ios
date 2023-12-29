@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import CoreLocation
 
 struct Building: Codable {
     let id: Int
@@ -447,7 +448,7 @@ struct MapCompound {
     let east: String
     let west: String
     let location: String
-    let coordinate: Coordinate?
+    let coordinate: MapViewCoordinate?
     let picUrl: String
     let familyRoomName: String
     let areaCode: Int
@@ -461,8 +462,25 @@ struct MapCompound {
     }
 }
 
-struct Coordinate: Codable {
-    let latitude: Double
-    let longitude: Double
+typealias Coordinate = CLLocationCoordinate2D
+extension Coordinate: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case latitude = "latitude"
+        case longitude = "longitude"
+    }
+    public init(from decoder: Decoder) throws {
+        let value = try decoder.container(keyedBy: CodingKeys.self)
+        let latitude = try value.decode(Double.self, forKey: .latitude)
+        let longitude = try value.decode(Double.self, forKey: .longitude)
+        
+        self.init()
+        self.latitude = latitude
+        self.longitude = longitude
+    }
 }
 
+enum MapViewCoordinate {
+    case point([Coordinate])
+    case line([Coordinate])
+    case plane([Coordinate])
+}

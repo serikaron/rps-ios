@@ -717,12 +717,28 @@ class EstateService: ObservableObject {
             }
             
             let r = rsp.records[0]
-            var coordinate: Coordinate?
+            
+            var mapViewCoordinate: MapViewCoordinate?
+            let et = DictType.EstateType(r.fvEstateType)
             if let pois = r.fvPois,
                let data = pois.data(using: .utf8) {
                 do {
-                    coordinate = try data.decoded() as Coordinate
-                } catch { }
+                    switch et {
+                    case .industrialFactory:
+                        mapViewCoordinate = try .plane(data.decoded() as [Coordinate])
+                        
+                    case .shopStreet:
+                        fallthrough
+                    case .landingRoom:
+                        mapViewCoordinate = try .line(data.decoded() as [Coordinate])
+                        
+                    default:
+                        mapViewCoordinate = try .point([data.decoded() as Coordinate])
+                    }
+                } catch {
+                    print("decode fvPois FAILED!!!, estatType:\(r.fvEstateType), fvPois:\(r.fvPois)")
+                    return nil
+                }
             }
             
             var loc = ""
@@ -747,7 +763,7 @@ class EstateService: ObservableObject {
                 east: r.fvToEast ?? "",
                 west: r.fvToWest ?? "",
                 location: loc,
-                coordinate: coordinate,
+                coordinate: mapViewCoordinate,
                 picUrl: picUrl,
                 familyRoomName: r.fvFamilyRoomName ?? "",
                 areaCode: r.fiAreaCode ?? 0,

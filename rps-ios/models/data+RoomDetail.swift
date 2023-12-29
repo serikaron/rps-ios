@@ -647,4 +647,30 @@ struct RoomDetail {
         set(value) {
         }
     }
+    
+    private var fvPois: Data? {
+        dcCompound.fvPois?.data(using: .utf8)
+    }
+    
+    var mapViewCoordinate: MapViewCoordinate? {
+        guard let data = fvPois else { return nil }
+        
+        do {
+            switch estateType {
+            case .industrialFactory:
+                return try .plane(data.decoded() as [Coordinate])
+                
+            case .shopStreet:
+                fallthrough
+            case .landingRoom:
+                return try .line(data.decoded() as [Coordinate])
+                
+            default:
+                return try .point([data.decoded() as Coordinate])
+            }
+        } catch {
+            print("decode fvPois FAILED!!!, estatType:\(estateTypeString), fvPois:\(dcCompound.fvPois)")
+            return nil
+        }
+    }
 }
