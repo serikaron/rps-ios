@@ -66,6 +66,7 @@ private struct CommApartmentDetailView: View {
                 itemView(title: "地市", keypath: \.compoundCityName)
                 itemView(title: "区县", keypath: \.compoundAreaName)
                 itemView(title: "镇/街道", keypath: \.compoundSubdistrictName)
+                itemView(title: "社区", keypath: \.compoundCommunityName)
                 itemView(title: "村/社区", keypath: \.compoundCompoundName)
                 itemView(title: "小区名称", keypath: \.compoundCompoundName)
             }
@@ -180,6 +181,7 @@ private struct SingleApartmentDetailView: View {
                 itemView(title: "地市", keypath: \.compoundCityName)
                 itemView(title: "区县", keypath: \.compoundAreaName)
                 itemView(title: "镇/街道", keypath: \.compoundSubdistrictName)
+                itemView(title: "社区", keypath: \.compoundCommunityName)
                 itemView(title: "项目名称", keypath: \.compoundCompoundName)
                 itemView(title: "项目别名", keypath: \.compoundNameAlias)
             }
@@ -314,6 +316,7 @@ private struct OfficeApartmentDetailView: View {
                 itemView(title: "区县", keypath: \.compoundAreaName)
                 itemView(title: "所处商圈", keypath: \.compoundBusinessDistrict)
                 itemView(title: "二级商圈", keypath: \.compoundCompoundName)
+                itemView(title: "社区", keypath: \.compoundCommunityName)
                 itemView(title: "项目名称", keypath: \.compoundCompoundName)
                 itemView(title: "项目别名", keypath: \.compoundNameAlias)
             }
@@ -451,6 +454,7 @@ private struct VillaApartmentDetailView: View {
                 itemView(title: "地市", keypath: \.compoundCityName)
                 itemView(title: "区县", keypath: \.compoundAreaName)
                 itemView(title: "镇/街道", keypath: \.compoundSubdistrictName)
+                itemView(title: "社区", keypath: \.compoundCommunityName)
                 itemView(title: "村/社区", keypath: \.compoundCompoundName)
                 itemView(title: "小区名称", keypath: \.compoundCompoundName)
                 itemView(title: "小区别名", keypath: \.compoundNameAlias)
@@ -580,6 +584,7 @@ private struct ShopStreetApartmentDetailView: View {
             section("路段区划信息") {
                 itemView(title: "地市", keypath: \.compoundCityName)
                 itemView(title: "区县", keypath: \.compoundAreaName)
+                itemView(title: "社区", keypath: \.compoundCommunityName)
                 itemView(title: "商圈类型", keypath: \.compoundBussinessType)
                 itemView(title: "路段名称", keypath: \.compoundCompoundName)
                 itemView(title: "路段别名", keypath: \.compoundNameAlias)
@@ -666,6 +671,7 @@ private struct LandingRoomApartmentDetailView: View {
                 itemView(title: "地市", keypath: \.compoundCityName)
                 itemView(title: "区县", keypath: \.compoundAreaName)
                 itemView(title: "镇/街道", keypath: \.compoundSubdistrictName)
+                itemView(title: "社区", keypath: \.compoundCommunityName)
                 itemView(title: "村/社区", keypath: \.compoundCompoundName)
                 itemView(title: "小区名称", keypath: \.compoundCompoundName)
                 itemView(title: "小区别名", keypath: \.compoundNameAlias)
@@ -810,6 +816,7 @@ private struct IndustrialSmallGardenDetailView: View {
                 itemView(title: "地市", keypath: \.compoundCityName)
                 itemView(title: "区县", keypath: \.compoundAreaName)
                 itemView(title: "区域位置", keypath: \.compoundAreaLocation)
+                itemView(title: "社区", keypath: \.compoundCommunityName)
                 itemView(title: "园区名称", keypath: \.compoundCompoundName)
                 itemView(title: "园区别名", keypath: \.compoundNameAlias)
             }

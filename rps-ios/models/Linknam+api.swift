@@ -435,6 +435,7 @@ extension Linkman {
         var fvIndustrialConcentrationRating: String?
         var fvParkKeyEnterprises: String?
         var fvIndustryLimit: String?
+        var fvCommunityName: String?
     }
     
     struct NetworkRoomDetail: Codable {
