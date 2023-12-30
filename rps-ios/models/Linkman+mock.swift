@@ -347,7 +347,9 @@ extension Record {
             contact: "",
             contactPhone: "",
             buildingYear: "",
-            structure: ._1
+            structure: ._1,
+            searchAddress: "",
+            dataOrgId: 0
         )
     }
 }

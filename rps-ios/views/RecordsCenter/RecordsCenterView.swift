@@ -436,14 +436,16 @@ private struct RecordView: View {
                     .disabled(button1Disabled)
                 NavigationLink {
                     RoomDetailView(
-                        familyRoomName: record.address,
+                        familyRoomName: record.searchAddress,
                         areaCode: record.areaCode,
                         estateType: record.estateType.dictKey,
                         buildingId: record.buildingId,
                         area: "",
-                        floor: record.floor)
+                        dataOrgId: record.dataOrgId,
+                        floor: record.floor
+                    )
                 } label: {
-                    Text("重新估价")
+                    Text("重新估价是")
                 }
                 .disabled(button2Disabled)
                 NavigationLink {
@@ -674,6 +676,7 @@ private struct RecordPopupView: View {
     
     @Binding var record: Record?
     @State private var showPdf = false
+    @State private var pdfData: Data?
     
     var body: some View {
         ZStack {
@@ -695,9 +698,9 @@ private struct RecordPopupView: View {
                     }
                 Spacer().frame(height: 20)
                 HStack {
-                    NavigationLink {
-                        ReportSheetView(type: record?.inquiryType?.dictKey ?? 0, estateType: record?.estateType.dictKey ?? "", inquiryId: record?.id ?? 0, reportState: 1)
-                    } label: {
+//                    NavigationLink {
+//                        ReportSheetView(type: record?.inquiryType?.dictKey ?? 0, estateType: record?.estateType.dictKey ?? "", inquiryId: record?.id ?? 0, reportState: 1)
+//                    } label: {
                         Text("直接下载")
                             .customText(size: 16, color: .main)
                             .frame(height: 40)
@@ -711,8 +714,8 @@ private struct RecordPopupView: View {
                             .onTapGesture {
                                 showPdf = true
                             }
-                    }
-                    Text("发送邮箱")
+//                    }
+                    Text("保存报告")
                         .customText(size: 16, color: .white)
                         .frame(height: 40)
                         .frame(maxWidth: .infinity)
@@ -720,11 +723,16 @@ private struct RecordPopupView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .onTapGesture {
                             Task {
-                                if let record = record {
-                                    await estateService.sendReportToMail(id: "\(record.id)", email: accountService.account?.email ?? "")
-                                }
+                                Box.setLoading(true)
+                                pdfData = await estateService.downloadComplexReportPdf(id: record?.id ?? 0)
+                                Box.setLoading(false)
                                 hide()
                             }
+                        }
+                        .sheet(isPresented: Binding(
+                            get: { pdfData != nil},
+                            set: { if !$0 {pdfData = nil} })) {
+                            PDFShareSheet(activityItems: [pdfData!])
                         }
                 }
                 .padding(.horizontal, 20)

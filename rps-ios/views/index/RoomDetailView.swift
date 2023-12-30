@@ -22,6 +22,7 @@ struct RoomDetailView: View {
     let estateType: String
     let buildingId: Int
     let area: String
+    let dataOrgId: Int?
     @State var floor: String
     var roomId: String { roomDetail.id }
     
@@ -33,6 +34,10 @@ struct RoomDetailView: View {
     @State private var detailExtened: Bool = false
     @State private var hasDetailResult: Bool = false
     @State private var isInfoFixShown: Bool = false
+    
+    private var orgId: Int {
+        return dataOrgId ?? accountService.account?.orgId ?? 0
+    }
     
     var body: some View {
         ZStack {
@@ -77,9 +82,9 @@ struct RoomDetailView: View {
                     areaCode: areaCode,
                     familyRoomName: familyRoomName,
                     buildingId: buildingId,
-                    orgId: accountService.account?.orgId ?? 0
+                    orgId: orgId
                 )
-                inquiry = await estateService.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: familyRoomName, orgId: accountService.account?.orgId ?? 0, roomId: Int(roomId) ?? 0)
+                inquiry = await estateService.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: familyRoomName, orgId: orgId, roomId: Int(roomId) ?? 0)
                 if !area.isEmpty {
                     inquiry?.area = Double(area) ?? 0
                 }
@@ -296,6 +301,7 @@ struct RoomDetailView: View {
                 estateType: "singleApartment",
                 buildingId: 1,
                 area: "",
+                dataOrgId: nil,
                 floor: "1-1"
             )
             .environmentObject(

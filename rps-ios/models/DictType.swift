@@ -653,7 +653,7 @@ extension DictType {
         var label: String { DictType.fv_decoration.label(of: dictKey) ?? "" }
     }
 
-    enum ValuationPurpose: String, CaseIterable, HasLabel {
+    enum ValuationPurpose: CaseIterable, HasLabel {
 //        case mortgageLoanLoanValuation, realEstateInsuranceValuation, realEstateDemolitionAndResettlementValuation, valuationOfCompensationForRealEstateDemolition, realEstateSegmentationAndConsolidationValuation, realEstateTransactionTaxValuation, realEstateDisputeValuation, realEstateFeasibilityStudy, realEstateAuctionLowPriceValuation, realEstateJudicialAppraisalIncludingDecorationValuation, realEstateJudicialAppraisalAndValuation, realEstateReplacementValuation, valuationOfRealEstateTransferPrice, realEstateTransferAndLoanValuation, realEstateRentalPriceValuation, otherPurposesOfRealEstateValuationAndEquityValuation
         
 //        var dictKey: String { rawValue }

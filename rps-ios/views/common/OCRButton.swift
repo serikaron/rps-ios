@@ -47,6 +47,7 @@ struct OCRButton: View {
                         estateType: ocrResult?.estateType ?? "",
                         buildingId: ocrResult?.buildingId ?? 0,
                         area: ocrArea,
+                        dataOrgId: nil,
                         floor: ocrResult?.floor ?? ""),
                     isActive: $navOcr) {
                         EmptyView()

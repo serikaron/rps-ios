@@ -340,6 +340,8 @@ struct Record: Identifiable {
     let contactPhone: String
     let buildingYear: String
     let structure: DictType.BuildingStructure?
+    let searchAddress: String
+    let dataOrgId: Int
     
     var displayTotalPrice: String {
         guard let d = Double(totalPrice) else { return "" }

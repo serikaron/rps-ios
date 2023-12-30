@@ -603,7 +603,9 @@ class EstateService: ObservableObject {
                         contact: r.fvContact ?? "",
                         contactPhone: r.fvContactPhone ?? "",
                         buildingYear: r.fvBuildingYear ?? "",
-                        structure: DictType.BuildingStructure(rawValue: r.fvBuildingStructure)
+                        structure: DictType.BuildingStructure(rawValue: r.fvBuildingStructure),
+                        searchAddress: r.fvSearchAddr ?? "",
+                        dataOrgId: r.fiDataOrgId ?? 0
                     )
                 })
         } catch {
@@ -844,6 +846,20 @@ class EstateService: ObservableObject {
         } catch {
             print("complexReportPdf FAILED!!! \(error)")
             return ""
+        }
+    }
+    
+    func downloadComplexReportPdf(id: Int) async -> Data? {
+        do {
+//            let url = URL(string: "https://image.xuboren.com/image/2023/12/28/6c05b422f08a4d34b365ed28c9f22252.pdf")!
+            let urlString = await complexReportPdf(id: id)
+            guard let url = URL(string: urlString) else { return nil }
+            let (data, _) = try await URLSession.shared.data(from: url)
+            return data
+        } catch {
+            print(error)
+            print("downloadAndSave FAILED!!!")
+            return nil
         }
     }
 }

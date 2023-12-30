@@ -863,6 +863,8 @@ extension Linkman {
         let fvContactPhone: String?
         let fvBuildingYear: String?
         let fvBuildingStructure: String?
+        let fvSearchAddr: String?
+        let fiDataOrgId: Int?
     }
     
     struct NetworkRecordImage: Codable {

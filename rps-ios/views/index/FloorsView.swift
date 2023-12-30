@@ -74,6 +74,7 @@ struct FloorsView: View {
                         estateType: room.estateType,
                         buildingId: room.buildingId,
                         area: "",
+                        dataOrgId: nil,
                         floor: room.floor
                     )
                         .environmentObject(estateService)
