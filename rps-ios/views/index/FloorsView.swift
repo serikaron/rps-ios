@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct FloorsView: View {
+    let building: Building
+    
     @EnvironmentObject var estateService: EstateService
     
     private var floors: Floors {
@@ -74,7 +76,7 @@ struct FloorsView: View {
                         estateType: room.estateType,
                         buildingId: room.buildingId,
                         area: "",
-                        dataOrgId: nil,
+                        dataOrgId: building.fiOrgId,
                         floor: room.floor
                     )
                         .environmentObject(estateService)
@@ -126,7 +128,7 @@ private extension Color {
 
 #Preview("online") {
     Box.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJycHNfdXNlcjo0MCIsInJuU3RyIjoibmZKT1dHcVYwNXFQd01qQXpSVjAyZTN5WDZGYXNsblQiLCJ1c2VySWQiOjQwfQ.qXqGFyWUOdhkUIE4AhjB5wB1zwOxQ0sG7v4XQahdpEQ")
-    return FloorsView()
+    return FloorsView(building: .mock)
         .environmentObject( EstateService().loadFloors() )
         .previewLayout(.sizeThatFits)
 }
@@ -157,7 +159,7 @@ fileprivate struct PreviewView: View {
     var body: some View {
         ZStack {
             Color.black
-            FloorsView()
+            FloorsView(building: .mock)
                 .environmentObject(
                     EstateService.preview
                         .setPreview(data: .mock(floorCount: floorCount, unitCount: unitCount))

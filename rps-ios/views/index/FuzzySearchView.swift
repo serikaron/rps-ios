@@ -33,7 +33,7 @@ struct FuzzySearchView: View {
                     estateType: selectedRoomInfo?.estateType ?? "",
                     buildingId: selectedRoomInfo?.buildingId ?? 0,
                     area: "",
-                    dataOrgId: nil,
+                    dataOrgId: selectedRoomInfo?.orgId ?? 0,
                     floor: selectedRoomInfo?.floor ?? "无"
                 )
                     .environmentObject(estateService)

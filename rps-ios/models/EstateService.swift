@@ -21,6 +21,7 @@ struct SearchResult {
     let areacode: Int?
     let buildingId: Int?
     let floor: String?
+    let orgId: Int?
 }
 typealias SearchResultList = [SearchResult]
 
@@ -199,7 +200,7 @@ class EstateService: ObservableObject {
     }
     
     
-    func getCaseList(compoundId: Int, estateType: String, price: Double) async -> [ReferenceCase] {
+    func getCaseList(compoundId: Int, estateType: String, price: Double, dataOrgId: Int) async -> [ReferenceCase] {
         if isPreview { return ReferenceCase.moclList }
         
         func formatPrice(_ price: String?) -> String {
@@ -211,7 +212,7 @@ class EstateService: ObservableObject {
         }
         
         do {
-            let rsp = try await Linkman.shared.getRoomCases(compoundId: compoundId, estateType: estateType, price: price)
+            let rsp = try await Linkman.shared.getRoomCases(compoundId: compoundId, estateType: estateType, price: price, dataOrgId: dataOrgId)
             return rsp.records.map { c in
                 ReferenceCase(
                     tradeType: c.fiTradeType == nil ? "" :
@@ -234,9 +235,9 @@ class EstateService: ObservableObject {
         }
     }
     
-    func getBaseCompoundPrice(districtId: Int, compoundId: Int, estateType: String, startTime: String, endTime: String, wuYeFenLei: String) async -> (String, Double) {
+    func getBaseCompoundPrice(districtId: Int, compoundId: Int, estateType: String, startTime: String, endTime: String, wuYeFenLei: String, dataOrgId: Int) async -> (String, Double) {
         do {
-            let rsp = try await Linkman.shared.getCompoundLastPrice(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType, districtId: districtId, wuYeFenLei: wuYeFenLei)
+            let rsp = try await Linkman.shared.getCompoundLastPrice(compoundId: compoundId, startTime: startTime, endTime: endTime, estateType: estateType, districtId: districtId, wuYeFenLei: wuYeFenLei, dataOrgId: dataOrgId)
             return (rsp.evaluateTime ?? "", rsp.price ?? 0)
         } catch {
             print("getBaseCompoundPrice FAILED: \(error)")
@@ -880,7 +881,8 @@ extension SearchResult {
                      comId: 1,
                      areacode: 300106,
                      buildingId: 1,
-                     floor: "1-1"
+                     floor: "1-1",
+                     orgId: 0
         )
     }
     
@@ -898,7 +900,8 @@ extension SearchResult {
             comId: item.fiCompoundId,
             areacode: item.fiAreaCode,
             buildingId: item.fiBuildingId,
-            floor: item.fvInFloor
+            floor: item.fvInFloor,
+            orgId: item.fiOrgId
         )
     }
 }

@@ -44,7 +44,8 @@ extension Linkman.NetworkSearchResult {
 //            fvSubdistrictName: "三墩镇",
 //            fvEstateState: "4"
             fiBuildingId: 0,
-            fvInFloor: "1-1"
+            fvInFloor: "1-1",
+            fiOrgId: 0
         )
     }
     
@@ -67,7 +68,8 @@ extension Linkman.NetworkSearchResult {
             fvCompletionDate: "\(num)",
             fvPois: nil,
             fiBuildingId: 0,
-            fvInFloor: "1-1"
+            fvInFloor: "1-1",
+            fiOrgId: 0
         )
     }
 }
@@ -136,7 +138,8 @@ extension Building {
             fvNameAlias: "宝石1幢",
             fvFloorHeight: "5",
             fvEstateType: "singleApartment",
-            fiAreaCode: 330106
+            fiAreaCode: 330106,
+            fiOrgId: 294
         )
     }
 }

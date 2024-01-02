@@ -17,6 +17,7 @@ struct Building: Codable {
     let fvFloorHeight: String?
     let fvEstateType: String?
     let fiAreaCode: Int?
+    let fiOrgId: Int?
     
     var completionDate: String { return fdCompletionDate ?? "" }
     var name: String { return fvBuildingName ?? "" }

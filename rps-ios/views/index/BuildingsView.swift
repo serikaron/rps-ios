@@ -19,6 +19,7 @@ struct BuildingsView: View {
     @State private var pageNum = 1
     private let pageSize = 10
     
+    @State private var selectedBuilding: Building?
     @State private var showPopup = false
     @State private var popupOffset: CGFloat = 500
     
@@ -36,6 +37,7 @@ struct BuildingsView: View {
                                     }
                                 }
                                 .onTapGesture {
+                                    selectedBuilding = building
                                     showPopup = true
                                     Task {
                                         await estateService.getFloors(
@@ -57,6 +59,7 @@ struct BuildingsView: View {
                 .ignoresSafeArea()
                 .onTapGesture {
                     showPopup = false
+                    selectedBuilding = nil
                     estateService.floors = .empty
                 }
             floorsPopup
@@ -118,7 +121,7 @@ struct BuildingsView: View {
     }
     
     private var floorsPopup: some View {
-        showPopup ? FloorsView().earseToAnyView() : EmptyView().earseToAnyView()
+        showPopup && selectedBuilding != nil ? FloorsView(building: selectedBuilding!).earseToAnyView() : EmptyView().earseToAnyView()
         
     }
 }

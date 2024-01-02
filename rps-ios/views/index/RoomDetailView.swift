@@ -133,9 +133,9 @@ struct RoomDetailView: View {
             case .inquiryDetail:
                 inquiryDetailPage.earseToAnyView()
             case .reference:
-                ReferenceCaseView(inquiry: inquiry, detail: roomDetail).earseToAnyView()
+                ReferenceCaseView(orgId: orgId, inquiry: inquiry, detail: roomDetail).earseToAnyView()
             case .chart:
-                ChartPage(inquiry: $inquiry, roomDetail: $roomDetail)
+                ChartPage(orgId: orgId, inquiry: $inquiry, roomDetail: $roomDetail)
             case .estateDetail:
                 EstateDetailView(detail: $roomDetail)
             case .none:
@@ -2120,6 +2120,7 @@ private struct InfoFixPreviewView: View {
 private struct ReferenceCaseView: View {
     @EnvironmentObject var estateService: EstateService
     
+    let orgId: Int
     let inquiry: Inquiry?
     let detail: RoomDetail
     @State private var caseList: [ReferenceCase] = []
@@ -2139,7 +2140,7 @@ private struct ReferenceCaseView: View {
                     caseList = await estateService.getCaseList(
                         compoundId: inquiry?.compoundId ?? 0,
                         estateType: inquiry?.estateTypeString ?? "",
-                        price: Double(inquiry?.price ?? "") ?? 0
+                        price: Double(inquiry?.price ?? "") ?? 0, dataOrgId: orgId
                     )
                 }
             }
@@ -2227,6 +2228,7 @@ private struct BannerView: View {
 //}
 
 private struct ChartPage: View {
+    let orgId: Int
     @Binding var inquiry: Inquiry?
     @Binding var roomDetail: RoomDetail
     @EnvironmentObject var estateService: EstateService
@@ -2335,18 +2337,23 @@ private struct ChartPage: View {
                 districtId: roomDetail.areaCode,
                 compoundId: roomDetail.compoundId,
                 startTime: s, endTime: e,
-                estateType: roomDetail.estateType?.dictKey ?? "")]
+                estateType: roomDetail.estateType?.dictKey ?? "",
+                dataOrgId: orgId
+            )]
             districtCurve = [await Curve.baseDistrictCurve(
                 districtId: roomDetail.areaCode,
                 compoundId: roomDetail.compoundId,
                 startTime: s, endTime: e,
-                estateType: roomDetail.estateType?.dictKey ?? "")]
+                estateType: roomDetail.estateType?.dictKey ?? "",
+                dataOrgId: orgId
+            )]
             (basePriceDate, basePrice) = await estateService.getBaseCompoundPrice(
                 districtId: roomDetail.areaCode,
                 compoundId: roomDetail.compoundId,
                 estateType: roomDetail.estateType?.dictKey ?? "",
                 startTime: s, endTime: e,
-                wuYeFenLei: roomDetail.wuYeFenLei
+                wuYeFenLei: roomDetail.wuYeFenLei,
+                dataOrgId: orgId
             )
             task = nil
         }
@@ -2355,7 +2362,7 @@ private struct ChartPage: View {
 
 #Preview("ChartPage") {
     PreviewView { inquiry, roomDetail in
-        ChartPage(inquiry: inquiry, roomDetail: roomDetail)
+        ChartPage(orgId: 0, inquiry: inquiry, roomDetail: roomDetail)
             .onAppear {
                 roomDetail.wrappedValue.compoundName = "杭州市壹号院"
                 roomDetail.wrappedValue.estateType = DictType.EstateType.commApartment
