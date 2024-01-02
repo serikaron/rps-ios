@@ -28,7 +28,7 @@ struct IndexView: View {
                 //                .ignoresSafeArea(edges: .bottom)
                     .onAppear {
                         Task {
-                            noticeList = await Notice.list(pageNum: 1, pageSize: 10, orgId: accountService.account?.orgId ?? 0)
+                            noticeList = await Notice.list(pageNum: 1, pageSize: 3, orgId: accountService.account?.orgId ?? 0)
                         }
                     }
             }
@@ -96,19 +96,22 @@ struct IndexView: View {
     }
     
     private var noticeSection: some View {
-        Color.white
-            .frame(height: 38)
-            .cornerRadius(8)
-            .overlay (
-                HStack(spacing: 10) {
-                    Image.index.announceIcon
-                    Text(noticeTitle)
-                        .customText(size: 14, color: .text.gray3)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                    .padding(.horizontal, 16)
-            )
+        NoticeSection(noticeList: noticeList.map{$0.title})
+            .padding(.horizontal, 16)
+            .background(Color.white)
+//        Color.white
+//            .frame(height: 38)
+//            .cornerRadius(8)
+//            .overlay (
+//                HStack(spacing: 10) {
+//                    Image.index.announceIcon
+//                    Text(noticeTitle)
+//                        .customText(size: 14, color: .text.gray3)
+//                        .lineLimit(1)
+//                        .frame(maxWidth: .infinity, alignment: .leading)
+//                }
+//                    .padding(.horizontal, 16)
+//            )
     }
     
     private var actionSection: some View {
@@ -509,3 +512,76 @@ private struct ChartChoisesView: View {
 //    ChartChoisesView(selectedCurve: .constant(.combined(startTime: nil, endTime: nil)))
 //}
 
+private struct NoticeSection: View {
+    let noticeList: [String]
+    @State private var curr = 0
+    private var next: Int {
+        (curr+1) % noticeList.count
+    }
+    
+    private let timer = Timer.publish(every: 2+Self.duration, on: .main, in: .common).autoconnect()
+    
+    static private let duration: Double = 0.15
+    static private let height:CGFloat = 38
+    
+    var body: some View {
+        Group {
+            if noticeList.count == 1 {
+                oneNotice
+            } else if noticeList.count > 1 {
+                moreNotice
+            } else {
+                Image.index.announceIcon
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .frame(height: Self.height)
+    }
+    
+    private var oneNotice: some View {
+        HStack(spacing: 10) {
+            Image.index.announceIcon
+            textView(noticeList[0])
+        }
+    }
+    
+    private var moreNotice: some View {
+        HStack(spacing: 10) {
+            Image.index.announceIcon
+            vTab
+        }
+        .frame(height: Self.height)
+        .clipped()
+    }
+    
+    @State private var offset: CGFloat = Self.height / 2
+    
+    private var vTab: some View {
+        VStack(spacing:0) {
+            textView(noticeList[curr])
+            textView(noticeList[next])
+        }
+        .offset(y: offset)
+        .onReceive(timer) { _ in
+            withAnimation(.linear(duration: Self.duration)) {
+                offset -= Self.height
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now()+Self.duration) {
+                curr = next
+                offset = Self.height / 2
+            }
+        }
+    }
+    
+    private func textView(_ text: String) -> some View {
+        Text(text)
+            .frame(height: Self.height)
+            .customText(size: 14, color: .text.gray3)
+            .lineLimit(1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+#Preview("Notice") {
+    NoticeSection(noticeList: [])
+}
