@@ -28,7 +28,7 @@ struct IndexView: View {
                 //                .ignoresSafeArea(edges: .bottom)
                     .onAppear {
                         Task {
-                            noticeList = await Notice.list(pageNum: 1, pageSize: 3, orgId: accountService.account?.orgId ?? 0)
+                            (noticeList, _, _) = await Notice.list(pageNum: 1, pageSize: 3, orgId: accountService.account?.orgId ?? 0)
                         }
                     }
             }
@@ -96,22 +96,11 @@ struct IndexView: View {
     }
     
     private var noticeSection: some View {
-        NoticeSection(noticeList: noticeList.map{$0.title})
-            .padding(.horizontal, 16)
-            .background(Color.white)
-//        Color.white
-//            .frame(height: 38)
-//            .cornerRadius(8)
-//            .overlay (
-//                HStack(spacing: 10) {
-//                    Image.index.announceIcon
-//                    Text(noticeTitle)
-//                        .customText(size: 14, color: .text.gray3)
-//                        .lineLimit(1)
-//                        .frame(maxWidth: .infinity, alignment: .leading)
-//                }
-//                    .padding(.horizontal, 16)
-//            )
+        NavigationLink(destination: NoticeListView()) {
+            NoticeSection(noticeList: noticeList.map{$0.title})
+                .padding(.horizontal, 16)
+                .background(Color.white)
+        }
     }
     
     private var actionSection: some View {

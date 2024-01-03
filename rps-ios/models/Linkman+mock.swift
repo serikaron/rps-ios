@@ -7,9 +7,15 @@
 
 import Foundation
 
-extension Linkman.NoticeRecord {
-    static var mock: Linkman.NoticeRecord {
-        return Linkman.NoticeRecord(noticeTitle: "公告1")
+extension Notice {
+    static var mock: [Self] {
+        return (0..<10).map { i in
+            Notice(
+                title: "title-\(i)",
+                date: "2023-12-26 14:06:29",
+                content: "<p>尊敬的RPS系统用户，您好！</p><p>\t&nbsp;</p><p>\t2023年12月份整体价格调整日期为12月18号至12月22号，调整期内系统个别房产价格会有一定波动，对此造成的不便深表歉意，各地区调整情况如下：</p><p>\t&nbsp;</p><p>\t主城区：主城区高档房产稍微下调，其他房产不同程度下调</p><p>\t各区县：各区县高档房产稍微下调，其他房产不同程度下调</p><p>\t&nbsp;</p><p>\t</p><p>\t祝工作生活愉快！</p><p>\t&nbsp;</p><p>\t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;恒基温州分公司数据部</p><p>\t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2023-12-14</p>"
+            )
+        }
     }
 }
 

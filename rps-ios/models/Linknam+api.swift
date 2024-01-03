@@ -108,11 +108,15 @@ extension Linkman {
     }
     
     struct NoticeRecord: Codable {
-        let noticeTitle: String
+        let noticeTitle: String?
+        let fdReleaseTime: String?
+        let noticeContent: String?
     }
     
     struct NoticeResponse: Codable {
         let records: [NoticeRecord]
+        let total: Int
+        let current: Int
     }
     
     func getNotices(pageNum: Int, pageSize: Int, orgId: Int) async throws -> NoticeResponse {
@@ -123,7 +127,7 @@ extension Linkman {
                 "pageNum": "\(pageNum)", "pageSize": "\(pageSize)", "orgId": "\(orgId)",
                 "type": "3", "fvPushstatus": "已发布", "fiTypeOfNotice": "0,2,3"
             ])
-            .with(\.standaloneResponse, setTo: standaloneResponse(NoticeResponse(records: [NoticeRecord.mock])))
+//            .with(\.standaloneResponse, setTo: standaloneResponse(NoticeResponse(records: [NoticeRecord.mock])))
             .make()
             .response() as NoticeResponse
     }
