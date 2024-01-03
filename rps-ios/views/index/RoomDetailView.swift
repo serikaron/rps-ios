@@ -47,7 +47,7 @@ struct RoomDetailView: View {
             VStack(spacing: 0) {
                 ScrollView {
                     ZStack(alignment: .top) {
-                        BannerView(roomDetail: $roomDetail)
+                        BannerView(roomDetail: roomDetail)
                             .frame(height: 252)
                             .frame(maxHeight: .infinity, alignment: .top)
                         VStack(spacing: 10) {
@@ -306,7 +306,7 @@ struct RoomDetailView: View {
                 floor: "1-1"
             )
             .environmentObject(
-                EstateService()
+                EstateService.preview
             )
             .environmentObject(AccountService.preview)
             .environmentObject(TabService())
@@ -2199,36 +2199,53 @@ private struct ReferenceCaseView: View {
 //}
 
 private struct BannerView: View {
-    @State private var selected: Int = 1
+    @EnvironmentObject private var imageService: ImageService
     
-    @Binding var roomDetail: RoomDetail
+    @State private var selected: Int = 0
+    
+    let roomDetail: RoomDetail
     
     private var imageURLs: [URL] {
         roomDetail.imageList.compactMap { URL(string: $0) }
     }
     
+    private let timer = Timer.publish(every: 1+0.5, on: .main, in: .common).autoconnect()
+    
     var body: some View {
-        TabView {
+        TabView(selection: $selected) {
             if imageURLs.isEmpty {
                 Image.main.placeholder
             } else {
-                ForEach(imageURLs, id: \.self) { bannerURL in
-                    BackportAsyncImage(url: bannerURL) { image in
-                        image.resizable()
-                            .scaledToFill()
-                            .clipped()
-                    } placeholder: {
-                        Image.main.placeholder
-                    }
+                ForEach(Array(zip(imageURLs.indices, imageURLs)), id: \.0) { idx, url in
+                    imageService.image(of: url)
+                        .resizable()
+                        .scaledToFill()
+//                    BackportAsyncImage(url: bannerURL) { image in
+//                        image.resizable()
+//                            .scaledToFill()
+//                            .clipped()
+//                    } placeholder: {
+//                        Image.main.placeholder
+//                    }
+                    .tag(idx)
                 }
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .onReceive(timer) { _ in
+            guard !imageURLs.isEmpty else { return }
+            withAnimation(.linear(duration: 0.5)) {
+                selected = (selected + 1) % imageURLs.count
             }
         }
     }
 }
 
-//#Preview("banner") {
-//    BannerView(roomDetail: .constant(.empty))
-//}
+#Preview("banner") {
+    BannerView(roomDetail: .mock)
+        .frame(height: 252)
+        .environmentObject(ImageService())
+}
 
 private struct ChartPage: View {
     let orgId: Int

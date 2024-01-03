@@ -11,6 +11,7 @@ struct MainView: View {
     @EnvironmentObject var accountService: AccountService
     @StateObject var estateService = EstateService()
     @StateObject var tabService = TabService()
+    @StateObject var imageService = ImageService()
     
     init() {
         print("MainView init")
@@ -26,6 +27,7 @@ struct MainView: View {
             .environmentObject(accountService)
             .environmentObject(estateService)
             .environmentObject(tabService)
+            .environmentObject(imageService)
 
             if !tabService.isHidden {
                 HStack {

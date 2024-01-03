@@ -201,8 +201,19 @@ extension Linkman.NetworkRoomDetail {
             wuYeFenLei: "",
             fiLandUpperCount: 0,
             fvLandingroomLandSe: "",
-            buildingImageList: [],
-            compoundImageList: [],
+            buildingImageList: [
+                "https://image.xuboren.com/image/2024/01/02/61bc80a4a9dc4ccc848cf42c6bc2453f.jpg"
+            ].map{
+                Linkman.RoomDetailImage(fvUrl: $0)
+            },
+            compoundImageList: [
+                "https://image.xuboren.com/image/2024/01/02/b1c65a616dce4e95a31539f0c111042c.jpg",
+                "https://image.xuboren.com/image/2024/01/02/864db33bcc20435da87c8d42e2a9ff31.jpg",
+                "https://image.xuboren.com/image/2024/01/02/f50b87accc534280a08efb371c1ef50e.jpg",
+                "https://image.xuboren.com/image/2024/01/02/59741e488218459bbc65c8500ff7faf3.jpg",
+            ].map{
+                Linkman.RoomDetailImage(fvUrl: $0)
+            },
             dcBuilding: .mock,
             dcCompound: .mock
         )
