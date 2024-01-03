@@ -59,6 +59,7 @@ struct RoomDetailView: View {
                 }
                 if selectedTab == .inquiryDetail {
                     OverlayView(
+                        detail: roomDetail,
                         inquiry: $inquiry,
                         hasInquiryResult: $hasInquiryResult,
                         detailExtened: $detailExtened,
@@ -535,6 +536,7 @@ private struct OverlayView: View {
     @EnvironmentObject var estateService: EstateService
     @EnvironmentObject var accountService: AccountService
     
+    let detail: RoomDetail
     @Binding var inquiry: Inquiry?
     @Binding var hasInquiryResult: Bool
     @Binding var detailExtened: Bool
@@ -577,7 +579,8 @@ private struct OverlayView: View {
                 .cornerRadius(8)
                 .onTapGesture {
                     Task {
-                        guard let inquiry = inquiry else { return }
+                        guard var inquiry = inquiry else { return }
+                        inquiry.coverImg = detail.coverImg
                         self.inquiry = await estateService.inquire(inquiry: inquiry)
                         hasInquiryResult = true
                     }

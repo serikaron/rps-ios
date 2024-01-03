@@ -340,6 +340,11 @@ struct Inquiry {
             return []
         }
     }
+    
+    var coverImg: String? {
+        get { return stringValue(of: "fvCoverImg") }
+        set(value) { setString(value, of: "fvCoverImg")}
+    }
 }
 
 struct OtherPriceInfo: Decodable {

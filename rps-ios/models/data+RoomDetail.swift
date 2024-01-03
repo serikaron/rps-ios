@@ -634,6 +634,12 @@ struct RoomDetail {
         networkRoomDetail.compoundImageList.compactMap { $0.fvUrl }
     }
     
+    var coverImg: String {
+        networkRoomDetail.compoundImageList.first?.fvUrl
+        ?? networkRoomDetail.buildingImageList.first?.fvUrl
+        ?? "https://image.xuboren.com/image/2023/07/27/e94490b018a14aa3a1d8f97a3d8b0cfa.jpg"
+    }
+    
     var coordinate: Coordinate? {
         get {
             do {
@@ -675,3 +681,4 @@ struct RoomDetail {
         }
     }
 }
+
