@@ -163,7 +163,6 @@ class EstateService: ObservableObject {
         do {
             let roomCount = try await Linkman.shared.getRoomCount(estateType: estateType, buildingId: buildingId)
             let rsp = try await Linkman.shared.getRoomDetail(estateType: estateType, areaCode: areaCode, familyRoomName: familyRoomName, orgId: orgId)
-            print("BannerView getRoomDetail")
             return RoomDetail(networkRoomDetail: rsp, roomCount: roomCount)
         } catch {
             print("getRoomDetail FAILED: \(error)")
@@ -584,7 +583,7 @@ class EstateService: ObservableObject {
                     return Record(
                         page: page,
                         id: r.id ?? 0,
-                        imageURL: r.fvCoverImg ?? "",
+                        imageURL: (r.fvCoverImg == nil || r.fvCoverImg! == "") ? "https://image.xuboren.com/image/2023/07/27/e94490b018a14aa3a1d8f97a3d8b0cfa.jpg" : r.fvCoverImg!,
                         inquiryType: InquiryType(rawValue: r.fiType),
                         district: r.fvAreaName ?? "",
                         estateType: estateType,

@@ -347,8 +347,7 @@ private struct RecordView: View {
             BackportAsyncImage(url: URL(string: record.imageURL)) { image in
                 image.resizable()
             } placeholder: {
-//                Image.main.placeholder.resizable()
-                Color.gray
+                Image.main.placeholder.resizable()
             }
             .frame(width: 100, height: 136)
             .cornerRadius(8)
@@ -445,7 +444,7 @@ private struct RecordView: View {
                         floor: record.floor
                     )
                 } label: {
-                    Text("重新估价是")
+                    Text("重新估价")
                 }
                 .disabled(button2Disabled)
                 NavigationLink {
