@@ -364,20 +364,16 @@ private struct RecordView: View {
                         colorText(record.estateType.label)
                     }
                     Spacer().frame(height: 9)
-                    HStack(spacing: 30) {
-                        VStack(spacing: 8) {
-                            Text("询价人: \(record.clientName)")
-                            Text(record.valuationDate)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("询价人： \(record.clientName)")
+                        Text("询价时间： \(record.valuationDate)")
+                        switch record.page {
+                        case .inquiry:
+                            Text("业务状态：\(record.inquiryState!.label)")
+                        case .report:
+                            Text("业务状态：\(record.reportState!.label)")
                         }
-                        VStack(alignment: .leading, spacing: 8) {
-                            switch record.page {
-                            case .inquiry:
-                                Text(record.inquiryState!.label)
-                            case .report:
-                                Text(record.reportState!.label)
-                            }
-                            Text(record.downloadState?.label ?? "")
-                        }
+                        Text("下载状态：\(record.downloadState?.label ?? "")")
                     }
                     .customText(size: 12, color: .text.gray6)
                 }
@@ -385,7 +381,7 @@ private struct RecordView: View {
                 HStack {
                     VStack {
                         Text("总价")
-                        Text("\(record.displayTotalPrice)万元")
+                        Text("\(record.displayTotalPrice)万")
                     }
                     Spacer()
                     VStack {
@@ -453,7 +449,7 @@ private struct RecordView: View {
                     Text("提交委托")
                 }
                 .disabled(button3Disabled)
-                Button("撤消询价") {
+                Button("撤销询价") {
                     Task {
                         await estateService.withdrawInquiry(id: record.id)
                     }
@@ -545,7 +541,7 @@ private struct RecordView: View {
                     Text("提交委托")
                 }
                 .disabled(reportButton1Disabled)
-                Button("撤消询价") {
+                Button("撤销询价") {
                     Task {
                         await estateService.withdrawInquiry(id: record.id)
                     }
