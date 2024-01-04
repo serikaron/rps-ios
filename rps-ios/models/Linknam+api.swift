@@ -503,7 +503,7 @@ extension Linkman {
                 "fvEstateType": estateType,
                 "fiAreaCode": "\(areaCode)",
                 "fvFamilyRoomName": familyRoomName,
-                "orgId": "\(orgId)"
+                "fiOrgId": "\(orgId)"
             ])
             .make()
             .response() as RoomDetailResponse

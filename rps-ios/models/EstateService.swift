@@ -315,7 +315,7 @@ class EstateService: ObservableObject {
                 var imageDict = [String: Any]()
                 imageDict["fvOssId"] = uploadRsp.ossId
                 imageDict["originalName"] = uploadRsp.originalName
-                imageDict["fdCreateTime"] = uploadRsp.createTime
+//                imageDict["fdCreateTime"] = uploadRsp.createTime
                 imageDict["fvOssUrl"] = uploadRsp.url
                 imageDict["fileSuffix"] = uploadRsp.fileSuffix
                 imageList.append(imageDict)
