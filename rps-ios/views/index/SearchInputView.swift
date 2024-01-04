@@ -23,7 +23,9 @@ struct SearchInputView: View {
     
     private var actionView: some View {
         HStack(spacing: 0) {
-            OCRButton()
+            OCRButton() {
+                Image.index.searchOCR
+            }
             Spacer().frame(width: 10)
             TextField("请输入物业名称或地址", text: $text)
                 .frame(maxWidth: .infinity, alignment: .leading)

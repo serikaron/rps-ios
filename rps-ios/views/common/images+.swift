@@ -40,6 +40,8 @@ extension Image {
         static var addIcon: Image { return Image("index-add-icon") }
         static var addButton: Image { return Image("index-add-button") }
         static var mapBack: Image { return Image("index-map-back") }
+        static var ocrLogo: Image { return Image("index-ocr-logo") }
+        static var mapLogo: Image { return Image("index-map-logo") }
     }
     
     enum onboarding {

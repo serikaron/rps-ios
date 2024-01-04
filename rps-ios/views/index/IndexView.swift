@@ -76,10 +76,11 @@ struct IndexView: View {
                 Spacer().frame(height: 10)
                 noticeSection
                 Spacer().frame(height: 16)
+                searchInput1
+                Spacer().frame(height: 16)
                 actionSection
                 Spacer().frame(height: 16)
-                searchSection
-//                Spacer()
+                chartView
             }
             .padding(.top, 15)
             .padding(.horizontal, 12)
@@ -104,17 +105,30 @@ struct IndexView: View {
     }
     
     private var actionSection: some View {
-        HStack {
-            NavigationLink {
-                AddInquiryView(roomDetail: nil, inquiry: nil, record: nil)
-            } label: {
-                actionButtonView(title: "人工询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
+        VStack {
+            HStack {
+                OCRButton {
+                    actionButtonView1(title: "产证识房", icon: Image.index.ocrLogo)
+                }
+                Spacer()
+                NavigationLink {
+                    MapSearchView()
+                } label: {
+                    actionButtonView1(title: "地图找房", icon: Image.index.mapLogo)
+                }
             }
-            Spacer()
-            NavigationLink {
-                AddReportView(inquiry: nil, detail: nil)
-            } label: {
-                actionButtonView(title: "新建委托", subTitle: "New commission", icon: .index.commissionIcon)
+            HStack {
+                NavigationLink {
+                    AddInquiryView(roomDetail: nil, inquiry: nil, record: nil)
+                } label: {
+                    actionButtonView(title: "人工询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
+                }
+                Spacer()
+                NavigationLink {
+                    AddReportView(inquiry: nil, detail: nil)
+                } label: {
+                    actionButtonView(title: "新建委托", subTitle: "New commission", icon: .index.commissionIcon)
+                }
             }
         }
     }
@@ -136,12 +150,23 @@ struct IndexView: View {
         }
     }
     
-    private var searchSection: some View {
-        return VStack(spacing: 0) {
-            searchAction
-            searchResult
+    private func actionButtonView1(title: String, icon: Image) -> some View {
+        VStack(spacing: 0) {
+            icon
+            Text(title)
+                .customText(size: 14, color: .main, weight: .medium)
         }
+        .frame(width: 165, height: 70)
+        .background(Image.index.buttonBg)
+        .clipShape(RoundedRectangle(cornerRadius: 6))
     }
+    
+//    private var searchSection: some View {
+//        return VStack(spacing: 0) {
+//            searchAction
+//            searchResult
+//        }
+//    }
     
     private var searchAction: some View {
         HStack {
@@ -170,7 +195,9 @@ struct IndexView: View {
             FuzzySearchView()
         } label: {
             HStack(spacing: 0) {
-                OCRButton()
+                OCRButton() {
+                    Image.index.searchOCR
+                }
                 Spacer().frame(width: 10)
                 Text("请输入物业名称或地址")
                     .customText(size: 14, color: .text.grayCD)
@@ -182,6 +209,30 @@ struct IndexView: View {
             .frame(height: 36)
             .background(Color.white)
             .cornerRadius(18)
+        }
+    }
+    
+    private var searchInput1: some View {
+        NavigationLink {
+            FuzzySearchView()
+        } label: {
+            HStack(spacing: 10) {
+                Text("请输入物业名称或地址")
+                    .customText(size: 14, color: .text.grayCD)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer().frame(width: 10)
+                Image.main.searchIcon
+                    .renderingMode(.template)
+                    .foregroundColor(.main)
+            }
+            .padding(.horizontal, 16)
+            .frame(height: 36)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 18))
+            .overlay (
+                RoundedRectangle(cornerRadius: 18)
+                    .stroke(Color.main, lineWidth: 1)
+            )
         }
     }
     
@@ -220,7 +271,7 @@ struct IndexView: View {
         }
     }
     
-    private var searchResult: some View {
+    private var chartView: some View {
         VStack {
             ChartTabView(selected: $estateType)
             ChartView(curves: $curves)

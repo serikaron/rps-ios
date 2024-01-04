@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OCRButton: View {
+struct OCRButton<Content: View>: View {
     @EnvironmentObject var estateService: EstateService
     
     @State private var showImpagePicker = false
@@ -16,8 +16,11 @@ struct OCRButton: View {
     @State private var ocrResult: SearchResult?
     @State private var ocrArea = ""
     
+    let content: () -> Content
+    
     var body: some View {
-        Image.index.searchOCR
+//        Image.index.searchOCR
+        content()
             .onTapGesture {
                 showImpagePicker = true
             }
@@ -57,5 +60,7 @@ struct OCRButton: View {
 }
 
 #Preview {
-    OCRButton()
+    OCRButton() {
+        Image.index.searchOCR
+    }
 }
