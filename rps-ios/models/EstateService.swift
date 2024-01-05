@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 struct SearchResult {
     let id: String
@@ -35,6 +36,8 @@ class EstateService: ObservableObject {
     }
     
     @Published var fuzzyKeyword = ""
+    
+    let refreshInquiryList = PassthroughSubject<Void, Never>()
     
     func fuzzySearch() {
         fuzzySearchTask?.cancel()
@@ -200,6 +203,16 @@ class EstateService: ObservableObject {
         }
     }
     
+    
+    func inquiry(by id: Int) async -> Inquiry {
+        do {
+            let r = try await Linkman.shared.inquiry(by: id)
+            return Inquiry(networkInquiry: r)
+        } catch {
+            print("inquiryByID FAILED: \(error)")
+            return .empty
+        }
+    }
     
     func getCaseList(compoundId: Int, estateType: String, price: Double, dataOrgId: Int) async -> [ReferenceCase] {
         if isPreview { return ReferenceCase.moclList }

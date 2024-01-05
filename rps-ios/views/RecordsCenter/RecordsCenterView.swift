@@ -444,7 +444,7 @@ private struct RecordView: View {
                 }
                 .disabled(button2Disabled)
                 NavigationLink {
-                    AddReportView(inquiry: nil, detail: nil)
+                    AddReportView(inquiryId: record.id, inquiry: nil, detail: nil)
                 } label: {
                     Text("提交委托")
                 }
@@ -456,7 +456,7 @@ private struct RecordView: View {
                 }
                     .disabled(button4Disabled)
                 NavigationLink {
-                    AddInquiryView(roomDetail: nil, inquiry: nil, record: record)
+                    AddInquiryView(inquiryId: record.id, roomDetail: nil, inquiry: nil, record: record)
                 } label: {
                     Text("提交询价")
                 }
@@ -536,7 +536,7 @@ private struct RecordView: View {
         ScrollView(.horizontal) {
             HStack {
                 NavigationLink {
-                    AddReportView(inquiry: nil, detail: nil)
+                    AddReportView(inquiryId: record.id,inquiry: nil, detail: nil)
                 } label: {
                     Text("提交委托")
                 }
@@ -646,6 +646,11 @@ private struct RecordListView: View {
             getRecord()
         }
         .onChange(of: filter) { _ in
+            pageNum = 0
+            records = []
+            getRecord()
+        }
+        .onReceive(estateService.refreshInquiryList) {
             pageNum = 0
             records = []
             getRecord()

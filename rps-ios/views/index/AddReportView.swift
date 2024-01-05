@@ -15,6 +15,7 @@ struct AddReportView: View {
     @State private var sheet = ReportSheet()
     @State private var areaTree: AreaTree = AreaTree(code: "", name: "", children: [])
     
+    let inquiryId: Int?
     let inquiry: Inquiry?
     let detail: RoomDetail?
     
@@ -376,7 +377,7 @@ struct AddReportView: View {
     }
     
     private func fillSheet() {
-        guard let inquiryId = inquiry?.id,
+        guard let inquiryId = inquiryId ?? inquiry?.id,
               inquiryId != 0
         else {
             return
@@ -462,7 +463,7 @@ struct AddReportView: View {
 }
 
 #Preview {
-    AddReportView(inquiry: nil, detail: nil)
+    AddReportView(inquiryId: nil, inquiry: nil, detail: nil)
         .environmentObject(EstateService.preview)
         .environmentObject(AccountService())
 }

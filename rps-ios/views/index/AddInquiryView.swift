@@ -11,6 +11,7 @@ struct AddInquiryView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var estateService: EstateService
 
+    let inquiryId: Int?
     let roomDetail: RoomDetail?
     let inquiry: Inquiry?
     let record: Record?
@@ -76,101 +77,7 @@ struct AddInquiryView: View {
             presentationMode.wrappedValue.dismiss()
         }
         .onAppear {
-            if let roomDetail = roomDetail {
-                sheet.provinceCode = roomDetail.provinceCode
-                sheet.cityCode = roomDetail.cityCode
-                sheet.areaCode = roomDetail.areaCode
-                if sheet.provinceCode != 0 {
-                    let pCode = "\(sheet.provinceCode)"
-                    sheet.provinceName = areaTree.name(by: [pCode])
-                    if sheet.cityCode != 0 {
-                        let cCode = "\(sheet.cityCode)"
-                        sheet.cityName = areaTree.name(by: [pCode, cCode])
-                        if sheet.areaCode != 0 {
-                            let aCode = "\(sheet.areaCode)"
-                            sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
-                        }
-                    }
-                }
-                sheet.upperFloor = Int(roomDetail.height)
-                if let floor = roomDetail.floor {
-                    let l = floor.components(separatedBy: "-")
-                    if l.count == 2 {
-                        sheet.beginFloor = Int(l[0])
-                        sheet.endFloor = Int(l[1])
-                    }
-                }
-            }
-            if let inquiry = inquiry {
-                sheet.address = inquiry.address ?? ""
-                sheet.estateType = inquiry.estateType
-                sheet.buildingArea = inquiry.buildingArea == nil ? nil : "\(inquiry.buildingArea!)"
-                sheet.contact = inquiry.contact ?? ""
-                sheet.phone = inquiry.phone ?? ""
-                sheet.buildingYear = inquiry.buildingYear ?? ""
-//                sheet.structure = inquiry.structure
-                if sheet.beginFloor != nil,
-                   let floor = inquiry.floor {
-                    let l = floor.components(separatedBy: "-")
-                    if l.count == 2 {
-                        sheet.beginFloor = Int(l[0])
-                        sheet.endFloor = Int(l[1])
-                    }
-                }
-                sheet.valuationDate = inquiry.valuationDate ?? ""
-                sheet.structure = inquiry.structure
-                
-                if sheet.provinceCode == 0 {
-                    sheet.provinceCode = inquiry.provinceCode ?? 0
-                    sheet.cityCode = inquiry.cityCode ?? 0
-                    sheet.areaCode = inquiry.areaCode ?? 0
-                    if sheet.provinceCode != 0 {
-                        let pCode = "\(sheet.provinceCode)"
-                        sheet.provinceName = areaTree.name(by: [pCode])
-                        if sheet.cityCode != 0 {
-                            let cCode = "\(sheet.cityCode)"
-                            sheet.cityName = areaTree.name(by: [pCode, cCode])
-                            if sheet.areaCode != 0 {
-                                let aCode = "\(sheet.areaCode)"
-                                sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
-                            }
-                        }
-                    }
-                }
-            }
-            if let record = record {
-                sheet.address = record.address
-                sheet.estateType = record.estateType
-                sheet.buildingArea = record.area
-                sheet.contact = record.contact
-                sheet.phone = record.contactPhone
-                sheet.buildingYear = record.buildingYear
-                sheet.structure = record.structure
-                sheet.valuationDate = record.valuationDate
-                let l = record.floor.components(separatedBy: "-")
-                if l.count == 2 {
-                    sheet.beginFloor = Int(l[0])
-                    sheet.endFloor = Int(l[1])
-                }
-                if sheet.provinceCode == 0 {
-                    sheet.provinceCode = record.provinceCode
-                    sheet.cityCode = record.cityCode
-                    sheet.areaCode = record.areaCode
-                    if sheet.provinceCode != 0 {
-                        let pCode = "\(sheet.provinceCode)"
-                        sheet.provinceName = areaTree.name(by: [pCode])
-                        if sheet.cityCode != 0 {
-                            let cCode = "\(sheet.cityCode)"
-                            sheet.cityName = areaTree.name(by: [pCode, cCode])
-                            if sheet.areaCode != 0 {
-                                let aCode = "\(sheet.areaCode)"
-                                sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
-                            }
-                        }
-                    }
-                }
-            }
-            
+            fillSheet()
             Task {
                 areaTree = await AreaTree.root
                 if sheet.provinceCode != 0 {
@@ -188,6 +95,118 @@ struct AddInquiryView: View {
             }
         }
     }
+    
+    private func fillSheet() {
+        guard let inquiryId = inquiryId,
+              inquiryId != 0
+        else { return }
+        
+        Task {
+            let inquiry = await estateService.inquiry(by: inquiryId)
+            fillSheet(with: inquiry)
+        }
+    }
+    
+    private func fillSheet1() {
+        if let roomDetail = roomDetail {
+            sheet.provinceCode = roomDetail.provinceCode
+            sheet.cityCode = roomDetail.cityCode
+            sheet.areaCode = roomDetail.areaCode
+            if sheet.provinceCode != 0 {
+                let pCode = "\(sheet.provinceCode)"
+                sheet.provinceName = areaTree.name(by: [pCode])
+                if sheet.cityCode != 0 {
+                    let cCode = "\(sheet.cityCode)"
+                    sheet.cityName = areaTree.name(by: [pCode, cCode])
+                    if sheet.areaCode != 0 {
+                        let aCode = "\(sheet.areaCode)"
+                        sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+                    }
+                }
+            }
+            sheet.upperFloor = Int(roomDetail.height)
+            if let floor = roomDetail.floor {
+                let l = floor.components(separatedBy: "-")
+                if l.count == 2 {
+                    sheet.beginFloor = Int(l[0])
+                    sheet.endFloor = Int(l[1])
+                }
+            }
+        }
+        if let inquiry = inquiry {
+            fillSheet(with: inquiry)
+        }
+        if let record = record {
+            sheet.address = record.address
+            sheet.estateType = record.estateType
+            sheet.buildingArea = record.area
+            sheet.contact = record.contact
+            sheet.phone = record.contactPhone
+            sheet.buildingYear = record.buildingYear
+            sheet.structure = record.structure
+            sheet.valuationDate = record.valuationDate
+            let l = record.floor.components(separatedBy: "-")
+            if l.count == 2 {
+                sheet.beginFloor = Int(l[0])
+                sheet.endFloor = Int(l[1])
+            }
+            if sheet.provinceCode == 0 {
+                sheet.provinceCode = record.provinceCode
+                sheet.cityCode = record.cityCode
+                sheet.areaCode = record.areaCode
+                if sheet.provinceCode != 0 {
+                    let pCode = "\(sheet.provinceCode)"
+                    sheet.provinceName = areaTree.name(by: [pCode])
+                    if sheet.cityCode != 0 {
+                        let cCode = "\(sheet.cityCode)"
+                        sheet.cityName = areaTree.name(by: [pCode, cCode])
+                        if sheet.areaCode != 0 {
+                            let aCode = "\(sheet.areaCode)"
+                            sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func fillSheet(with inquiry: Inquiry) {
+        sheet.address = inquiry.address ?? ""
+        sheet.estateType = inquiry.estateType
+        sheet.buildingArea = inquiry.buildingArea == nil ? nil : "\(inquiry.buildingArea!)"
+        sheet.contact = inquiry.contact ?? ""
+        sheet.phone = inquiry.phone ?? ""
+        sheet.buildingYear = inquiry.buildingYear ?? ""
+//                sheet.structure = inquiry.structure
+        if sheet.beginFloor != nil,
+           let floor = inquiry.floor {
+            let l = floor.components(separatedBy: "-")
+            if l.count == 2 {
+                sheet.beginFloor = Int(l[0])
+                sheet.endFloor = Int(l[1])
+            }
+        }
+        sheet.valuationDate = inquiry.valuationDate ?? ""
+        sheet.structure = inquiry.structure
+        sheet.purpose = inquiry.purpose
+        
+        if sheet.provinceCode == 0 {
+            sheet.provinceCode = inquiry.provinceCode ?? 0
+            sheet.cityCode = inquiry.cityCode ?? 0
+            sheet.areaCode = inquiry.areaCode ?? 0
+            if sheet.provinceCode != 0 {
+                let pCode = "\(sheet.provinceCode)"
+                sheet.provinceName = areaTree.name(by: [pCode])
+                if sheet.cityCode != 0 {
+                    let cCode = "\(sheet.cityCode)"
+                    sheet.cityName = areaTree.name(by: [pCode, cCode])
+                    if sheet.areaCode != 0 {
+                        let aCode = "\(sheet.areaCode)"
+                        sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+                    }
+                }
+            }
+        }    }
     
     private var requireSection: some View {
         SectionView(title: "询价基本信息") {
@@ -323,6 +342,7 @@ struct AddInquiryView: View {
                     Task {
                         let success = await estateService.addInquiry(sheet: sheet, state: 1)
                         if success {
+                            estateService.refreshInquiryList.send(())
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
@@ -337,6 +357,7 @@ struct AddInquiryView: View {
                     Task {
                         let success = await estateService.addInquiry(sheet: sheet, state: 0)
                         if success {
+                            estateService.refreshInquiryList.send(())
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
@@ -486,7 +507,7 @@ struct AddInquiryView: View {
 }
 
 #Preview {
-    AddInquiryView(roomDetail: .empty, inquiry: .empty, record: nil)
+    AddInquiryView(inquiryId: 0, roomDetail: .empty, inquiry: .empty, record: nil)
         .environmentObject(EstateService.preview)
 }
 

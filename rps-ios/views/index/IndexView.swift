@@ -119,13 +119,13 @@ struct IndexView: View {
             }
             HStack {
                 NavigationLink {
-                    AddInquiryView(roomDetail: nil, inquiry: nil, record: nil)
+                    AddInquiryView(inquiryId: 0, roomDetail: nil, inquiry: nil, record: nil)
                 } label: {
                     actionButtonView(title: "人工询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
                 }
                 Spacer()
                 NavigationLink {
-                    AddReportView(inquiry: nil, detail: nil)
+                    AddReportView(inquiryId: nil, inquiry: nil, detail: nil)
                 } label: {
                     actionButtonView(title: "新建委托", subTitle: "New commission", icon: .index.commissionIcon)
                 }

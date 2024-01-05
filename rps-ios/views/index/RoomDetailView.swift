@@ -234,7 +234,7 @@ struct RoomDetailView: View {
                 }
                 Spacer()
                 NavigationLink {
-                    AddInquiryView(roomDetail: roomDetail, inquiry: inquiry, record: nil)
+                    AddInquiryView(inquiryId: inquiry?.id, roomDetail: roomDetail, inquiry: inquiry, record: nil)
                 } label: {
                     actionItem(title: "人工询价")
                 }
@@ -248,7 +248,7 @@ struct RoomDetailView: View {
 //                    }
 //                Spacer()
                 NavigationLink {
-                    AddReportView(inquiry: inquiry, detail: roomDetail)
+                    AddReportView(inquiryId: inquiry?.id, inquiry: inquiry, detail: roomDetail)
                 } label: {
                     actionItem(title: "委托报告")
                 }

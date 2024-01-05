@@ -345,6 +345,10 @@ struct Inquiry {
         get { return stringValue(of: "fvCoverImg") }
         set(value) { setString(value, of: "fvCoverImg")}
     }
+    
+    var purpose: DictType.ValuationPurpose? {
+        DictType.ValuationPurpose(rawValue: stringValue(of: "fvValuationPurpose"))
+    }
 }
 
 struct OtherPriceInfo: Decodable {

@@ -592,6 +592,25 @@ extension Linkman {
         return out
     }
     
+    func inquiry(by id: Int) async throws -> NetworkInquiry {
+        let req = try await Request()
+            .with(\.path, setTo: "/inquiry/rps/inquiry/\(id)")
+            .with(\.method, setTo: .GET)
+            .make()
+        
+        guard let data = req._response else {
+            throw "response not exits"
+        }
+        
+        guard let dataDict = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let out = dataDict["data"] as? NetworkInquiry
+        else {
+            throw "data not in response"
+        }
+        
+        return out
+    }
+    
     struct RoomCase: Codable {
         let fiTradeType: Int?
         let fvCaseTime: String?
