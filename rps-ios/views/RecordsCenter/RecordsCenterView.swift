@@ -541,9 +541,9 @@ private struct RecordView: View {
                     Text("提交委托")
                 }
                 .disabled(reportButton1Disabled)
-                Button("撤销询价") {
+                Button("撤销委托") {
                     Task {
-                        await estateService.withdrawInquiry(id: record.id)
+                        await estateService.withdrawReport(id: record.id)
                     }
                 }
                 .disabled(reportButton2Disabled)

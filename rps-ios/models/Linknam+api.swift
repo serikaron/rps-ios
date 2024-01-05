@@ -1097,6 +1097,14 @@ extension Linkman {
             .make()
     }
     
+    func withdrawReport(id: Int) async throws {
+        try await Request()
+            .with(\.path, setTo: "/inquiry/rps/complexReport/undo")
+            .with(\.method, setTo: .GET)
+            .with(\.query, setTo: ["id":"\(id)"])
+            .make()
+    }
+    
     func sendReportToEmail(id: String, email: String) async throws {
         try await Request()
             .with(\.path, setTo: "/inquiry/rps/complexReport/sendMail/\(id)/\(email)")

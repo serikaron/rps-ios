@@ -818,6 +818,14 @@ class EstateService: ObservableObject {
         }
     }
     
+    func withdrawReport(id: Int) async {
+        do {
+            try await Linkman.shared.withdrawReport(id: id)
+        } catch {
+            print("withdrawReport FAILED!!! \(error)")
+        }
+    }
+    
     func sendReportToMail(id: String, email: String) async {
         do {
             try await Linkman.shared.sendReportToEmail(id: id, email: email)
