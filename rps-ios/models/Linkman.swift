@@ -249,7 +249,7 @@ class Request: Withable {
         get throws {
             if rawURL.isEmpty {
                 var urlComponents = URLComponents.rps()
-                urlComponents.path = path
+                urlComponents.path = "/prod-api" + path
                 
                 if let query = query {
                     urlComponents.queryItems = query.map { (key, value) in
@@ -286,9 +286,9 @@ func standaloneResponse<T: Codable>(_ data: T) -> Data {
 extension URLComponents {
     static func rps() -> URLComponents {
         var out = URLComponents()
-        out.scheme = "http"
-        out.host = "121.199.160.77"
-        out.port = 8080
+        out.scheme = "https"
+        out.host = "rps2.zfp.cn"
+//        out.port = 8080
         return out
     }
 }
