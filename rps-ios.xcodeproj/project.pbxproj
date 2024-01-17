@@ -803,7 +803,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.22;
+				MARKETING_VERSION = 0.0.23;
 				OTHER_LDFLAGS = (
 					"-Xlinker",
 					"-no_fixup_chains",
@@ -853,7 +853,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.22;
+				MARKETING_VERSION = 0.0.23;
 				OTHER_LDFLAGS = (
 					"-Xlinker",
 					"-no_fixup_chains",
