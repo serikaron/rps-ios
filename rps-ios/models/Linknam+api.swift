@@ -384,7 +384,7 @@ extension Linkman {
         var fvBusinessLevel: String?
         var fvPlate: String?
         var fbResidentialArea: String?
-        var fiBuildingNumber: Int?
+        var fiBuildingNumber: String?
         var fvBuildingDesc: String?
         var fvBuildingType: String?
         var fvBuildingStructure: String?
@@ -394,7 +394,7 @@ extension Linkman {
         var fvOutsideMainRoad: String?
         var fvInternalRoad: String?
         var fbBusStopDistance: String?
-        var fiBusLineNumber: Int?
+        var fiBusLineNumber: String?
         var fbSubwayDistance: String?
         var fvClubServise: String?
         var fvSportStructure: String?

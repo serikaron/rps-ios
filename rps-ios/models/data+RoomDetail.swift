@@ -22,7 +22,9 @@ struct RoomDetail {
     private let nilText: String = "无"
     
     var estateType: DictType.EstateType? {
-        get { DictType.EstateType(networkRoomDetail.fvEstateType) }
+        get {
+            DictType.EstateType(networkRoomDetail.fvEstateType)
+        }
         set(value) { networkRoomDetail.fvEstateType = value?.dictKey }
     }
     var estateTypeString: String? { networkRoomDetail.fvEstateType }
@@ -565,7 +567,7 @@ struct RoomDetail {
     var compoundBusinessLevel: String { DictType.fv_business_level.label(of: dcCompound.fvBusinessLevel ?? "") ?? "" }
     var compoundPlate: String { dcCompound.fvPlate ?? "" }
     var compoundResidentialArea: String { dcCompound.fbResidentialArea ?? "" }
-    var compoundBuildingNumber: String { "\(dcCompound.fiBuildingNumber ?? 0)" }
+    var compoundBuildingNumber: String { dcCompound.fiBuildingNumber ?? "" }
     var compoundBuildingDesc: String { dcCompound.fvBuildingDesc ?? "" }
     var compoundBuildingType: String { dcCompound.fvBuildingType ?? "" }
     var compoundBuildingStructure: String { DictType.buildingStructure.label(of: dcCompound.fvBuildingStructure ?? "") ?? "" }
@@ -575,7 +577,7 @@ struct RoomDetail {
     var compoundOutsideMainRoad: String { dcCompound.fvOutsideMainRoad ?? "" }
     var compoundInternalRoad: String { dcCompound.fvInternalRoad ?? "" }
     var compoundBusStopDistance: String { dcCompound.fbBusStopDistance ?? "" }
-    var compoundBusLineNumber: String { "\(dcCompound.fiBusLineNumber ?? 0)" }
+    var compoundBusLineNumber: String { dcCompound.fiBusLineNumber ?? "" }
     var compoundSubwayDistance: String { dcCompound.fbSubwayDistance ?? "" }
     var compoundClubServise: String { dcCompound.fvClubServise ?? "" }
     var compoundSportStructure: String { dcCompound.fvSportStructure ?? "" }

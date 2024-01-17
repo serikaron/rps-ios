@@ -85,6 +85,7 @@ struct RoomDetailView: View {
                     buildingId: buildingId,
                     orgId: orgId
                 )
+                print("debug get roomeDetail done")
                 inquiry = await estateService.createInquiry(buildingId: buildingId, estateType: estateType, areaCode: areaCode, searchAddr: familyRoomName, orgId: orgId, roomId: Int(roomId) ?? 0)
                 if !area.isEmpty {
                     inquiry?.area = Double(area) ?? 0
@@ -148,7 +149,7 @@ struct RoomDetailView: View {
     private var inquiryDetailPage: some View {
         VStack {
             RoomInfoView(
-                floor: floor, roomDetail: roomDetail,
+                floor: floor, roomDetail: $roomDetail,
                 isInfoFixShown: $isInfoFixShown, hasDetailResult: $hasDetailResult
             )
             if account?.canShowMapView ?? false {
@@ -381,7 +382,7 @@ private struct RoomDetailTabView: View {
 private struct RoomInfoView: View {
     let floor: String
     
-    let roomDetail: RoomDetail
+    @Binding var roomDetail: RoomDetail
     private var estateType: DictType.EstateType? { roomDetail.estateType }
 //    private var estateType: EstateType? { EstateType.shopStreet }
     
@@ -489,7 +490,7 @@ private struct RoomInfoView: View {
     }
     
     private var itemToShow: [[RoomInfoItem]] {
-//        print("itemToShow, estateType: \(estateType)")
+        print("debug itemToShow, estateType: \(estateType)")
         switch estateType {
         case .commApartment:
             fallthrough
