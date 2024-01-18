@@ -341,32 +341,47 @@ private struct ChartTabView: View {
 
 
 private struct BannerView: View {
-    @State private var selected: Int = 1
+    @EnvironmentObject private var imageService: ImageService
+
+    @State private var selected: Int = 0
     @State private var banners: [Banner] = []
+    
+    private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     private var bannerURLs: [URL] {
         banners.compactMap { URL(string: $0.ossUrl) }
     }
     
     var body: some View {
-        TabView {
+        TabView(selection: $selected) {
             if bannerURLs.isEmpty {
                 Image.main.placeholder
             } else {
-                ForEach(bannerURLs, id: \.self) { bannerURL in
-                    BackportAsyncImage(url: bannerURL) { image in
-                        image.resizable()
-                            .scaledToFill()
-                            .clipped()
-                    } placeholder: {
-                        Image.main.placeholder
-                    }
+                ForEach(bannerURLs.indices, id: \.self) { idx in
+//                    BackportAsyncImage(url: bannerURLs[idx]) { image in
+//                        image.resizable()
+//                            .scaledToFill()
+//                            .clipped()
+//                    } placeholder: {
+//                        Image.main.placeholder
+//                    }
+                    imageService.image(of: bannerURLs[idx])
+                        .resizable()
+                        .scaledToFill()
+                    .tag(idx)
                 }
             }
         }
+        .tabViewStyle(.page)
         .onAppear(perform: {
             Task {
                 banners = await Banner.list
+            }
+        })
+        .onReceive(timer, perform: { _ in
+            guard bannerURLs.count > 0 else { return }
+            withAnimation(.linear(duration: 0.5)) {
+                selected = (selected + 1) % bannerURLs.count
             }
         })
     }
