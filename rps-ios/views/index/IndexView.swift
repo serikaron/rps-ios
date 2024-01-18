@@ -364,6 +364,11 @@ private struct BannerView: View {
                 }
             }
         }
+        .onAppear(perform: {
+            Task {
+                banners = await Banner.list
+            }
+        })
     }
 }
 
