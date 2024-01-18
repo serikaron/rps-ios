@@ -16,7 +16,8 @@ struct AddReportView: View {
     @State private var areaTree: AreaTree = AreaTree(code: "", name: "", children: [])
     
     let inquiryId: Int?
-    let inquiry: Inquiry?
+//    let inquiry: Inquiry?
+    let recordId: Int?
     let detail: RoomDetail?
     
     var body: some View {
@@ -377,93 +378,88 @@ struct AddReportView: View {
     }
     
     private func fillSheet() {
-        guard let inquiryId = inquiryId ?? inquiry?.id,
-              inquiryId != 0
-        else {
-            return
-        }
-        
         Task {
-            sheet = await estateService.getReportSheet(by: inquiryId)
+            print("debug inquiryId:\(inquiryId) recordId:\(recordId)")
+            sheet = await estateService.getReportSheet(inquiryId: inquiryId, recordId: recordId)
         }
     }
     
-    private func fillSheet1() {
-        guard let inquiry = inquiry,
-              let detail = detail
-        else { return }
-        
-        sheet.address = detail.roomName
-        sheet.certificateAddress = inquiry.address ?? ""
-        sheet.estateType = detail.estateType
-        sheet.clientName = accountService.account?.nickname ?? ""
-        sheet.buildingArea = inquiry.buildingArea == nil ? "" : "\(inquiry.buildingArea!)"
-        sheet.phone = accountService.account?.phone ?? ""
-        sheet.buildingYear = Int(inquiry.buildingYear ?? "0")
-        sheet.structure = inquiry.structure
-        
-        if let floor = inquiry.floor {
-            let l = floor.components(separatedBy: "-")
-            if l.count == 2 {
-                sheet.beginFloor = Int(l[0])
-                sheet.endFloor = Int(l[1])
-            }
-        }
-        
-        if let price = Double(inquiry.price) {
-            sheet.price = Int((price / 10000) + 0.5)
-        }
-        if let totalPrice = Double(inquiry.totalPrice) {
-            sheet.totalPrice = Int((totalPrice / 10000) + 0.5)
-        }
-        
-        sheet.valuationDate = inquiry.date
-        sheet.housingUse = inquiry.housingUse
-        sheet.facing = DictType.BuildDirection(rawValue: inquiry.facing)
-        sheet.landSe = inquiry.landSe
-        sheet.northTo = detail.compoundToNorth
-        sheet.westTo = detail.compoundToWest
-        sheet.southTo = detail.compoundToSouth
-        sheet.eastTo = detail.compoundToEast
-        sheet.traffic = [detail.compoundBusLine, detail.compoundFastBus, detail.compoundSubway].joined(separator: ",")
-        sheet.publicFacilities = [
-            detail.compoundVegeMarket, detail.compoundBusinessSet,
-            detail.compoundHospital, detail.compoundFinaceOrg,
-            detail.compoundFinaceOrg, detail.compoundStadium,
-            detail.compoundRelaxSquare, detail.compoundKindergarten,
-            detail.compoundPrimarySchool, detail.compoundMiddleSchool
-        ].joined(separator: ",")
-        if detail.hasRoom {
-            sheet.decoration = DictType.Decoration(rawValue: detail.decoration)
-        } else {
-            sheet.levelDecorate = detail.buildingLevelDecorate
-        }
-        
-        sheet.organ = accountService.account?.placeUnit ?? ""
-        sheet.organDept = accountService.account?.placeOrganization ?? ""
-        
-        sheet.provinceCode = detail.provinceCode
-        print(detail.provinceCode)
-        print(sheet.provinceCode)
-        sheet.cityCode = detail.cityCode
-        sheet.areaCode = detail.areaCode
-        if sheet.provinceCode != 0 {
-            let pCode = "\(sheet.provinceCode)"
-            sheet.provinceName = areaTree.name(by: [pCode])
-            if sheet.cityCode != 0 {
-                let cCode = "\(sheet.cityCode)"
-                sheet.cityName = areaTree.name(by: [pCode, cCode])
-                if sheet.areaCode != 0 {
-                    let aCode = "\(sheet.areaCode)"
-                    sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
-                }
-            }
-        }
-    }
+//    private func fillSheet1() {
+//        guard let inquiry = inquiry,
+//              let detail = detail
+//        else { return }
+//        
+//        sheet.address = detail.roomName
+//        sheet.certificateAddress = inquiry.address ?? ""
+//        sheet.estateType = detail.estateType
+//        sheet.clientName = accountService.account?.nickname ?? ""
+//        sheet.buildingArea = inquiry.buildingArea == nil ? "" : "\(inquiry.buildingArea!)"
+//        sheet.phone = accountService.account?.phone ?? ""
+//        sheet.buildingYear = Int(inquiry.buildingYear ?? "0")
+//        sheet.structure = inquiry.structure
+//        
+//        if let floor = inquiry.floor {
+//            let l = floor.components(separatedBy: "-")
+//            if l.count == 2 {
+//                sheet.beginFloor = Int(l[0])
+//                sheet.endFloor = Int(l[1])
+//            }
+//        }
+//        
+//        if let price = Double(inquiry.price) {
+//            sheet.price = Int((price / 10000) + 0.5)
+//        }
+//        if let totalPrice = Double(inquiry.totalPrice) {
+//            sheet.totalPrice = Int((totalPrice / 10000) + 0.5)
+//        }
+//        
+//        sheet.valuationDate = inquiry.date
+//        sheet.housingUse = inquiry.housingUse
+//        sheet.facing = DictType.BuildDirection(rawValue: inquiry.facing)
+//        sheet.landSe = inquiry.landSe
+//        sheet.northTo = detail.compoundToNorth
+//        sheet.westTo = detail.compoundToWest
+//        sheet.southTo = detail.compoundToSouth
+//        sheet.eastTo = detail.compoundToEast
+//        sheet.traffic = [detail.compoundBusLine, detail.compoundFastBus, detail.compoundSubway].joined(separator: ",")
+//        sheet.publicFacilities = [
+//            detail.compoundVegeMarket, detail.compoundBusinessSet,
+//            detail.compoundHospital, detail.compoundFinaceOrg,
+//            detail.compoundFinaceOrg, detail.compoundStadium,
+//            detail.compoundRelaxSquare, detail.compoundKindergarten,
+//            detail.compoundPrimarySchool, detail.compoundMiddleSchool
+//        ].joined(separator: ",")
+//        if detail.hasRoom {
+//            sheet.decoration = DictType.Decoration(rawValue: detail.decoration)
+//        } else {
+//            sheet.levelDecorate = detail.buildingLevelDecorate
+//        }
+//        
+//        sheet.organ = accountService.account?.placeUnit ?? ""
+//        sheet.organDept = accountService.account?.placeOrganization ?? ""
+//        
+//        sheet.provinceCode = detail.provinceCode
+//        print(detail.provinceCode)
+//        print(sheet.provinceCode)
+//        sheet.cityCode = detail.cityCode
+//        sheet.areaCode = detail.areaCode
+//        if sheet.provinceCode != 0 {
+//            let pCode = "\(sheet.provinceCode)"
+//            sheet.provinceName = areaTree.name(by: [pCode])
+//            if sheet.cityCode != 0 {
+//                let cCode = "\(sheet.cityCode)"
+//                sheet.cityName = areaTree.name(by: [pCode, cCode])
+//                if sheet.areaCode != 0 {
+//                    let aCode = "\(sheet.areaCode)"
+//                    sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
+//                }
+//            }
+//        }
+//    }
 }
 
 #Preview {
-    AddReportView(inquiryId: nil, inquiry: nil, detail: nil)
+    AddReportView(inquiryId: nil, recordId: nil, detail: nil)
         .environmentObject(EstateService.preview)
         .environmentObject(AccountService())
 }

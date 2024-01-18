@@ -125,7 +125,7 @@ struct IndexView: View {
                 }
                 Spacer()
                 NavigationLink {
-                    AddReportView(inquiryId: nil, inquiry: nil, detail: nil)
+                    AddReportView(inquiryId: nil, recordId: nil, detail: nil)
                 } label: {
                     actionButtonView(title: "新建委托", subTitle: "New commission", icon: .index.commissionIcon)
                 }

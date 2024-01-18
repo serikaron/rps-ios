@@ -249,7 +249,7 @@ struct RoomDetailView: View {
 //                    }
 //                Spacer()
                 NavigationLink {
-                    AddReportView(inquiryId: inquiry?.id, inquiry: inquiry, detail: roomDetail)
+                    AddReportView(inquiryId: inquiry?.id, recordId: nil, detail: roomDetail)
                 } label: {
                     actionItem(title: "委托报告")
                 }

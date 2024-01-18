@@ -835,14 +835,17 @@ class EstateService: ObservableObject {
         }
     }
     
-    func getReportSheet(by inquiryId: Int) async -> ReportSheet {
-        guard inquiryId != 0 else {
-            return ReportSheet()
-        }
-        
+    func getReportSheet(inquiryId: Int?, recordId: Int?) async -> ReportSheet {
         do {
-            let rsp = try await Linkman.shared.getReportSheet(by: inquiryId)
-            return ReportSheet(networkReportSheet: rsp)
+            if let id = inquiryId {
+                let rsp = try await Linkman.shared.getReportSheet(inquiryId: id)
+                return ReportSheet(networkReportSheet: rsp)
+            }
+            if let id = recordId {
+                let rsp = try await Linkman.shared.getReportSheet(recordId: id)
+                return ReportSheet(networkReportSheet: rsp)
+            }
+            return ReportSheet()
         } catch {
             print("getReportSheet FAILED!!! \(error)")
             return ReportSheet()

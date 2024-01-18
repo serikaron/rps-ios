@@ -1114,9 +1114,28 @@ extension Linkman {
     
     typealias NetworkReportSheet = [String: Any]
     
-    func getReportSheet(by inquiryId: Int) async throws -> NetworkReportSheet {
+    func getReportSheet(inquiryId: Int) async throws -> NetworkReportSheet {
         let req = try await Request()
             .with(\.path, setTo: "/inquiry/rps/complexReport/getReportInfoByInquiryId/\(inquiryId)")
+            .with(\.method, setTo: .GET)
+            .make()
+        
+        guard let data = req._response else {
+            throw "response not exits"
+        }
+        
+        guard let dataDict = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let out = dataDict["data"] as? NetworkReportSheet
+        else {
+            throw "data not in response"
+        }
+        
+        return out
+    }
+    
+    func getReportSheet(recordId: Int) async throws -> NetworkReportSheet {
+        let req = try await Request()
+            .with(\.path, setTo: "/inquiry/rps/complexReport/\(recordId)")
             .with(\.method, setTo: .GET)
             .make()
         

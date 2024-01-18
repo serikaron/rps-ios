@@ -444,7 +444,7 @@ private struct RecordView: View {
                 }
                 .disabled(button2Disabled)
                 NavigationLink {
-                    AddReportView(inquiryId: record.id, inquiry: nil, detail: nil)
+                    AddReportView(inquiryId: record.id, recordId: nil, detail: nil)
                 } label: {
                     Text("提交委托")
                 }
@@ -452,6 +452,8 @@ private struct RecordView: View {
                 Button("撤销询价") {
                     Task {
                         await estateService.withdrawInquiry(id: record.id)
+                        estateService.refreshInquiryList.send(())
+                        Box.sendError("已撤销")
                     }
                 }
                     .disabled(button4Disabled)
@@ -536,7 +538,7 @@ private struct RecordView: View {
         ScrollView(.horizontal) {
             HStack {
                 NavigationLink {
-                    AddReportView(inquiryId: record.id,inquiry: nil, detail: nil)
+                    AddReportView(inquiryId: nil, recordId: record.id, detail: nil)
                 } label: {
                     Text("提交委托")
                 }
@@ -544,6 +546,8 @@ private struct RecordView: View {
                 Button("撤销委托") {
                     Task {
                         await estateService.withdrawReport(id: record.id)
+                        estateService.refreshInquiryList.send(())
+                        Box.sendError("已撤销")
                     }
                 }
                 .disabled(reportButton2Disabled)
@@ -643,16 +647,19 @@ private struct RecordListView: View {
         .onChange(of: page) { newValue in
             pageNum = 0
             records = []
+            total = Int.max
             getRecord()
         }
         .onChange(of: filter) { _ in
             pageNum = 0
             records = []
+            total = Int.max
             getRecord()
         }
         .onReceive(estateService.refreshInquiryList) {
             pageNum = 0
             records = []
+            total = Int.max
             getRecord()
         }
     }
