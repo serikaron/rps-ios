@@ -365,28 +365,28 @@ extension DictType {
         
         init?(rawValue: String?) {
             switch rawValue {
-            case "1": self = ._1
-            case "2": self = ._2
-            case "3": self = ._3
-            case "4": self = ._4
-            case "5": self = ._5
-            case "6": self = ._6
-            case "7": self = ._7
-            case "8": self = ._8
+            case "rebar": self = ._1
+            case "steel": self = ._2
+            case "2": self = ._3
+            case "5": self = ._4
+            case "brick": self = ._5
+            case "zhuangmu": self = ._6
+            case "easy": self = ._7
+            case "wood": self = ._8
             default: return nil
             }
         }
         
         var dictKey: String {
             switch self {
-            case ._1: return "1"
-            case ._2: return "2"
-            case ._3: return "3"
-            case ._4: return "4"
-            case ._5: return "5"
-            case ._6: return "6"
-            case ._7: return "7"
-            case ._8: return "8"
+            case ._1: return "rebar"
+            case ._2: return "steel"
+            case ._3: return "2"
+            case ._4: return "5"
+            case ._5: return "brick"
+            case ._6: return "zhuangmu"
+            case ._7: return "easy"
+            case ._8: return "wood"
             }
         }
 
