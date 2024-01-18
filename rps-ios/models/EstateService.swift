@@ -507,6 +507,7 @@ class EstateService: ObservableObject {
         } else {
             dict.removeValue(forKey: "fvInFloor")
         }
+        dict["fiReportState"] = state
 
         
         do {
