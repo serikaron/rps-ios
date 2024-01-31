@@ -14,8 +14,13 @@ extension Linkman {
     }
     
     func login(phone: String, password: String) async throws -> LoginResponse {
+        guard let udid = await UIDevice.current.identifierForVendor?.uuidString else {
+            throw "找不到UDID"
+        }
+        
         return try await Request()
             .with(\.path, setTo: "/auth/rps/clientLogin")
+            .with(\.headers, setTo: ["Fvdeviceidentify": udid])
             .with(\.method, setTo: .POST)
             .with(\.bodyDict, setTo: ["username": phone, "password": password, "deviceType": "APP"])
             .with(\.standaloneResponse, setTo: standaloneResponse(LoginResponse(access_token: "mockToken")))
@@ -32,8 +37,13 @@ extension Linkman {
     }
     
     func login(phone: String, smsCode: String) async throws -> LoginResponse {
+        guard let udid = await UIDevice.current.identifierForVendor?.uuidString else {
+            throw "找不到UDID"
+        }
+        
         return try await Request()
             .with(\.path, setTo: "/auth/rps/smsLogin")
+            .with(\.headers, setTo: ["Fvdeviceidentify": udid])
             .with(\.method, setTo: .POST)
             .with(\.bodyDict, setTo: ["phonenumber": phone, "smsCode": smsCode, "deviceType": "APP"])
 //            .with(\.bodyDict, setTo: ["phonenumber": phone, "smsCode": smsCode])
