@@ -151,48 +151,74 @@ struct Inquiry {
     
     var auxiliaryRoomList: [AuxiliaryRoom] {
         get {
-            guard let l = networkInquiry["fvAuxiliaryRoomsAndAccessories"] as? [[String: Any]]
-            else { return [] }
-            return l.compactMap { room -> AuxiliaryRoom? in
-                let attributeString = room["fvPropertyAttribute"] as? String
-                let name = room["fvRpsPageName"] as? String
-                let rights = room["fvPropertyRights"] as? String
-                let unit = room["jjdw"] as? String
+            do {
+                guard let s = networkInquiry["fvAuxiliaryRoomsAndAccessories"] as? String,
+                      let data = s.data(using: .utf8),
+                      let l = try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
+                else { return [] }
                 
-                let attribute = DictType.PropertyAttribute(mainType: attributeString, subType: name)
-                let commonHas = rights == nil ? nil : DictType.CommonHas(rawValue: rights!)
-                
-                return AuxiliaryRoom(
-                    propertyAttribute: attribute,
-                    commonHas: commonHas,
-                    unit: unit,
-                    area: areaString
-                )
+//                guard let l = networkInquiry["fvAuxiliaryRoomsAndAccessories"] as? [[String: Any]]
+//                else { return [] }
+                return l.compactMap { room -> AuxiliaryRoom? in
+                    let attributeString = room["fvPropertyAttribute"] as? String
+                    let name = room["fvRpsPageName"] as? String
+                    let rights = room["fvPropertyRights"] as? String
+                    let unit = room["jjdw"] as? String
+                    
+                    let attribute = DictType.PropertyAttribute(mainType: attributeString, subType: name)
+                    let commonHas = rights == nil ? nil : DictType.CommonHas(rawValue: rights!)
+                    
+                    return AuxiliaryRoom(
+                        propertyAttribute: attribute,
+                        commonHas: commonHas,
+                        unit: unit,
+                        area: areaString
+                    )
+                }
+            } catch {
+                print("parse fvAuxiliaryRoomsAndAccessories FAILED!!!: \(error)")
+                return []
             }
         }
     }
     
     mutating func addAuxiliaryRoom(_ room: AuxiliaryRoom) {
-        var name: String?
-        switch room.propertyAttribute {
-        case .mainHouse:
-            name = DictType.MainHouse.mian.dictKey
-        case .auxiliaryHouse(let subType):
-            name = subType?.dictKey
-        case .appendages(let subType):
-            name = subType?.dictKey
-        default: break
+        let roomToDict: (AuxiliaryRoom) -> [String: String?] = { room in
+            var name: String?
+            switch room.propertyAttribute {
+            case .mainHouse:
+                name = DictType.MainHouse.mian.dictKey
+            case .auxiliaryHouse(let subType):
+                name = subType?.dictKey
+            case .appendages(let subType):
+                name = subType?.dictKey
+            default: break
+            }
+            
+            let item = [
+                "fvPropertyAttribute": room.propertyAttribute?.dictKey,
+                "fvRpsPageName": name,
+                "fvPropertyRights": room.commonHas?.dictKey,
+                "jjdw": room.unit,
+                "value": room.area != nil ? "\(room.area!)" : nil
+            ]
+            
+            return item
         }
         
-        let item = [
-            "fvPropertyAttribute": room.propertyAttribute?.dictKey,
-            "fvRpsPageName": name,
-            "fvPropertyRights": room.commonHas?.dictKey,
-            "jjdw": room.unit,
-            "value": room.area != nil ? "\(room.area!)" : nil
-        ]
+        var l = auxiliaryRoomList
+        l.append(room)
         
-        addItem(item, toList: "fvAuxiliaryRoomsAndAccessories")
+        let dict = l.map(roomToDict)
+        do {
+            let data = try JSONSerialization.data(withJSONObject: dict)
+            let s = String(data: data, encoding: .utf8)
+            setString(s, of: "fvAuxiliaryRoomsAndAccessories")
+        } catch {
+            print("Encode auxiliaryRoomList FAILED!!! \(error)")
+        }
+        
+//        addItem(item, toList: "fvAuxiliaryRoomsAndAccessories")
     }
     
     mutating func removeAuxiliaryRoom(at idx: Int) {

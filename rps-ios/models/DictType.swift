@@ -195,30 +195,30 @@ extension DictType {
     }
     
     enum PlaneShape: CaseIterable, Hashable {
-        case good, aboveAverage, average, belowAverage, poor
+        case _0, _1, _3, _4, _5
         
         init?(rawValue: String?) {
             switch rawValue {
-            case "1": self = .average
-            case "2": self = .aboveAverage
-            case "3": self = .good
-            case "4": self = .belowAverage
-            case "5": self = .poor
+            case "0": self = ._0
+            case "1": self = ._1
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
             default: return nil
             }
         }
         
         var dictKey: String {
             switch self {
-            case .good:
-                return "3"
-            case .aboveAverage:
-                return "2"
-            case .average:
+            case ._0:
+                return "0"
+            case ._1:
                 return "1"
-            case .belowAverage:
+            case ._3:
+                return "3"
+            case ._4:
                 return "4"
-            case .poor:
+            case ._5:
                 return "5"
             }
         }
