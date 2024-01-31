@@ -349,6 +349,22 @@ struct Inquiry {
     var purpose: DictType.ValuationPurpose? {
         DictType.ValuationPurpose(rawValue: stringValue(of: "fvValuationPurpose"))
     }
+    
+    var upperFloor: Int? {
+        networkInquiry["fiLandUpperCount"] as? Int
+    }
+    
+    var lowerFloor: Int? {
+        networkInquiry["fiLandLowerCount"] as? Int
+    }
+    
+    var telephone: String? {
+        networkInquiry["fvFixedTelephone"] as? String
+    }
+    
+    var custodian: String? {
+        networkInquiry["fvBusinessCustodian"] as? String
+    }
 }
 
 struct OtherPriceInfo: Decodable {

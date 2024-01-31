@@ -102,29 +102,31 @@ struct ReportSheet {
     }
     var price: Int? {
         get {
-            if let price: Int = value(for: "fvValuationPrice") {
-                return price / 10000
-            } else {
-                return nil
-            }
+            value(for: "fvValuationPrice")
+//            if let price: Int = value(for: "fvValuationPrice") {
+//                return price / 10000
+//            } else {
+//                return nil
+//            }
         }
         set(value) {
             if let value = value {
-                set(value * 10000, for: "fvValuationPrice")
+                set(value, for: "fvValuationPrice")
             }
         }
     }
     var totalPrice: Int? {
         get { 
-            if let price: Int = value(for: "fvValuationTotalPrice") {
-                return price / 10000
-            } else {
-                return nil
-            }
+            value(for: "fvValuationTotalPrice")
+//            if let price: Int = value(for: "fvValuationTotalPrice") {
+//                return price / 10000
+//            } else {
+//                return nil
+//            }
         }
         set(value) {
             if let value = value {
-                set(value * 10000, for: "fvValuationTotalPrice")
+                set(value, for: "fvValuationTotalPrice")
             }
         }
     }

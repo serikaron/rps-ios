@@ -286,18 +286,18 @@ extension DictType {
         
         init?(rawValue: String?) {
             switch rawValue {
-            case "1": self = ._1
-            case "2": self = ._2
-            case "3": self = ._3
+            case "churang": self = ._1
+            case "huabo": self = ._2
+            case "jiti": self = ._3
             default: return nil
             }
         }
         
         var dictKey: String {
             switch self {
-            case ._1: return "1"
-            case ._2: return "2"
-            case ._3: return "3"
+            case ._1: return "churang"
+            case ._2: return "huabo"
+            case ._3: return "jiti"
             }
         }
         
@@ -706,7 +706,7 @@ extension DictType {
         var label: String { DictType.valuation_purpose.label(of: dictKey) ?? "" }
     }
     
-    enum HousingUse: String, CaseIterable, HasLabel {
+    enum HousingUse: CaseIterable, HasLabel {
         case _1, _2, _3, _4, _5, _6
         
         init?(rawValue: String?) {
@@ -735,7 +735,7 @@ extension DictType {
         var label: String { DictType.housingUse.label(of: dictKey) ?? "" }
     }
     
-    enum CoOwnershipSituation: String, CaseIterable, HasLabel {
+    enum CoOwnershipSituation: CaseIterable, HasLabel {
         case _1, _2, _3
         
         init?(rawValue: String?) {

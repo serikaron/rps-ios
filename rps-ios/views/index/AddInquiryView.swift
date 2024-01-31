@@ -189,6 +189,11 @@ struct AddInquiryView: View {
         sheet.valuationDate = inquiry.valuationDate ?? ""
         sheet.structure = inquiry.structure
         sheet.purpose = inquiry.purpose
+        sheet.buildingArea = inquiry.areaString
+        sheet.upperFloor = inquiry.upperFloor
+        sheet.underFloor = inquiry.lowerFloor
+        sheet.telephone = inquiry.telephone ?? ""
+        sheet.custodian = inquiry.custodian ?? ""
         
         if sheet.provinceCode == 0 {
             sheet.provinceCode = inquiry.provinceCode ?? 0
