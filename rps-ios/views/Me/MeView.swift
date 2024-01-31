@@ -36,7 +36,8 @@ struct MeView: View {
                 content
            }
             .background(Color.view.background)
-            .ignoresSafeArea()
+//            .ignoresSafeArea()
+            .edgesIgnoringSafeArea(.all)
             .navigationTitle("我的")
             .navigationBarTitleDisplayMode(.inline)
         }

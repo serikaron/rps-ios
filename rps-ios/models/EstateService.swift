@@ -755,7 +755,8 @@ class EstateService: ObservableObject {
                     }
                 } catch {
                     print("decode fvPois FAILED!!!, estatType:\(r.fvEstateType), fvPois:\(r.fvPois)")
-                    return nil
+                    Box.sendError("经纬度数据出错: \(r.fvPois ?? "null")")
+//                    return nil
                 }
             }
             

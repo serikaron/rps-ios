@@ -377,6 +377,7 @@ private struct BannerView: View {
             Task {
                 banners = await Banner.list
             }
+            print(UIDevice.current.identifierForVendor?.uuidString)
         })
         .onReceive(timer, perform: { _ in
             guard bannerURLs.count > 0 else { return }

@@ -62,7 +62,7 @@ struct MainView: View {
                         .shadow(color: .hex("#A4ADBC").opacity(0.2), radius: 10)
                         .frame(height: 49+34)
                         .frame(maxHeight: .infinity, alignment: .bottom)
-                        .ignoresSafeArea()
+                        .edgesIgnoringSafeArea(.all)
                 )
                 .ignoresSafeArea(.keyboard)
             }

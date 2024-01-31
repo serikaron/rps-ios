@@ -29,7 +29,8 @@ struct MapSearchView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding(.top, 60)
                 .padding(.leading, 20)
-                .ignoresSafeArea()
+//                .ignoresSafeArea()
+                .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
                     presentationMode.wrappedValue.dismiss()
                 }
