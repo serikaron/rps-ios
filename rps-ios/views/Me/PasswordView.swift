@@ -31,9 +31,11 @@ struct PasswordView: View {
             Spacer()
             Button {
                 Task {
-                    await accountService.resetPassword(orgPassword: orgPassword, newPassword: newPassword, newPassword2: newPassword2)
-                    Box.sendError("修改成功")
-                    presentationMode.wrappedValue.dismiss()
+                    let success = await accountService.resetPassword(orgPassword: orgPassword, newPassword: newPassword, newPassword2: newPassword2)
+                    if success {
+                        Box.sendError("修改成功")
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
             } label: {
                 Text("保存")

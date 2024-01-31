@@ -225,21 +225,24 @@ class AccountService: ObservableObject {
         }
     }
     
-    func resetPassword(orgPassword: String, newPassword: String, newPassword2: String) async {
+    func resetPassword(orgPassword: String, newPassword: String, newPassword2: String) async -> Bool {
         guard !orgPassword.isEmpty, !newPassword.isEmpty, !newPassword2.isEmpty else {
             Box.sendError("请输入密码")
-            return
+            return false
         }
         
         guard newPassword == newPassword2 else {
             Box.sendError("两次输入密码不一样")
-            return
+            return false
         }
         
         do {
             try await Linkman.shared.updatePwd(oldPassword: orgPassword, newPassword: newPassword)
+            return true
         } catch {
             print("resetPassword FAILED!!! \(error)")
+            Box.sendError(error)
+            return false
         }
     }
     
