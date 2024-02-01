@@ -139,13 +139,13 @@ struct InquirySheet {
     var address: String
     var estateType: DictType.EstateType?
     var purpose: DictType.ValuationPurpose?
-    var buildingArea: String?
+    var buildingArea: Double?
     var structure: DictType.BuildingStructure?
     var contact: String
     var phone: String
     var valuationDate: String
     
-    var landArea: String
+    var landArea: Double?
     var buildingYear: String
     var upperFloor: Int?
     var underFloor: Int?
@@ -175,7 +175,7 @@ struct InquirySheet {
             contact: "",
             phone: "",
             valuationDate: "",
-            landArea: "",
+            landArea: nil,
             buildingYear: "",
             upperFloor: nil,
             underFloor: nil,

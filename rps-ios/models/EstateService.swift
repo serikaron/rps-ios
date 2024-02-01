@@ -267,8 +267,7 @@ class EstateService: ObservableObject {
               !sheet.address.isEmpty,
               !sheet.contact.isEmpty,
               !sheet.phone.isEmpty,
-              let inputBA = sheet.buildingArea,
-              let buildingArea = Double(inputBA),
+              let buildingArea = sheet.buildingArea,
               let fvValuationPurpose = sheet.purpose,
               !sheet.valuationDate.isEmpty
         else {
@@ -296,8 +295,8 @@ class EstateService: ObservableObject {
         if let structure = sheet.structure {
             dict["fvBuildingStructure"] = structure.dictKey
         }
-        if !sheet.landArea.isEmpty {
-            dict["fbLandArea"] = sheet.landArea
+        if let la = sheet.landArea {
+            dict["fbLandArea"] = la
         }
         if !sheet.buildingYear.isEmpty {
             dict["fvBuildingYear"] = sheet.buildingYear

@@ -309,6 +309,14 @@ struct Inquiry {
         set(value) { setString(value, of: "fvInFloor")}
     }
     
+    var beginFloor: Int? {
+        get { networkInquiry["fiBeginFloor"] as? Int }
+    }
+    
+    var endFloor: Int? {
+        get { networkInquiry["fiEndFloor"] as? Int }
+    }
+    
     var height: String? {
         get {
             if let height = networkInquiry["fiLandUpperCount"] {

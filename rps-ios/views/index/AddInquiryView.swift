@@ -20,12 +20,24 @@ struct AddInquiryView: View {
     @State private var areaTree = AreaTree(code: "", name: "", children: [])
     
     private var landArea: Binding<String> {Binding(
-        get: { sheet.landArea },
-        set: { sheet.landArea = $0 }
+        get: {
+            if let area = sheet.landArea {
+                return "\(area)"
+            } else {
+                return ""
+            }
+        },
+        set: { sheet.landArea = Double($0) }
     )}
     private var buildingArea: Binding<String> {Binding(
-        get: { sheet.buildingArea ?? "" },
-        set: { sheet.buildingArea = $0 }
+        get: { 
+            if let area = sheet.buildingArea {
+                return "\(area)"
+            } else {
+                return ""
+            }
+        },
+        set: { sheet.buildingArea = Double($0) }
     )}
     private var valuationDate: Binding<Date> {Binding(
         get: { sheet.valuationDate.toDate() ?? Date() },
@@ -139,7 +151,7 @@ struct AddInquiryView: View {
         if let record = record {
             sheet.address = record.address
             sheet.estateType = record.estateType
-            sheet.buildingArea = record.area
+//            sheet.buildingArea = record.area
             sheet.contact = record.contact
             sheet.phone = record.contactPhone
             sheet.buildingYear = record.buildingYear
@@ -173,23 +185,17 @@ struct AddInquiryView: View {
     private func fillSheet(with inquiry: Inquiry) {
         sheet.address = inquiry.address ?? ""
         sheet.estateType = inquiry.estateType
-        sheet.buildingArea = inquiry.buildingArea == nil ? nil : "\(inquiry.buildingArea!)"
+        sheet.buildingArea = inquiry.buildingArea
         sheet.contact = inquiry.contact ?? ""
         sheet.phone = inquiry.phone ?? ""
         sheet.buildingYear = inquiry.buildingYear ?? ""
 //                sheet.structure = inquiry.structure
-        if sheet.beginFloor != nil,
-           let floor = inquiry.floor {
-            let l = floor.components(separatedBy: "-")
-            if l.count == 2 {
-                sheet.beginFloor = Int(l[0])
-                sheet.endFloor = Int(l[1])
-            }
-        }
+        sheet.beginFloor = inquiry.beginFloor
+        sheet.endFloor = inquiry.endFloor
         sheet.valuationDate = inquiry.valuationDate ?? ""
         sheet.structure = inquiry.structure
         sheet.purpose = inquiry.purpose
-        sheet.buildingArea = inquiry.areaString
+        sheet.landArea = inquiry.area
         sheet.upperFloor = inquiry.upperFloor
         sheet.underFloor = inquiry.lowerFloor
         sheet.telephone = inquiry.telephone ?? ""
