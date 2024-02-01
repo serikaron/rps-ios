@@ -87,7 +87,7 @@ struct AddReportView: View {
             Divider()
             intInputView(title: "单价", isRequire: false, binding: $sheet.price, subFix: "元")
             Divider()
-            intInputView(title: "总价", isRequire: false, binding: $sheet.totalPrice, subFix: "元")
+            intInputView(title: "总价", isRequire: false, binding: $sheet.totalPrice, subFix: "万元")
             Divider()
             textItemView(title: "产权人", isRequire: false, binding: $sheet.owner)
             Divider()

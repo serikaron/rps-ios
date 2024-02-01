@@ -117,16 +117,15 @@ struct ReportSheet {
     }
     var totalPrice: Int? {
         get { 
-            value(for: "fvValuationTotalPrice")
-//            if let price: Int = value(for: "fvValuationTotalPrice") {
-//                return price / 10000
-//            } else {
-//                return nil
-//            }
+            if let price: Int = value(for: "fvValuationTotalPrice") {
+                return price / 10000
+            } else {
+                return nil
+            }
         }
         set(value) {
             if let value = value {
-                set(value, for: "fvValuationTotalPrice")
+                set(value * 10000, for: "fvValuationTotalPrice")
             }
         }
     }
