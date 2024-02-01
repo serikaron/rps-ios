@@ -1062,7 +1062,7 @@ extension Linkman {
         try await Request()
             .with(\.path, setTo: "/account/rps/account/clientUser/updatePwd")
             .with(\.method, setTo: .PUT)
-            .with(\.query, setTo: [
+            .with(\.bodyDict, setTo: [
                 "oldPassword": oldPassword,
                 "newPassword": newPassword
             ])
