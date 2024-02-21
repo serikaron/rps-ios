@@ -35,7 +35,10 @@ struct RoomDetail {
     
     var hasRoom: Bool { roomCount > 0 }
     
-    var roomName: String { networkRoomDetail.fvFamilyRoomName ?? "" }
+    var roomName: String {
+        get {networkRoomDetail.fvFamilyRoomName ?? ""}
+        set(value) { networkRoomDetail.fvFamilyRoomName = value }
+    }
     var address: String {
         return "\(networkRoomDetail.fvProvinceName ?? "")" +
         "\(networkRoomDetail.fvCityName ?? "")" +
@@ -407,29 +410,60 @@ struct RoomDetail {
         }
     }
     var property: String {
-        switch estateType {
-        case .commApartment:
-            fallthrough
-        case .singleApartment:
-            fallthrough
-        case .villa:
-            fallthrough
-        case .office:
-            fallthrough
-        case .shopStreet:
-            fallthrough
-        case .industrialSmallGarden:
-            guard let hp = hasRoom ? networkRoomDetail.fvHouseProperty :
-                    dcBuilding.fvHouseProperty
-            else { return nilText }
-            return DictType.houseProperty.label(of: hp) ?? nilText
-            
-        case .landingRoom:
-            fallthrough
-        case .industrialFactory:
-            fallthrough
-        case nil:
-            return nilText
+        guard let hp = propertyKey else { return nilText }
+        return DictType.houseProperty.label(of: hp) ?? nilText
+    }
+    var propertyKey: String? {
+        get {
+            switch estateType {
+            case .commApartment:
+                fallthrough
+            case .singleApartment:
+                fallthrough
+            case .villa:
+                fallthrough
+            case .office:
+                fallthrough
+            case .shopStreet:
+                fallthrough
+            case .industrialSmallGarden:
+                return hasRoom ? networkRoomDetail.fvHouseProperty :
+                dcBuilding.fvHouseProperty
+                
+            case .landingRoom:
+                fallthrough
+            case .industrialFactory:
+                fallthrough
+            case nil:
+                return nil
+            }
+        }
+        set(value) {
+            switch estateType {
+            case .commApartment:
+                fallthrough
+            case .singleApartment:
+                fallthrough
+            case .villa:
+                fallthrough
+            case .office:
+                fallthrough
+            case .shopStreet:
+                fallthrough
+            case .industrialSmallGarden:
+                if hasRoom {
+                    networkRoomDetail.fvHouseProperty = value
+                } else {
+                    networkRoomDetail.dcBuilding.fvHouseProperty = value
+                }
+                
+            case .landingRoom:
+                fallthrough
+            case .industrialFactory:
+                fallthrough
+            case nil:
+                break
+            }
         }
     }
     var usage: String {

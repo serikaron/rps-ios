@@ -68,6 +68,14 @@ extension DictType {
         return subDict[key]
     }
     
+    fileprivate static func subDict(of typename: String) -> SubDict? {
+        if dict == nil {
+            dict = UserDefaults.dictType
+        }
+        guard let dict = dict else { return nil }
+        return dict[typename]
+    }
+    
     static func getDict() async {
         do {
             let rsp = try await Linkman.shared.getDict()
@@ -102,6 +110,10 @@ extension DictType {
     
     func label(of key: String) -> String? {
         Self.pickValue(type: typeName, key: key)
+    }
+    
+    var keys: [String] {
+        Self.subDict(of: typeName)?.keys as? [String] ?? []
     }
 }
 

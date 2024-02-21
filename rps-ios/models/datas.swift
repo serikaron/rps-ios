@@ -463,6 +463,65 @@ struct MapCompound {
     static var empty: Self {
         MapCompound(name: "", alias: "", streetMark: "", north: "", south: "", east: "", west: "", location: "", coordinate: nil, picUrl: "", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "", compoundId: 0)
     }
+    
+    static func fromSearchResult(_ r: Linkman.NetworkSearchResult) -> MapCompound {
+        var mapViewCoordinate: MapViewCoordinate?
+        let et = DictType.EstateType(r.fvEstateType)
+        if let pois = r.fvPois,
+           let data = pois.data(using: .utf8) {
+            do {
+                switch et {
+                case .industrialFactory:
+                    mapViewCoordinate = try .plane(data.decoded() as [Coordinate])
+                    
+                case .shopStreet:
+                    fallthrough
+                case .landingRoom:
+                    mapViewCoordinate = try .line(data.decoded() as [Coordinate])
+                    
+                default:
+                    mapViewCoordinate = try .point([data.decoded() as Coordinate])
+                }
+            } catch {
+                print("decode fvPois FAILED!!!, estatType:\(r.fvEstateType), fvPois:\(r.fvPois)")
+//                    Box.sendError("经纬度数据出错: \(r.fvPois ?? "null")")
+//                    return nil
+            }
+        }
+        
+        var loc = ""
+        if let location = DictType.AreaLocation(rawValue: r.fvAreaLocation) {
+            loc = location.label
+        }
+        
+        var picUrl = ""
+        if let urlString = r.picUrls {
+            let urls = urlString.components(separatedBy: ",")
+            if !urls.isEmpty {
+                picUrl = urls[0]
+            }
+        }
+        
+        return MapCompound(
+            name: r.fvCompoundName ?? "",
+            alias: r.fvNameAlias ?? "",
+            streetMark: r.fvStreetMark ?? "",
+            north: r.fvToNorth ?? "",
+            south: r.fvToSouth ?? "",
+            east: r.fvToEast ?? "",
+            west: r.fvToWest ?? "",
+            location: loc,
+            coordinate: mapViewCoordinate,
+            picUrl: picUrl,
+            familyRoomName: r.fvFamilyRoomName ?? "",
+            areaCode: r.fiAreaCode ?? 0,
+            estateType: r.fvEstateType ?? "",
+            buildingId: r.fiBuildingId ?? 0,
+            floor: r.fvInFloor ?? "",
+            compoundId: r.fiCompoundId ?? 0
+        )
+
+    }
 }
 
 typealias Coordinate = CLLocationCoordinate2D

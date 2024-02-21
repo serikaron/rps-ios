@@ -23,6 +23,8 @@ struct SearchResult {
     let buildingId: Int?
     let floor: String?
     let orgId: Int?
+    
+    let networkData: Linkman.NetworkSearchResult
 }
 typealias SearchResultList = [SearchResult]
 
@@ -908,7 +910,8 @@ extension SearchResult {
                      areacode: 300106,
                      buildingId: 1,
                      floor: "1-1",
-                     orgId: 0
+                     orgId: 0,
+                     networkData: Linkman.NetworkSearchResult.mock
         )
     }
     
@@ -927,7 +930,8 @@ extension SearchResult {
             areacode: item.fiAreaCode,
             buildingId: item.fiBuildingId,
             floor: item.fvInFloor,
-            orgId: item.fiOrgId
+            orgId: item.fiOrgId,
+            networkData: item
         )
     }
 }

@@ -1666,6 +1666,9 @@ private struct InfoFixView: View {
         var floor1: String = ""
         var floor2: String = ""
         var completionDate: String = ""
+        var property: String = ""
+        var address: String = ""
+        var systemAddress: String = ""
     }
     
     @State private var data: Data = Data()
@@ -1734,15 +1737,21 @@ private struct InfoFixView: View {
     
     private enum Item {
         case landUser, position, facing, height, floor, completionDate
+        case address, systemAddress, property//, structure, usage
         
         var title: String {
             switch self {
+            case .address: return "产权地址"
+            case .systemAddress: return "系统地址"
+            case .property: return "房屋性质"
             case .landUser: return "使用权类型"
-            case .position: return "所在部位"
+//            case .structure: return "建筑结构"
             case .facing: return "建筑朝向"
+            case .completionDate: return "建成年份"
+            case .position: return "所在部位"
+//            case .usage: return "房屋用途"
             case .height: return "地上总层"
             case .floor: return "所在层"
-            case .completionDate: return "建成年份"
             }
         }
     }
@@ -1761,6 +1770,12 @@ private struct InfoFixView: View {
             return floorInput.earseToAnyView()
         case .completionDate:
             return completionDatePicker.earseToAnyView()
+        case .address:
+            return addressInput.earseToAnyView()
+        case .systemAddress:
+            return systemAddressText.earseToAnyView()
+        case .property:
+            return propertyMenu.earseToAnyView()
         }
     }
     
@@ -1799,6 +1814,11 @@ private struct InfoFixView: View {
             }
         case .completionDate:
             data.completionDate = roomDetail.completionDate
+        case .address:
+            data.address = roomDetail.roomName
+        case .systemAddress: break
+        case .property:
+            data.property = roomDetail.property
         }
     }
     
@@ -1862,6 +1882,13 @@ private struct InfoFixView: View {
         case .completionDate:
             inquiry?.completionDate = data.completionDate
             roomDetail.completionDate = data.completionDate
+        case .address:
+            roomDetail.roomName = data.address
+            inquiry?.searchAddress = data.address
+        case .systemAddress: break
+        case .property:
+            roomDetail.propertyKey = data.property
+            inquiry?.property = data.property
         }
     }
     
@@ -2086,6 +2113,37 @@ private struct InfoFixView: View {
                 .text.grayCD : .text.gray3
         )
         .fixViewLabelStyle()
+    }
+    
+    private var propertyMenu: some View {
+        Menu {
+            ForEach(DictType.houseProperty.keys, id: \.self) { key in
+                Button {
+                    data.property = key
+                } label: {
+                    Text(DictType.houseProperty.label(of: key) ?? key)
+                }
+            }
+        } label: {
+            Text(DictType.houseProperty.label(of: data.property) ?? "请选择\(Item.property.title)")
+                .foregroundColor(
+                    data.landUser == nil ?
+                        .text.grayCD : .text.gray6
+                )
+                .fixViewLabelStyle()
+        }
+    }
+    
+    private var addressInput: some View {
+        TextField("", text: $data.address)
+            .foregroundColor(.text.gray3)
+            .fixViewLabelStyle(showArrow: false)
+    }
+    
+    private var systemAddressText: some View {
+        Text(data.systemAddress)
+            .foregroundColor(.text.gray3)
+            .fixViewLabelStyle(showArrow: false)
     }
 }
 

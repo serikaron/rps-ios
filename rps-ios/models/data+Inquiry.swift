@@ -338,6 +338,12 @@ struct Inquiry {
     }
     
     var address: String? { stringValue(of: "fvPropertyRightAddr") }
+    var searchAddress: String? {
+        get { stringValue(of: "fvSearchAddr") }
+        set(value) {
+            networkInquiry["fvSearchAddr"] = value
+        }
+    }
     var buildingArea: Double? {
         networkInquiry["fbBuildingArea"] as? Double
     }
@@ -398,6 +404,10 @@ struct Inquiry {
     
     var custodian: String? {
         networkInquiry["fvBusinessCustodian"] as? String
+    }
+    var property: String? {
+        get { networkInquiry["fvHouseProperty"] as? String }
+        set(value) { networkInquiry["fvHouseProperty"] = value }
     }
 }
 

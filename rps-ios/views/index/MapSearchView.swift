@@ -19,6 +19,7 @@ struct MapSearchView: View {
     @State private var inputText = ""
     @State private var showMap = true
     @State private var compound: MapCompound?
+    @State private var showPopover = false
     
     var body: some View {
         ZStack {
@@ -48,6 +49,9 @@ struct MapSearchView: View {
         .onDisappear {
             TabBarModifier.showTabBar()
             tabService.isHidden = false
+        }
+        .popover(isPresented: $showPopover) {
+            ResultListView(show: $showPopover, compound: $compound, keyword: inputText)
         }
     }
     
@@ -156,7 +160,9 @@ struct MapSearchView: View {
                 .onTapGesture {
                     hideKeyboard()
                     Task {
-                        compound = await estateService.searchMap(address: inputText)
+//                        compound = await estateService.searchMap(address: inputText)
+                        await estateService.exactSearch(keyword: inputText)
+                        showPopover = true
                     }
                 }
         }
@@ -177,6 +183,37 @@ struct MapSearchView: View {
     private var divider: some View {
         Color.hex("#F3F3F3")
             .frame(width: 1, height: 52)
+    }
+}
+
+private struct ResultListView: View {
+    @EnvironmentObject private var estateService: EstateService
+    @Binding var show: Bool
+    @Binding var compound: MapCompound?
+    let keyword: String
+    
+    private var resultList: [SearchResult] {
+        estateService.exactSearchResult
+    }
+    
+    var body: some View {
+        List {
+            ForEach(resultList.indices, id: \.self) { i in
+                Text(resultList[i].compoundName ?? "")
+                    .onAppear {
+                        if i == resultList.count - 2 {
+                            Task {
+                                await estateService.exactSearch(keyword: keyword)
+                            }
+                        }
+                    }
+                    .onTapGesture {
+                        let r = resultList[i]
+                        compound = MapCompound.fromSearchResult(r.networkData)
+                        show = false
+                    }
+            }
+        }
     }
 }
 
