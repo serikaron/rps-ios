@@ -1063,8 +1063,8 @@ extension Linkman {
             .with(\.path, setTo: "/account/rps/account/clientUser/updatePwd")
             .with(\.method, setTo: .PUT)
             .with(\.bodyDict, setTo: [
-                "oldPassword": oldPassword,
-                "newPassword": newPassword
+                "oldPassWord": oldPassword,
+                "newPassWord": newPassword
             ])
             .make()
     }
