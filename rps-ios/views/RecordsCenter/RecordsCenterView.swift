@@ -35,16 +35,19 @@ struct RecordsCenterView: View {
                 RecordPopupView(record: $popupRecord)
                     .opacity(popupRecord == nil ? 0 : 1)
             }
-            .navigationTitle(page.viewTitle)
+//            .navigationTitle(page.viewTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Text(page.buttonTitle)
-                        .customText(size: 14, color: .hex("#2A64D6"))
-                        .onTapGesture {
-                            (page, param) = page.toggle(filter: param)
-                        }
+                ToolbarItem(placement: .principal) {
+                    titleView
                 }
+//                ToolbarItem(placement: .navigationBarLeading) {
+//                    Text(page.buttonTitle)
+//                        .customText(size: 14, color: .hex("#2A64D6"))
+//                        .onTapGesture {
+//                            (page, param) = page.toggle(filter: param)
+//                        }
+//                }
             }
             .onChange(of: moreSheetShown) { shown in
                 withAnimation(.linear(duration: 0.2)) {
@@ -62,6 +65,25 @@ struct RecordsCenterView: View {
                 hideKeyboard()
             }
         }
+    }
+    
+    private var titleView: some View {
+        HStack(spacing: 20) {
+            ForEach(pages.indices, id: \.self) { i in
+                Text(pages[i].text)
+                    .font(page.isEquivalentTo(other: pages[i]) ? .body : .caption)
+                    .foregroundColor(page.isEquivalentTo(other: pages[i]) ? Color.blue : Color.primary)
+                    .onTapGesture {
+                        guard !page.isEquivalentTo(other: pages[i]) else { return }
+                        
+                        (page, param) = page.toggle(filter: param)
+                    }
+            }
+        }
+    }
+    
+    private var pages: [RecordPage] {
+        [RecordPage.inquiry(SearchFilter()), RecordPage.report(SearchFilter())]
     }
     
     private var content: some View {
@@ -766,6 +788,23 @@ private struct RecordPopupView: View {
 }
 
 private extension RecordPage {
+    func isEquivalentTo(other: Self) -> Bool {
+        switch (self, other) {
+        case (.inquiry, .inquiry): return true
+        case (.report, .report): return true
+        default:
+            return false
+        }
+    }
+    var text: String {
+        switch self {
+        case .inquiry:
+            return "询价记录"
+        case .report:
+            return "委托记录"
+        }
+    }
+    
     var viewTitle: String {
         switch self {
         case .inquiry:
