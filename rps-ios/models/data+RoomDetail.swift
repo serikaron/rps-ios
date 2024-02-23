@@ -40,10 +40,10 @@ struct RoomDetail {
         set(value) { networkRoomDetail.fvFamilyRoomName = value }
     }
     var address: String {
-        return "\(networkRoomDetail.fvProvinceName ?? "")" +
-        "\(networkRoomDetail.fvCityName ?? "")" +
-        "\(networkRoomDetail.fvAreaName ?? "")" +
-        "\(networkRoomDetail.fvSubdistrictName ?? "")" +
+        return "\(dcBuilding.fvProvinceName ?? "")" +
+        "\(dcBuilding.fvCityName ?? "")" +
+        "\(dcBuilding.fvAreaName ?? "")" +
+        "\(dcBuilding.fvSubdistrictName ?? "")" +
         "\(networkRoomDetail.fvFamilyRoomName ?? "")"
     }
     var compoundName: String {

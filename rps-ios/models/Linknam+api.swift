@@ -346,6 +346,10 @@ extension Linkman {
         var fvBuildDirection: String?
         var fvSpecialCircumstances: String?
         var fvLevelDecorateFk: String?
+        var fvProvinceName: String?
+        var fvCityName: String?
+        var fvAreaName: String?
+        var fvSubdistrictName: String?
     }
     
     struct DCCompound: Codable {

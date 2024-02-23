@@ -411,6 +411,14 @@ private struct RoomInfoView: View {
             HStack {
                 Text("产权地址")
                     .customText(size: 14, color: .text.gray6)
+                Text(roomDetail.roomName)
+                    .customText(size: 14, color: .text.gray3)
+                Spacer()
+            }
+            Spacer().frame(height: 10)
+            HStack {
+                Text("系统地址")
+                    .customText(size: 14, color: .text.gray6)
                 Text(roomDetail.address)
                     .customText(size: 14, color: .text.gray3)
                 Spacer()
