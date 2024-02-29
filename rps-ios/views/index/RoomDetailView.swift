@@ -2276,7 +2276,7 @@ private struct BannerView: View {
         roomDetail.imageList.compactMap { URL(string: $0) }
     }
     
-    private let timer = Timer.publish(every: 1+0.5, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 5+0.5, on: .main, in: .common).autoconnect()
     
     var body: some View {
         TabView(selection: $selected) {
@@ -2310,7 +2310,7 @@ private struct BannerView: View {
 
 #Preview("banner") {
     BannerView(roomDetail: .mock)
-        .frame(height: 252)
+        .frame(height: 282)
         .environmentObject(ImageService())
 }
 

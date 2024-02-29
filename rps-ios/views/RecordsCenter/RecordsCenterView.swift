@@ -376,7 +376,16 @@ private struct RecordView: View {
 
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(record.address).headerText()
+                    if case .inquiry = record.page {
+                        NavigationLink {
+                            AddInquiryView(inquiryId: record.id, roomDetail: nil, inquiry: nil, record: record)
+                        } label: {
+                            Text(record.address)
+                                .multilineTextAlignment(.leading)
+                        }.headerText()
+                    } else {
+                        Text(record.address).headerText()
+                    }
                     Spacer().frame(height: 4)
                     HStack {
                         if let inquiryType = record.inquiryType {

@@ -71,7 +71,7 @@ struct IndexView: View {
             Color.view.background
             VStack(alignment: .center, spacing: 0) {
                 BannerView()
-                    .frame(height: 150)
+                    .frame(height: 200)
                     .cornerRadius(8)
                 Spacer().frame(height: 10)
                 noticeSection
@@ -346,7 +346,7 @@ private struct BannerView: View {
     @State private var selected: Int = 0
     @State private var banners: [Banner] = []
     
-    private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private var timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
     
     private var bannerURLs: [URL] {
         banners.compactMap { URL(string: $0.ossUrl) }

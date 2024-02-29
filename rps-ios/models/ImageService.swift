@@ -18,13 +18,14 @@ class ImageService: ObservableObject {
             let (data, _) = try await URLSession.shared.data(from: url)
             imageDict[url] = data
             loadingFlags[url] = false
-            print("imageService.loadImage done: \(url.absoluteString)")
+//            print("imageService.loadImage done: \(url.absoluteString)")
         } catch {
             print("loadImage FILED!!! url:\(url.absoluteString) error:\(error)")
         }
     }
     
     func image(of url: URL) -> Image {
+//        print("image of: \(url)")
         if let data = imageDict[url],
            let uiImage = UIImage(data: data) {
             return Image(uiImage: uiImage)
