@@ -2199,6 +2199,7 @@ private struct ReferenceCaseView: View {
         ScrollView(.horizontal) {
             VStack(spacing: 10) {
                 view(for: headerItem, isHeader: true)
+                Color.green.frame(height: 1)
                 ForEach(Array(zip(caseList.indices, caseList)), id: \.0) { _, item in
                     view(for: item, isHeader: false)
                 }
@@ -2234,9 +2235,10 @@ private struct ReferenceCaseView: View {
     
     private func caseText(_ text: String, isHeader: Bool) -> some View {
         Text(text)
-            .lineLimit(2)
-            .frame(width: 53, height: 40)
-            .background(isHeader ? headerBgColor : .white)
+            .customText(size: 10, color: .text.gray3)
+            .lineLimit(1)
+            .frame(width: 60)
+//            .background(isHeader ? headerBgColor : .white)
     }
     
     private var headerItem: ReferenceCase {
@@ -2260,10 +2262,10 @@ private struct ReferenceCaseView: View {
     }
 }
 
-//#Preview("ReferenceCase") {
-//    ReferenceCaseView(inquiry: .empty, detail: .empty)
-//        .environmentObject(EstateService.preview)
-//}
+#Preview("ReferenceCase") {
+    ReferenceCaseView(orgId: 0, inquiry: .empty, detail: .empty)
+        .environmentObject(EstateService.preview)
+}
 
 private struct BannerView: View {
     @EnvironmentObject private var imageService: ImageService
