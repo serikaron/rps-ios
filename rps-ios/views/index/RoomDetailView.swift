@@ -726,6 +726,10 @@ private struct DecorateView: View {
             levelDecoratePicker
 //            Divider()
 //            decorateDatePicker
+            if inquiry?.estateType == .villa {
+                Divider()
+                gardenPicker
+            }
         }
         .sectionStyle()
     }
@@ -762,6 +766,25 @@ private struct DecorateView: View {
             } label: {
                 HStack {
                     Text(inquiry?.decoration?.label ?? "请选择装修情况")
+                    Image.main.arrowIconRight
+                }
+            }
+        }
+    }
+    
+    private var gardenPicker: some View {
+        FlexibleListItem(title: "花园情况") {
+            Menu {
+                ForEach(DictType.GardenStandard.allCases, id: \.self) { garden in
+                    Button {
+                        inquiry?.garden = garden
+                    } label: {
+                        Text(garden.label)
+                    }
+                }
+            } label: {
+                HStack {
+                    Text(inquiry?.garden?.label ?? "请选择花园情况")
                     Image.main.arrowIconRight
                 }
             }

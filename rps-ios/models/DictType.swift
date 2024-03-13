@@ -13,7 +13,7 @@ enum DictType: String {
     typealias MainDict = [String: SubDict]
     
     case estate, orientation, buildDirection, landUser, buildingStructure, houseProperty, housingUse, landingroomLandSe, position, noRoomPosition, shopPosition, landingroomPosition, landLevel, planeShape, levelDecorate, propertyAttribute, mainHouse, auxiliaryHouse, appendages
-    case common_has, fv_land_se, fv_temporary_road_conditions, fi_trade_type, fv_decoration, fv_type_of_house, fv_daylighting, fv_noise, fv_landscape, fv_garden, fv_terrace, fv_attic, fv_basement, valuation_purpose, fv_co_ownership_situation, fv_report_spatial_layout, common_status, fv_area_location, fv_is_close, fv_property_manage_type, fv_business_type, fv_business_level, fv_industrial_concentration_rating,fv_property_classify_third,fv_property_classify_third_villa,fv_property_classify_third_other,fv_shops_property_classify_third_shopstreet,fv_property_classify_third_landingroom
+    case common_has, fv_land_se, fv_temporary_road_conditions, fi_trade_type, fv_decoration, fv_type_of_house, fv_daylighting, fv_noise, fv_landscape, fv_garden, fv_terrace, fv_attic, fv_basement, valuation_purpose, fv_co_ownership_situation, fv_report_spatial_layout, common_status, fv_area_location, fv_is_close, fv_property_manage_type, fv_business_type, fv_business_level, fv_industrial_concentration_rating,fv_property_classify_third,fv_property_classify_third_villa,fv_property_classify_third_other,fv_shops_property_classify_third_shopstreet,fv_property_classify_third_landingroom, fv_garden_standard
     
     var typeName: String {
         switch self {
@@ -848,6 +848,33 @@ extension DictType {
         }
 
         var label: String { DictType.fv_area_location.label(of: dictKey) ?? "" }
+    }
+    
+    enum GardenStandard: CaseIterable, HasLabel {
+        case _1, _2, _3, _4, _5
+        
+        init?(rawValue: String?) {
+            switch rawValue {
+            case "1": self = ._1
+            case "2": self = ._2
+            case "3": self = ._3
+            case "4": self = ._4
+            case "5": self = ._5
+            default: return nil
+            }
+        }
+        
+        var dictKey: String {
+            switch self {
+            case ._1: return "1"
+            case ._2: return "2"
+            case ._3: return "3"
+            case ._4: return "4"
+            case ._5: return "5"
+            }
+        }
+
+        var label: String { DictType.fv_garden_standard.label(of: dictKey) ?? "" }
     }
     
     enum IsClose: CaseIterable, HasLabel {

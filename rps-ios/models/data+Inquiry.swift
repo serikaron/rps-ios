@@ -146,6 +146,18 @@ struct Inquiry {
             }
         }
     }
+    var garden: DictType.GardenStandard? {
+        get {
+            DictType.GardenStandard(rawValue: networkInquiry["fvGardenStandard"] as? String)
+        }
+        set(value) {
+            if let dictKey = value?.dictKey {
+                networkInquiry["fvGardenStandard"] = dictKey
+            } else {
+                networkInquiry.removeValue(forKey: "fvGardenStandard")
+            }
+        }
+    }
     
     var decorationDate: String? {
         get {
