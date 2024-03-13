@@ -146,6 +146,8 @@ extension Linkman {
         let id: String
         let fvFamilyRoomName: String?
         let fvEstateType: String?
+        let fiProvinceCode: Int?
+        let fiCityCode: Int?
         let fiAreaCode: Int?
         let fiCompoundId: Int?
         let fvCompoundName: String?

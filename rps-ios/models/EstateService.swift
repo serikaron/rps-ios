@@ -23,6 +23,7 @@ struct SearchResult {
     let buildingId: Int?
     let floor: String?
     let orgId: Int?
+    let city: String?
     
     let networkData: Linkman.NetworkSearchResult
 }
@@ -66,7 +67,7 @@ class EstateService: ObservableObject {
         
         do {
             let rsp = try await Linkman.shared.fuzzySearch(keyword: keyword)
-            return .fromNetwork(rsp)
+            return await .fromNetwork(rsp)
         } catch {
             return []
         }
@@ -95,7 +96,7 @@ class EstateService: ObservableObject {
         
         do {
             let rsp = try await Linkman.shared.exactSearch(keyword: keyword, pageSize: searchParam.pageSize, pageNum: searchParam.pageNum)
-            let l = SearchResultList.fromNetwork(rsp.records)
+            let l = await SearchResultList.fromNetwork(rsp.records)
             if searchParam.pageNum == 1 {
                 exactSearchResult = l
             } else {
@@ -806,7 +807,7 @@ class EstateService: ObservableObject {
             guard let address = ocrRsp.fvThePropertyIsLocated else { return (nil, nil) }
             let searchRsp = try await Linkman.shared.fuzzySearch(keyword: address)
             guard !searchRsp.isEmpty else { return (nil, nil) }
-            return (SearchResult.fromNetwork(searchRsp[0]), ocrRsp.fvBuildingFloorArea)
+            return (await SearchResult.fromNetwork(searchRsp[0]), ocrRsp.fvBuildingFloorArea)
         } catch {
             print("ocr FAILED!!! \(error)")
             return (nil, nil)
@@ -911,12 +912,20 @@ extension SearchResult {
                      buildingId: 1,
                      floor: "1-1",
                      orgId: 0,
+                     city: "",
                      networkData: Linkman.NetworkSearchResult.mock
         )
     }
     
-    static func fromNetwork(_ item: Linkman.NetworkSearchResult) -> SearchResult {
-        SearchResult(
+    static func fromNetwork(_ item: Linkman.NetworkSearchResult) async -> SearchResult {
+        let getCity: () async -> String = {
+            guard let pc = item.fiProvinceCode,
+                  let cc = item.fiCityCode
+            else { return "" }
+            return await AreaTree.root.name(by: ["\(pc)", "\(cc)"])
+        }
+        let city = await getCity()
+        return SearchResult(
             id: item.id,
             roomName: item.fvFamilyRoomName,
             compoundName: item.fvCompoundName,
@@ -931,16 +940,17 @@ extension SearchResult {
             buildingId: item.fiBuildingId,
             floor: item.fvInFloor,
             orgId: item.fiOrgId,
+            city: city,
             networkData: item
         )
     }
 }
 
 extension SearchResultList {
-    static func fromNetwork(_ networkList: [Linkman.NetworkSearchResult]) -> SearchResultList {
+    static func fromNetwork(_ networkList: [Linkman.NetworkSearchResult]) async -> SearchResultList {
         var out: SearchResultList = []
         for item in networkList {
-            out.append(SearchResult.fromNetwork(item))
+            await out.append(SearchResult.fromNetwork(item))
         }
         return out
     }
@@ -951,8 +961,8 @@ extension EstateService {
         Box.isPreview = true
         let out = EstateService()
 //        out.isPreview = true
-        out.exactSearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
-        out.fuzzySearchResult = [SearchResult.fromNetwork(Linkman.NetworkSearchResult.mock)]
+        out.exactSearchResult = [SearchResult.mock(num: 10)]
+        out.fuzzySearchResult = [SearchResult.mock(num: 10)]
         out.buildings = (0..<10).map { _ in Building.mock }
         return out
     }

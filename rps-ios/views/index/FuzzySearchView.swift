@@ -108,7 +108,7 @@ struct FuzzySearchView: View {
     }
     
     private func roomItem(info: SearchResult) -> some View {
-        Text(info.roomName ?? "")
+        Text("\(info.roomName ?? "") - \(info.city ?? "") - \(info.estateTypeLabel ?? "")")
     }
 }
 
