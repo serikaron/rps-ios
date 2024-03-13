@@ -104,6 +104,7 @@ struct RoomDetailView: View {
     
     private var upperView: some View {
         VStack(spacing: 0) {
+            ResultAdjustView(inquiry: $inquiry)
             if hasInquiryResult {
                 HStack(spacing: 20) {
                     Text("单价：\(inquiry?.price ?? "")元/m²")
@@ -192,27 +193,28 @@ struct RoomDetailView: View {
     
     @State private var mapShowing: Bool = true
     private var mapView: some View {
-        VStack {
-            Button {
-                mapShowing.toggle()
-            } label: {
-                HStack(spacing: 0) {
-                    Text("地图定位")
-                        .customText(size: 16, color: .text.gray3, weight: .medium)
-                    Image.index.mapIcon
-                        .rotationEffect(mapShowing ? .degrees(180) : .zero)
-                    Spacer()
-                }
-            }
-            Spacer().frame(height: 16)
-            if mapShowing {
-//                MapView(coordinate: $roomDetail.coordinate)
-                MapView(mapViewCoordinate: roomDetail.mapViewCoordinate)
-                    .frame(height: 138)
-                    .cornerRadius(5)
-            }
-        }
-        .sectionStyle()
+        EmptyView()
+//        VStack {
+//            Button {
+//                mapShowing.toggle()
+//            } label: {
+//                HStack(spacing: 0) {
+//                    Text("地图定位")
+//                        .customText(size: 16, color: .text.gray3, weight: .medium)
+//                    Image.index.mapIcon
+//                        .rotationEffect(mapShowing ? .degrees(180) : .zero)
+//                    Spacer()
+//                }
+//            }
+//            Spacer().frame(height: 16)
+//            if mapShowing {
+////                MapView(coordinate: $roomDetail.coordinate)
+//                MapView(mapViewCoordinate: roomDetail.mapViewCoordinate)
+//                    .frame(height: 138)
+//                    .cornerRadius(5)
+//            }
+//        }
+//        .sectionStyle()
     }
     
     private func resultItem(title: String, value: String) -> some View {
@@ -293,10 +295,10 @@ struct RoomDetailView: View {
     
 }
 
-#Preview {
-    MapService.initMAMapKit()
-    return TabView {
-        NavigationView {
+#Preview("RoomDetail") {
+//    MapService.initMAMapKit()
+//    return TabView {
+//        NavigationView {
             RoomDetailView(
                 familyRoomName: "宝石1幢1单元RF301",
                 areaCode: 300106,
@@ -312,8 +314,8 @@ struct RoomDetailView: View {
             .environmentObject(AccountService.preview)
             .environmentObject(TabService())
             .navigationBarTitleDisplayMode(.inline)
-        }
-    }
+//        }
+//    }
 }
 //
 //#Preview("online") {
@@ -707,11 +709,11 @@ private struct ResultView: View {
     }
 }
 
-#Preview("ResultView") {
-    ResultView(inquiry: Inquiry(networkInquiry: [
-        "fvOtherPriceInfo": "[{\"name\":\"额外金额2\",\"price\":\"1010\",\"totalPrice\":\"101000\"},{\"name\":\"额外金额\",\"price\":\"1010\",\"totalPrice\":\"101000\"}]"
-    ]), detailExtened: .constant(true))
-}
+//#Preview("ResultView") {
+//    ResultView(inquiry: Inquiry(networkInquiry: [
+//        "fvOtherPriceInfo": "[{\"name\":\"额外金额2\",\"price\":\"1010\",\"totalPrice\":\"101000\"},{\"name\":\"额外金额\",\"price\":\"1010\",\"totalPrice\":\"101000\"}]"
+//    ]), detailExtened: .constant(true))
+//}
 
 private struct DecorateView: View {
     @Binding var inquiry: Inquiry?
@@ -1099,6 +1101,8 @@ private struct ResultAdjustView: View {
         }
     }
     
+    @State var mDate = Date()
+    
     private var fee: Binding<String> {Binding(
         get: { inquiry?.fee ?? "" },
         set: { inquiry?.fee = $0 }
@@ -1118,9 +1122,13 @@ private struct ResultAdjustView: View {
                     Image.main.arrowIconRight
                 }
                 .overlay(
-                    DatePicker("date", selection: date, in: ...Date(), displayedComponents: [.date])
+                    DatePicker("date", selection: $mDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.compact)
                         .blendMode(.destinationOver)
+                        .onTapGesture(count: 99) {
+                            // date components not showing in ios 17.1
+                            // this is a trick fix
+                        }
                 )
                 Divider()
                 FlexibleListItem(title: "处置税费金额") {
@@ -1146,11 +1154,11 @@ private struct ResultAdjustView: View {
     }
 }
 
-//#Preview("ResultAdjustView") {
-//    PreviewView {
-//        ResultAdjustView(inquiry: $0)
-//    }
-//}
+#Preview("ResultAdjustView") {
+    PreviewView { inquiry, detail in
+        ResultAdjustView(inquiry: inquiry)
+    }
+}
 
 private struct DetailResultView: View {
     @Binding var inquiry: Inquiry?
@@ -2285,10 +2293,10 @@ private struct ReferenceCaseView: View {
     }
 }
 
-#Preview("ReferenceCase") {
-    ReferenceCaseView(orgId: 0, inquiry: .empty, detail: .empty)
-        .environmentObject(EstateService.preview)
-}
+//#Preview("ReferenceCase") {
+//    ReferenceCaseView(orgId: 0, inquiry: .empty, detail: .empty)
+//        .environmentObject(EstateService.preview)
+//}
 
 private struct BannerView: View {
     @EnvironmentObject private var imageService: ImageService
@@ -2333,11 +2341,11 @@ private struct BannerView: View {
     }
 }
 
-#Preview("banner") {
-    BannerView(roomDetail: .mock)
-        .frame(height: 282)
-        .environmentObject(ImageService())
-}
+//#Preview("banner") {
+//    BannerView(roomDetail: .mock)
+//        .frame(height: 282)
+//        .environmentObject(ImageService())
+//}
 
 private struct ChartPage: View {
     let orgId: Int
@@ -2472,21 +2480,21 @@ private struct ChartPage: View {
     }
 }
 
-#Preview("ChartPage") {
-    PreviewView { inquiry, roomDetail in
-        ChartPage(orgId: 0, inquiry: inquiry, roomDetail: roomDetail)
-            .onAppear {
-                roomDetail.wrappedValue.compoundName = "杭州市壹号院"
-                roomDetail.wrappedValue.estateType = DictType.EstateType.commApartment
-                roomDetail.wrappedValue.wuYeFenLei = "多层"
-                roomDetail.wrappedValue.compoundId = 2
-                roomDetail.wrappedValue.areaName = "西湖区"
-            }
-            .frame(maxHeight: .infinity)
-            .background(Color.black)
-    }
-    .environmentObject(EstateService.preview)
-}
+//#Preview("ChartPage") {
+//    PreviewView { inquiry, roomDetail in
+//        ChartPage(orgId: 0, inquiry: inquiry, roomDetail: roomDetail)
+//            .onAppear {
+//                roomDetail.wrappedValue.compoundName = "杭州市壹号院"
+//                roomDetail.wrappedValue.estateType = DictType.EstateType.commApartment
+//                roomDetail.wrappedValue.wuYeFenLei = "多层"
+//                roomDetail.wrappedValue.compoundId = 2
+//                roomDetail.wrappedValue.areaName = "西湖区"
+//            }
+//            .frame(maxHeight: .infinity)
+//            .background(Color.black)
+//    }
+//    .environmentObject(EstateService.preview)
+//}
 
 
 // MARK: -
