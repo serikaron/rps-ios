@@ -85,21 +85,26 @@ struct FuzzySearchView: View {
     
     @State private var selectedRoomInfo: SearchResult?
     
+    @ViewBuilder
     private var roomList: some View {
-        List {
-            ForEach(liteInfoList, id: \.id) { info in
-                Button {
-                    disableSearch = true
-                    nextAction = .detail
-                    estateService.fuzzyKeyword = info.roomName ?? ""
-                    selectedRoomInfo = info
-                } label: {
-                    roomItem(info: info)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+        if liteInfoList.isEmpty {
+            Image.main.emptyList
+        } else {
+            List {
+                ForEach(liteInfoList, id: \.id) { info in
+                    Button {
+                        disableSearch = true
+                        nextAction = .detail
+                        estateService.fuzzyKeyword = info.roomName ?? ""
+                        selectedRoomInfo = info
+                    } label: {
+                        roomItem(info: info)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
             }
+            .listStyle(.plain)
         }
-        .listStyle(.plain)
     }
     
     private func roomItem(info: SearchResult) -> some View {

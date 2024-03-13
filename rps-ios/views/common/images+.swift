@@ -23,6 +23,7 @@ extension Image {
         static var meTabIconSelected: Image { return Image("me-tab-selected") }
         static var placeholder: Image { return Image("image-placeholder") }
         static var calendarIcon: Image { return Image("calendar-icon") }
+        static var emptyList: Image { return Image("image-empty-list") }
     }
     
     enum index {

@@ -659,19 +659,14 @@ private struct RecordListView: View {
     @Binding var popupRecord: Record?
     
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 10) {
-                ForEach(Array(zip(records.indices, records)), id: \.0) { idx, r in
-                    RecordView(record: r, popupRecord: $popupRecord)
-                        .onAppear {
-                            if idx == records.count - 2 {
-                                getRecord()
-                            }
-                        }
-                }
+        Group {
+            if records.isEmpty {
+                Image.main.emptyList
+                    .padding()
+            } else {
+                list
             }
         }
-        .padding(.vertical, 10)
         .onAppear {
             getRecord()
         }
@@ -693,6 +688,22 @@ private struct RecordListView: View {
             total = Int.max
             getRecord()
         }
+    }
+    
+    private var list: some View {
+        ScrollView {
+            LazyVStack(spacing: 10) {
+                ForEach(Array(zip(records.indices, records)), id: \.0) { idx, r in
+                    RecordView(record: r, popupRecord: $popupRecord)
+                        .onAppear {
+                            if idx == records.count - 2 {
+                                getRecord()
+                            }
+                        }
+                }
+            }
+        }
+        .padding(.vertical, 10)
     }
     
     private func getRecord() {

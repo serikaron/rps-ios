@@ -25,6 +25,26 @@ struct ExactSearchView: View {
                 search()
             })
             Spacer().frame(height: 10)
+            listView
+        }
+        .padding(.horizontal, 12)
+        .background(Color.view.background)
+        .setupNavigationBar(title: "小区列表") {
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+    
+    private func search() {
+        Task {
+            await estateService.exactSearch(keyword: text)
+        }
+    }
+    
+    @ViewBuilder
+    private var listView: some View {
+        if resultList.isEmpty {
+            Image.main.emptyList
+        } else {
             List {
                 ForEach(Array(zip(resultList.indices, resultList)), id: \.0) { idx, result in
                     ZStack {
@@ -48,17 +68,6 @@ struct ExactSearchView: View {
                 }
             }
             .listStyle(.plain)
-        }
-        .padding(.horizontal, 12)
-        .background(Color.view.background)
-        .setupNavigationBar(title: "小区列表") {
-            presentationMode.wrappedValue.dismiss()
-        }
-    }
-    
-    private func search() {
-        Task {
-            await estateService.exactSearch(keyword: text)
         }
     }
     
