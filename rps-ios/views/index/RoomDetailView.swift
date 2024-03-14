@@ -104,7 +104,6 @@ struct RoomDetailView: View {
     
     private var upperView: some View {
         VStack(spacing: 0) {
-            ResultAdjustView(inquiry: $inquiry)
             if hasInquiryResult {
                 HStack(spacing: 20) {
                     Text("单价：\(inquiry?.price ?? "")元/m²")
