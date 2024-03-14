@@ -192,28 +192,27 @@ struct RoomDetailView: View {
     
     @State private var mapShowing: Bool = true
     private var mapView: some View {
-        EmptyView()
-//        VStack {
-//            Button {
-//                mapShowing.toggle()
-//            } label: {
-//                HStack(spacing: 0) {
-//                    Text("地图定位")
-//                        .customText(size: 16, color: .text.gray3, weight: .medium)
-//                    Image.index.mapIcon
-//                        .rotationEffect(mapShowing ? .degrees(180) : .zero)
-//                    Spacer()
-//                }
-//            }
-//            Spacer().frame(height: 16)
-//            if mapShowing {
-////                MapView(coordinate: $roomDetail.coordinate)
-//                MapView(mapViewCoordinate: roomDetail.mapViewCoordinate)
-//                    .frame(height: 138)
-//                    .cornerRadius(5)
-//            }
-//        }
-//        .sectionStyle()
+        VStack {
+            Button {
+                mapShowing.toggle()
+            } label: {
+                HStack(spacing: 0) {
+                    Text("地图定位")
+                        .customText(size: 16, color: .text.gray3, weight: .medium)
+                    Image.index.mapIcon
+                        .rotationEffect(mapShowing ? .degrees(180) : .zero)
+                    Spacer()
+                }
+            }
+            Spacer().frame(height: 16)
+            if mapShowing {
+//                MapView(coordinate: $roomDetail.coordinate)
+                MapView(mapViewCoordinate: roomDetail.mapViewCoordinate)
+                    .frame(height: 138)
+                    .cornerRadius(5)
+            }
+        }
+        .sectionStyle()
     }
     
     private func resultItem(title: String, value: String) -> some View {
@@ -1100,8 +1099,6 @@ private struct ResultAdjustView: View {
         }
     }
     
-    @State var mDate = Date()
-    
     private var fee: Binding<String> {Binding(
         get: { inquiry?.fee ?? "" },
         set: { inquiry?.fee = $0 }
@@ -1121,7 +1118,7 @@ private struct ResultAdjustView: View {
                     Image.main.arrowIconRight
                 }
                 .overlay(
-                    DatePicker("date", selection: $mDate, in: ...Date(), displayedComponents: [.date])
+                    DatePicker("date", selection: date, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.compact)
                         .blendMode(.destinationOver)
                         .onTapGesture(count: 99) {
