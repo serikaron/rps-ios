@@ -501,10 +501,7 @@ struct AddInquiryView: View {
                             color: sheet.valuationDate.isEmpty ? .text.grayCD : .text.gray3)
             Image.main.arrowIconRight
         }
-        .overlay(
-            DatePicker("", selection: valuationDate, displayedComponents: [.date])
-                .blendMode(.destinationOver)
-        )
+        .plugDatePicker(date: valuationDate)
     }
     
     private var floorInput: some View {

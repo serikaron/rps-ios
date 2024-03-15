@@ -363,15 +363,7 @@ struct AddReportView: View {
                                 color: binding.wrappedValue.isEmpty ? .text.grayCD : .text.gray3)
                 Image.main.arrowIconRight
             }
-            .overlay(
-                DatePicker("",
-                           selection: Binding(
-                            get: { binding.wrappedValue.toDate() ?? Date() },
-                            set: { binding.wrappedValue = $0.toString() }),
-                           displayedComponents: [.date]
-                          )
-                .blendMode(.destinationOver)
-            )
+            .plugDatePicker(str: binding)
         }
     }
     

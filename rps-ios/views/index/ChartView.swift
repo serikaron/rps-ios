@@ -88,7 +88,7 @@ struct ChartView: UIViewRepresentable {
 
 private class XAxisFormatter: NSObject, AxisValueFormatter {
     func stringForValue(_ value: Double, axis: DGCharts.AxisBase?) -> String {
-        labels.isEmpty ? "" : labels[Int(value)]
+        labels.isEmpty || labels.count <= Int(value) ? "" : labels[Int(value)]
     }
     
     let labels: [String]

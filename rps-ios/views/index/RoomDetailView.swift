@@ -802,11 +802,7 @@ private struct DecorateView: View {
                 Image.main.arrowIconRight
             }
         }
-        .overlay (
-            DatePicker("date", selection: date, in: ...Date(), displayedComponents: [.date])
-                .datePickerStyle(.compact)
-                .blendMode(.destinationOver)
-        )
+        .plugDatePicker(date: date)
     }
 }
 
@@ -1117,15 +1113,7 @@ private struct ResultAdjustView: View {
                     Text(dateString)
                     Image.main.arrowIconRight
                 }
-                .overlay(
-                    DatePicker("date", selection: date, in: ...Date(), displayedComponents: [.date])
-                        .datePickerStyle(.compact)
-                        .blendMode(.destinationOver)
-                        .onTapGesture(count: 99) {
-                            // date components not showing in ios 17.1
-                            // this is a trick fix
-                        }
-                )
+                .plugDatePicker(date: date)
                 Divider()
                 FlexibleListItem(title: "处置税费金额") {
                     HStack {
@@ -1333,11 +1321,7 @@ private struct LandCreateView: View {
                 }
                 FlexibleListItem(title: "土地终止日期") {
                     Text(newLand.endDate ?? "请选择日期")
-                        .overlay(
-                            DatePicker("date", selection: date)
-                                .datePickerStyle(.compact)
-                                .blendMode(.destinationOver)
-                        )
+                        .plugDatePicker(date: date)
                 }
                 FlexibleListItem(title: "土地用途") {
                     Menu {
@@ -1550,11 +1534,7 @@ private struct BuildCreateView: View {
                             Color.text.grayCD :
                                     .text.gray6
                         )
-                        .overlay(
-                            DatePicker("date", selection: date)
-                                .datePickerStyle(.compact)
-                                .blendMode(.destinationOver)
-                        )
+                        .plugDatePicker(date: date)
                 }
                 FlexibleListItem(title: "建筑结构") {
                     Menu {
@@ -2139,10 +2119,7 @@ private struct InfoFixView: View {
             Image.main.calendarIcon
             Text(data.completionDate.isEmpty || data.completionDate == "无" ? "请选择\(Item.completionDate.title)" : data.completionDate)
         }
-        .overlay (
-            DatePicker("date", selection: date, in: ...Date(), displayedComponents: [.date])
-                .blendMode(.destinationOver)
-        )
+        .plugDatePicker(date: date)
         .foregroundColor(
             data.completionDate.isEmpty || data.completionDate == "无" ?
                 .text.grayCD : .text.gray3

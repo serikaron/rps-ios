@@ -98,24 +98,21 @@ struct YearMonthButton: View {
     @Binding var time: String?
     
     var body: some View {
-        Button {
-            isShown = true
-        } label: {
-            HStack {
-                Image.main.calendarIcon
-                Text(time ?? placeholder)
-                    .customText(size: 14, color: time == nil ? .text.grayCD : .text.gray3)
-            }
-            .padding(7)
-            .frame(width: 119)
-            .overlay(
-                RoundedRectangle(cornerRadius: 4)
-                    .stroke(Color.hex("#F2F2F2"), lineWidth: 1)
-            )
+        HStack {
+            Image.main.calendarIcon
+            Text(time ?? placeholder)
+                .customText(size: 14, color: time == nil ? .text.grayCD : .text.gray3)
         }
-        .alwaysPopover(isPresented: $isShown) {
-            YearMonthPicker(dateString: $time, shown: $isShown)
-        }
+        .padding(7)
+        .frame(width: 119)
+        .overlay(
+            RoundedRectangle(cornerRadius: 4)
+                .stroke(Color.hex("#F2F2F2"), lineWidth: 1)
+        )
+        .plugDatePicker(optionalStr: $time)
+//        .alwaysPopover(isPresented: $isShown) {
+//            YearMonthPicker(dateString: $time, shown: $isShown)
+//        }
     }
 }
 
