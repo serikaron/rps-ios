@@ -206,7 +206,7 @@ extension DictType {
         var label: String { DictType.common_has.label(of: dictKey) ?? "" }
     }
     
-    enum PlaneShape: CaseIterable, Hashable {
+    enum PlaneShape: CaseIterable, HasLabel, Hashable {
         case _0, _1, _3, _4, _5
         
         init?(rawValue: String?) {

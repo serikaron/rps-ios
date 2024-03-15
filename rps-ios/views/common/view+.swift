@@ -330,3 +330,31 @@ extension View {
         ))
     }
 }
+
+private struct PlugDictTypeModifier<T : CaseIterable & HasLabel & Hashable>: ViewModifier {
+    @State private var show = false
+    var binding: Binding<T>
+    
+    func body(content: Content) -> some View {
+        content
+            .onTapGesture { show = true }
+            .sheet(isPresented: $show) {
+                DictTypePicker(binding: binding, show: $show)
+                    .presentationDetents([.height(350)])
+            }
+    }
+}
+
+extension View {
+    func plugDictTypePicker<T : CaseIterable & HasLabel & Hashable>(val: Binding<T>) -> some View {
+        ModifiedContent(content: self, modifier: PlugDictTypeModifier(binding: val))
+    }
+    
+    @ViewBuilder
+    func plugDictTypePicker<T : CaseIterable & HasLabel & Hashable, Parent>(for parent: Binding<Parent?>, bind keyPath: WritableKeyPath<Parent, T?>) -> some View {
+        plugDictTypePicker(val: Binding<T>(
+            get: { parent.wrappedValue?[keyPath: keyPath] ?? T.allCases.first! },
+            set: { parent.wrappedValue?[keyPath: keyPath] = $0 }
+        ))
+    }
+}

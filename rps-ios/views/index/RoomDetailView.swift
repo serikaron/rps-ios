@@ -736,39 +736,21 @@ private struct DecorateView: View {
     
     private var planeShapePicker: some View {
         FlexibleListItem(title: "户型布局") {
-            Menu {
-                ForEach(DictType.PlaneShape.allCases, id: \.self) { shape in
-                    Button {
-                        inquiry?.style = shape
-                    } label: {
-                        Text(shape.label)
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(inquiry?.style?.label ?? "请选择户型布局")
-                    Image.main.arrowIconRight
-                }
+            HStack {
+                Text(inquiry?.style?.label ?? "请选择户型布局")
+                Image.main.arrowIconRight
             }
+            .plugDictTypePicker(for: $inquiry, bind: \.style)
         }
     }
     
     private var levelDecoratePicker: some View {
         FlexibleListItem(title: "装修情况") {
-            Menu {
-                ForEach(DictType.LevelDecorate.allCases, id: \.self) { deco in
-                    Button {
-                        inquiry?.decoration = deco
-                    } label: {
-                        Text(deco.label)
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(inquiry?.decoration?.label ?? "请选择装修情况")
-                    Image.main.arrowIconRight
-                }
+            HStack {
+                Text(inquiry?.decoration?.label ?? "请选择装修情况")
+                Image.main.arrowIconRight
             }
+            .plugDictTypePicker(for: $inquiry, bind: \.decoration)
         }
     }
     
