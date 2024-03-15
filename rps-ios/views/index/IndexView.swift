@@ -110,7 +110,7 @@ struct IndexView: View {
                 OCRButton {
                     actionButtonView1(title: "产证识房", icon: Image.index.ocrLogo)
                 }
-                Spacer()
+                Spacer().frame(width: 15)
                 NavigationLink {
                     MapSearchView()
                 } label: {
@@ -123,7 +123,7 @@ struct IndexView: View {
                 } label: {
                     actionButtonView(title: "人工询价", subTitle: "Appraiser Inquiry", icon: .index.inquiryIcon)
                 }
-                Spacer()
+                Spacer().frame(width: 15)
                 NavigationLink {
                     AddReportView(inquiryId: nil, recordId: nil, detail: nil)
                 } label: {
@@ -134,20 +134,22 @@ struct IndexView: View {
     }
     
     private func actionButtonView(title: String, subTitle: String, icon: Image) -> some View {
-        return ZStack {
-            Image.index.buttonBg
-            HStack {
-                VStack(spacing: 2) {
-                    Text(title).customText(size: 16, color: .main, weight: .bold)
-                    Text(subTitle.uppercased()).customText(size: 8, color: .text.gray9)
-                }
-                Spacer()
-                icon.frame(width: 50, height: 50)
+        HStack {
+            VStack(spacing: 2) {
+                Text(title).customText(size: 16, color: .main, weight: .bold)
+                Text(subTitle.uppercased()).customText(size: 8, color: .text.gray9)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .frame(width: 165, height: 66)
+            Spacer()
+            icon.frame(width: 50, height: 50)
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .frame(height: 66)
+        .frame(maxWidth: .infinity)
+        .background(
+            Image.index.buttonBg
+                .resizable()
+        )
     }
     
     private func actionButtonView1(title: String, icon: Image) -> some View {
@@ -156,8 +158,12 @@ struct IndexView: View {
             Text(title)
                 .customText(size: 14, color: .main, weight: .medium)
         }
-        .frame(width: 165, height: 70)
-        .background(Image.index.buttonBg)
+        .frame(height: 70)
+        .frame(maxWidth: .infinity)
+        .background(
+            Image.index.buttonBg
+                .resizable()
+        )
         .clipShape(RoundedRectangle(cornerRadius: 6))
     }
     

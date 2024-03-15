@@ -219,3 +219,66 @@ extension View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+
+private struct DatePickerSheetModifier: ViewModifier {
+    let height: CGFloat
+    var binding: Binding<Date>
+    
+    @State private var date = Date()
+    @State private var show = false
+    
+    func body(content: Content) -> some View {
+        content
+            .onTapGesture { show = true }
+            .sheet(isPresented: $show) {
+                VStack {
+                    HStack {
+                        Text("取消")
+                            .customText(size: 14, color: .text.gray6)
+                            .background(.white)
+                            .onTapGesture {
+                                show = false
+                            }
+                        Spacer()
+                        Text("确定")
+                            .customText(size: 14, color: .text.gray3)
+                            .background(.white)
+                            .onTapGesture {
+                                show = false
+                                binding.wrappedValue = date
+                            }
+                    }
+                    .padding()
+                    DatePicker("", selection: $date, displayedComponents: [.date])
+                        .datePickerStyle(.wheel)
+                        .presentationDetents([.height(height)])
+                        .labelsHidden()
+                        .environment(\.locale, Locale.init(identifier: "zh"))
+                }
+        }
+    }
+}
+
+private extension Binding<String> {
+    func toDateBinding() -> Binding<Date> {
+        Binding<Date> (
+            get: { wrappedValue.toDate() ?? Date() },
+            set: { wrappedValue = $0.toString() }
+        )
+    }
+}
+
+private extension Binding<String?> {
+    func toDateBinding() -> Binding<Date> {
+        Binding<Date> (
+            get: { wrappedValue?.toDate() ?? Date() },
+            set: { wrappedValue = $0.toString() }
+        )
+    }
+}
+
+extension View {
+    func datePickerSheet(height: CGFloat = 350, date: Binding<Date>? = nil, str: Binding<String>? = nil, optionalStr: Binding<String?>? = nil) -> some View {
+        ModifiedContent(content: self, modifier: DatePickerSheetModifier(height: height, binding: date ?? str?.toDateBinding() ?? optionalStr?.toDateBinding() ?? .constant(Date())))
+    }
+}

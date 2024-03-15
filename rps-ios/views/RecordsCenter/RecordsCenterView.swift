@@ -23,19 +23,21 @@ struct RecordsCenterView: View {
         NavigationView {
             ZStack {
                 content
+                    .sheet(isPresented: $moreSheetShown) {
+                        MoreFilterView(param: $param, shown: $moreSheetShown)
+                            .frame(maxHeight: .infinity, alignment: .top)
+                            .presentationDetents([.height(350)])
+                    }
                 Color.black.opacity(maskAlpha)
                     .onTapGesture {
                         moreSheetShown = false
                     }
-//                    .ignoresSafeArea()
-                MoreFilterView(param: $param, shown: $moreSheetShown)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .offset(x: 0, y: sheetOffset)
-//                    .ignoresSafeArea()
+//                MoreFilterView(param: $param, shown: $moreSheetShown)
+//                    .frame(maxHeight: .infinity, alignment: .bottom)
+//                    .offset(x: 0, y: sheetOffset)
                 RecordPopupView(record: $popupRecord)
                     .opacity(popupRecord == nil ? 0 : 1)
             }
-//            .navigationTitle(page.viewTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -93,6 +95,8 @@ struct RecordsCenterView: View {
         }
         .background(Color.view.background)
     }
+    
+    @State var date = Date()
     
     private var header: some View {
         VStack {
@@ -169,28 +173,36 @@ struct RecordsCenterView: View {
     
     private var filterInfoView: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("估价时间").itemContent()
-                Text("\(param.startDate) — \(param.endDate)")
-                    .itemTitle()
-                Spacer()
+            if !(param.startDate.isEmpty || param.endDate.isEmpty) {
+                HStack {
+                    Text("估价时间").itemContent()
+                    Text("\(param.startDate) — \(param.endDate)")
+                        .itemTitle()
+                }
             }
-            HStack {
-                Text("评估价格").itemContent()
-                Text("\(param.startPrice)元 — \(param.endPrice)元")
-                    .itemTitle()
+            if !(param.startPrice.isEmpty || param.endPrice.isEmpty) {
+                HStack {
+                    Text("评估价格").itemContent()
+                    Text("\(param.startPrice)元 — \(param.endPrice)元")
+                        .itemTitle()
+                }
             }
-            HStack {
-                Text("询价人").itemContent()
-                Text(param.clientName).itemTitle()
+            if !param.clientName.isEmpty {
+                HStack {
+                    Text("询价人").itemContent()
+                    Text(param.clientName).itemTitle()
+                }
             }
-            HStack {
-                Text("物业地址").itemContent()
-                Text(param.address).itemTitle()
+            if !param.address.isEmpty {
+                HStack {
+                    Text("物业地址").itemContent()
+                    Text(param.address).itemTitle()
+                }
             }
         }
         .padding(.horizontal, 28)
         .padding(.vertical, 16)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private func menu<T: Hashable & HasLabel>(title: String, allCases: [T?], binding: Binding<T?>) -> some View {
@@ -241,6 +253,14 @@ private struct MoreFilterView: View {
     @State private var height: CGFloat = .zero
     @State private var newFilter = SearchFilter()
     
+    private enum Focus: Hashable {
+        case startPrice, endPrice, client
+    }
+    @FocusState private var focus: Focus?
+    
+    @State private var showStartDatePicker = false;
+    @State private var showEndDatePicker = false;
+    
     var body: some View {
         VStack(spacing: 0) {
             Text("更多筛选")
@@ -250,15 +270,17 @@ private struct MoreFilterView: View {
                 HStack {
                     Text("估价时间")
                     HStack {
-                        dateButton(placeholder: "开始时间", binding: $newFilter.startDate)
-                        dateButton(placeholder: "结束时间", binding: $newFilter.endDate)
+                        dateButton(placeholder: "开始时间", binding: $newFilter.startDate, showSheet: $showStartDatePicker)
+                        dateButton(placeholder: "结束时间", binding: $newFilter.endDate, showSheet: $showEndDatePicker)
                     }.frame(width: 255)
                 }
                 HStack {
                     Text("评估价格")
                     HStack {
                         priceInput(placeholder: "", binding: $newFilter.startPrice)
+                            .focused($focus, equals: .startPrice)
                         priceInput(placeholder: "", binding: $newFilter.endPrice)
+                            .focused($focus, equals: .endPrice)
                     }.frame(width: 255)
                 }
                 HStack {
@@ -270,7 +292,7 @@ private struct MoreFilterView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: 4)
                                 .stroke(Color.hex("#F2F2F2"))
-                        )
+                        ).focused($focus, equals: .client)
                 }
             }
             .itemTitle()
@@ -295,6 +317,14 @@ private struct MoreFilterView: View {
                     .background(Color.main)
                     .cornerRadius(8)
                     .onTapGesture {
+                        if newFilter.startPrice.isEmpty != newFilter.endPrice.isEmpty {
+                            Box.sendError("请输入完整价格")
+                            return
+                        }
+                        if newFilter.startDate.isEmpty != newFilter.endDate.isEmpty {
+                            Box.sendError("请输入完整日期")
+                            return
+                        }
                         param = newFilter
                         shown = false
                     }
@@ -303,14 +333,18 @@ private struct MoreFilterView: View {
         }
         .padding(.horizontal, 28)
         .padding(.vertical, 16)
-        .padding(.bottom, 49+34)
         .background(Color.white)
-        .cornerRadius(10)
+        .onTapGesture {
+            focus = nil
+        }
+//        .padding(.bottom, 49+34)
+//        .background(Color.white)
+//        .cornerRadius(10)
     }
     
-    private func dateButton(placeholder: String, binding: Binding<String>) -> some View {
+    private func dateButton(placeholder: String, binding: Binding<String>, showSheet: Binding<Bool>) -> some View {
         HStack {
-            Text(binding.wrappedValue.isEmpty ? "开始时间" : binding.wrappedValue)
+            Text(binding.wrappedValue.isEmpty ? placeholder : binding.wrappedValue)
                 .foregroundColor(binding.wrappedValue.isEmpty ? .text.grayCD : .text.gray3)
             Spacer()
             Image.main.calendarIcon
@@ -321,13 +355,7 @@ private struct MoreFilterView: View {
             RoundedRectangle(cornerRadius: 4)
                 .stroke(Color.hex("#F2F2F2"))
         )
-        .overlay(
-            DatePicker("", selection: Binding(
-                get: { binding.wrappedValue.toDate() ?? Date() },
-                set: { binding.wrappedValue = $0.toString() }
-            ), displayedComponents: [.date])
-            .blendMode(.destinationOver)
-        )
+        .datePickerSheet(str: binding)
     }
     
     private func priceInput(placeholder: String, binding: Binding<String>) -> some View {
@@ -342,9 +370,9 @@ private struct MoreFilterView: View {
     }
 }
 
-#Preview("MoreFilter") {
-    MoreFilterView(param: .constant(SearchFilter()), shown: .constant(false))
-}
+//#Preview("MoreFilter") {
+//    MoreFilterView(param: .constant(SearchFilter()), shown: .constant(false))
+//}
 
 private struct RecordView: View {
     @EnvironmentObject var tabService: TabService
@@ -643,9 +671,9 @@ private struct RecordView: View {
     }
 }
 
-#Preview("Record") {
-    RecordView(record: Record.mock, popupRecord: .constant(nil))
-}
+//#Preview("Record") {
+//    RecordView(record: Record.mock, popupRecord: .constant(nil))
+//}
 
 private struct RecordListView: View {
     @EnvironmentObject var estateService: EstateService
@@ -801,11 +829,11 @@ private struct RecordPopupView: View {
     }
 }
 
-#Preview("popup") {
-    RecordPopupView(record: .constant(nil))
-        .environmentObject(EstateService.preview)
-        .environmentObject(AccountService.preview)
-}
+//#Preview("popup") {
+//    RecordPopupView(record: .constant(nil))
+//        .environmentObject(EstateService.preview)
+//        .environmentObject(AccountService.preview)
+//}
 
 private extension RecordPage {
     func isEquivalentTo(other: Self) -> Bool {

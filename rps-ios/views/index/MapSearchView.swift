@@ -7,7 +7,7 @@
 
 import SwiftUI
 import MAMapKit
-import SBPAsyncImage
+//import SBPAsyncImage
 import Combine
 
 struct MapSearchView: View {
@@ -71,7 +71,7 @@ struct MapSearchView: View {
         Group {
             if let compound = compound {
                 VStack(spacing: 0) {
-                    AsyncImage(url: URL(string: compound.picUrl)) { image in
+                    AsyncImage(url: URL(string: compound.picUrl), scale: 1.0) { image in
                         image.resizable()
                     } placeholder: {
                         Image.main.placeholder
