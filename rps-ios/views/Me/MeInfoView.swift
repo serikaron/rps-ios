@@ -213,6 +213,12 @@ private struct BirthdayButton: View {
     @State private var isShown = false
     
     var body: some View {
+        Text(birthday.isEmpty ? "请选择" : birthday)
+            .foregroundColor(birthday.isEmpty ? .text.grayCD : .text.gray3)
+            .itemContent()
+            .plugDatePicker(str: $birthday)
+    }
+    var body1: some View {
         Button {
             isShown = true
         } label: {
