@@ -388,6 +388,27 @@ private struct RegisterView: View {
     }
     
     private var addressPicker: some View {
+        HStack {
+            Text(address.isEmpty ? "请选择" : address)
+                .customText(size: 14, color: address.isEmpty ? .text.grayCD : .text.gray3)
+            Spacer()
+            Image.main.arrowIconRight
+        }
+        .frame(height: 30)
+        .padding(.horizontal, 16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 4)
+                .stroke(Color.hex("#CDCDCD"))
+        )
+        .plugAreaPicker(
+            provinceCode: $provinceCode,
+            provinceName: $provinceName,
+            cityCode: $cityCode,
+            cityName: $cityName,
+            areaCode: $areaCode,
+            areaName: $areaName)
+    }
+    private var addressPicker1: some View {
         Menu {
             ForEach(areaTree.children, id: \.code) { province in
                 Menu {

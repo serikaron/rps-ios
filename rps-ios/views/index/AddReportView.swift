@@ -291,6 +291,21 @@ struct AddReportView: View {
         "\(sheet.provinceName)\(sheet.cityName)\(sheet.areaName)"
     }
     private var addressPicker: some View {
+        HStack {
+            Text(addressString.isEmpty ? "请选择物业地址" : addressString)
+                .customText(size: 14, color: addressString.isEmpty ? .text.grayCD : .text.gray3)
+            Image.main.arrowIconRight
+        }
+        .plugAreaPicker(
+            provinceCode: $sheet.provinceCode,
+            provinceName: $sheet.provinceName,
+            cityCode: $sheet.cityCode,
+            cityName: $sheet.cityName,
+            areaCode: $sheet.areaCode,
+            areaName: $sheet.areaName
+        )
+    }
+    private var addressPicker1: some View {
         Menu {
             ForEach(areaTree.children, id: \.code) { province in
                 Menu {
