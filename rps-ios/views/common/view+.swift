@@ -278,7 +278,55 @@ private extension Binding<String?> {
 }
 
 extension View {
-    func datePickerSheet(height: CGFloat = 350, date: Binding<Date>? = nil, str: Binding<String>? = nil, optionalStr: Binding<String?>? = nil) -> some View {
+    func plugDatePicker(height: CGFloat = 350, date: Binding<Date>? = nil, str: Binding<String>? = nil, optionalStr: Binding<String?>? = nil) -> some View {
         ModifiedContent(content: self, modifier: DatePickerSheetModifier(height: height, binding: date ?? str?.toDateBinding() ?? optionalStr?.toDateBinding() ?? .constant(Date())))
+    }
+}
+
+private struct PlugAreaPickerModifier: ViewModifier {
+    @State private var show = false
+    
+    var provinceCode: Binding<Int>
+    var provinceName: Binding<String>
+    var cityCode: Binding<Int>
+    var cityName: Binding<String>
+    var areaCode: Binding<Int>
+    var areaName: Binding<String>
+    
+    func body(content: Content) -> some View {
+        content
+            .onTapGesture { show = true }
+            .sheet(isPresented: $show) {
+                AreaPicker(
+                    provinceCode: provinceCode,
+                    provinceName: provinceName,
+                    cityCode: cityCode,
+                    cityName: cityName,
+                    areaCode: areaCode,
+                    areaName: areaName,
+                    show: $show
+                )
+                .presentationDetents([.medium, .large])
+            }
+    }
+}
+
+extension View {
+    func plugAreaPicker(
+        provinceCode: Binding<Int>,
+        provinceName: Binding<String>,
+        cityCode: Binding<Int>,
+        cityName: Binding<String>,
+        areaCode: Binding<Int>,
+        areaName: Binding<String>
+    ) -> some View {
+        ModifiedContent(content: self, modifier: PlugAreaPickerModifier(
+            provinceCode: provinceCode,
+            provinceName: provinceName,
+            cityCode: cityCode,
+            cityName: cityName,
+            areaCode: areaCode,
+            areaName: areaName
+        ))
     }
 }

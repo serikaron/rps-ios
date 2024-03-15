@@ -355,7 +355,7 @@ private struct MoreFilterView: View {
             RoundedRectangle(cornerRadius: 4)
                 .stroke(Color.hex("#F2F2F2"))
         )
-        .datePickerSheet(str: binding)
+        .plugDatePicker(str: binding)
     }
     
     private func priceInput(placeholder: String, binding: Binding<String>) -> some View {

@@ -312,18 +312,7 @@ private struct RegisterView: View {
                             RoundedRectangle(cornerRadius: 4)
                                 .stroke(Color.hex("#CDCDCD"))
                         )
-                        .overlay(
-                            DatePicker("",
-                                       selection: Binding(
-                                        get: { birthday.toDate() ?? Date() },
-                                        set: { birthday = $0.toString() }),
-                                       in: ...Date(),
-                                       displayedComponents: [.date]
-                                      )
-                            .labelsHidden()
-                            .blendMode(.destinationOver)
-                            .scaleEffect(x: 1.5, y: 1)
-                        )
+                        .plugDatePicker(str: $birthday)
                     }
                     formInput(title: "注册码", isRequired: true, text: $registerCode)
                     formInput(title: "所在单位", isRequired: true, text: $company)
