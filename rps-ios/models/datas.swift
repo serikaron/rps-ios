@@ -459,9 +459,15 @@ struct MapCompound {
     let buildingId: Int
     let floor: String
     let compoundId: Int
+    let provinceName: String
+    let cityName: String
+    let areaName: String
+    let subdistrictName: String
     
     static var empty: Self {
-        MapCompound(name: "", alias: "", streetMark: "", north: "", south: "", east: "", west: "", location: "", coordinate: nil, picUrl: "", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "", compoundId: 0)
+        MapCompound(name: "", alias: "", streetMark: "", north: "", south: "", east: "", west: "", location: "", coordinate: nil, picUrl: "", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "", compoundId: 0,
+                    provinceName: "", cityName: "", areaName: "", subdistrictName: ""
+        )
     }
     
     static func fromSearchResult(_ r: Linkman.NetworkSearchResult) -> MapCompound {
@@ -518,7 +524,11 @@ struct MapCompound {
             estateType: r.fvEstateType ?? "",
             buildingId: r.fiBuildingId ?? 0,
             floor: r.fvInFloor ?? "",
-            compoundId: r.fiCompoundId ?? 0
+            compoundId: r.fiCompoundId ?? 0,
+            provinceName: r.fvProvinceName ?? "",
+            cityName: r.fvCityName ?? "",
+            areaName: r.fvAreaName ?? "",
+            subdistrictName: r.fvSubdistrictName ?? ""
         )
 
     }

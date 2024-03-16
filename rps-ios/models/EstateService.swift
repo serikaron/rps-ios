@@ -791,7 +791,11 @@ class EstateService: ObservableObject {
                 estateType: r.fvEstateType ?? "",
                 buildingId: r.fiBuildingId ?? 0,
                 floor: r.fvInFloor ?? "",
-                compoundId: r.fiCompoundId ?? 0
+                compoundId: r.fiCompoundId ?? 0,
+                provinceName: r.fvProvinceName ?? "",
+                cityName: r.fvCityName ?? "",
+                areaName: r.fvAreaName ?? "",
+                subdistrictName: r.fvSubdistrictName ?? ""
             )
         } catch {
             print("searchMap failed!!! \(error)")

@@ -105,7 +105,7 @@ struct IndexView: View {
     }
     
     private var actionSection: some View {
-        VStack {
+        VStack(spacing: 15) {
             HStack {
                 OCRButton {
                     actionButtonView1(title: "产证识房", icon: Image.index.ocrLogo)

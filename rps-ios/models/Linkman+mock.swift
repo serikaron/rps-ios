@@ -51,7 +51,11 @@ extension Linkman.NetworkSearchResult {
 //            fvEstateState: "4"
             fiBuildingId: 0,
             fvInFloor: "1-1",
-            fiOrgId: 0
+            fiOrgId: 0,
+            fvProvinceName: "",
+            fvCityName: "",
+            fvAreaName: "",
+            fvSubdistrictName: ""
         )
     }
     
@@ -77,7 +81,11 @@ extension Linkman.NetworkSearchResult {
             fvPois: nil,
             fiBuildingId: 0,
             fvInFloor: "1-1",
-            fiOrgId: 0
+            fiOrgId: 0,
+            fvProvinceName: "",
+            fvCityName: "",
+            fvAreaName: "",
+            fvSubdistrictName: ""
         )
     }
 }
@@ -410,7 +418,9 @@ extension MapCompound {
         MapCompound(name: "宝石小区", alias: "宝石小区", streetMark: "233号", north: "金祝小区", south: "金祝小区", east: "金祝小区", west: "金祝小区", location: "胜利",
 //                    coordinate: Coordinate(latitude: 30.25301, longitude: 120.167998),
                     coordinate: nil,
-                    picUrl: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "", compoundId: 0)
+                    picUrl: "https://image.xuboren.com/image/2023/10/11/ef3ca15d388940e6b21dc46d848d3905.jpg", familyRoomName: "", areaCode: 0, estateType: "", buildingId: 0, floor: "", compoundId: 0,
+                    provinceName: "", cityName: "", areaName: "", subdistrictName: ""
+        )
     }
 }
 

@@ -130,11 +130,15 @@ struct RecordsCenterView: View {
                 }
                 .plugDictTypePicker(val: $param.recordType)
 
+                Spacer()
+                
                 menu(title: "物业类型", allCases: DictType.EstateType.allCases, binding: $param.estateType)
+                Spacer()
                 Group {
                     switch page {
                     case .inquiry:
                         menu(title: "询价系统", allCases: InquiryType.allCases, binding: $param.inquiryType)
+                        Spacer()
                     case .report:
                         EmptyView()
                     }
@@ -727,6 +731,7 @@ private struct RecordListView: View {
         Group {
             if records.isEmpty {
                 Image.main.emptyList
+                    .frame(maxHeight: .infinity, alignment: .top)
                     .padding()
             } else {
                 list

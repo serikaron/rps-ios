@@ -50,8 +50,9 @@ struct MapSearchView: View {
             TabBarModifier.showTabBar()
             tabService.isHidden = false
         }
-        .popover(isPresented: $showPopover) {
+        .sheet(isPresented: $showPopover) {
             ResultListView(show: $showPopover, compound: $compound, keyword: inputText)
+                .presentationDetents([.height(350)])
         }
     }
     
@@ -188,7 +189,9 @@ struct MapSearchView: View {
 
 private struct ResultListView: View {
     @EnvironmentObject private var estateService: EstateService
-    @Binding var show: Bool
+    var show: Binding<Bool>
+    
+    @State private var pickerValue: Int = 0
     @Binding var compound: MapCompound?
     let keyword: String
     
@@ -196,10 +199,49 @@ private struct ResultListView: View {
         estateService.exactSearchResult
     }
     
+    private func text(for searchResult: SearchResult) -> String {
+        (searchResult.networkData.fvProvinceName ?? "")
+        + "-" + (searchResult.networkData.fvCityName ?? "")
+        + "-" + (searchResult.networkData.fvAreaName ?? "")
+        + "-" + (searchResult.networkData.fvSubdistrictName ?? "")
+        + "-" + (searchResult.networkData.fvCompoundName ?? "")
+        + "-(" + (searchResult.networkData.fvNameAlias ?? "") + ")"
+    }
+    
     var body: some View {
-        List {
+        VStack {
+            actionRow
+            picker
+        }
+        .padding()
+    }
+    
+    private var actionRow: some View {
+        HStack {
+            Text("取消")
+                .customText(size: 14, color: .text.gray6)
+                .background(.white)
+                .onTapGesture {
+                    show.wrappedValue = false
+                }
+            Spacer()
+            Text("确定")
+                .customText(size: 14, color: .text.gray3)
+                .background(.white)
+                .onTapGesture {
+                    show.wrappedValue = false
+                    if !resultList.isEmpty {
+                        compound = MapCompound.fromSearchResult(resultList[pickerValue].networkData)
+                    }
+                }
+        }
+    }
+    
+    private var picker: some View {
+        Picker("", selection: $pickerValue) {
             ForEach(resultList.indices, id: \.self) { i in
-                Text(resultList[i].compoundName ?? "")
+                Text(text(for: resultList[i]))
+                    .tag(i)
                     .onAppear {
                         if i == resultList.count - 2 {
                             Task {
@@ -207,13 +249,9 @@ private struct ResultListView: View {
                             }
                         }
                     }
-                    .onTapGesture {
-                        let r = resultList[i]
-                        compound = MapCompound.fromSearchResult(r.networkData)
-                        show = false
-                    }
             }
         }
+        .pickerStyle(.wheel)
     }
 }
 

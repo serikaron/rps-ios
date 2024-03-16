@@ -164,6 +164,10 @@ extension Linkman {
         let fiBuildingId: Int?
         let fvInFloor: String?
         let fiOrgId: Int?
+        let fvProvinceName: String?
+        let fvCityName: String?
+        let fvAreaName: String?
+        let fvSubdistrictName: String?
     }
     
     typealias FuzzySearchResopnse = [NetworkSearchResult]
