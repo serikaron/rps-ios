@@ -356,7 +356,7 @@ struct RecordsResult {
     let records: [Record]
 }
 
-struct Template: Equatable {
+struct Template: Equatable & Hashable {
     let id: Int
     let name: String
 }

@@ -345,16 +345,44 @@ private struct PlugDictTypeModifier<T : CaseIterable & HasLabel & Hashable>: Vie
     }
 }
 
+typealias PickerBuilder<Picker: View> = (_ show: Binding<Bool>) -> Picker
+
+private struct PlugPickerModifier<Picker: View>: ViewModifier {
+    @State private var show = false
+    
+    @ViewBuilder let builder: PickerBuilder<Picker>
+    
+    func body(content: Content) -> some View {
+        content
+            .onTapGesture { show = true }
+            .sheet(isPresented: $show) {
+                builder($show)
+                    .presentationDetents([.height(350)])
+            }
+    }
+}
+
 extension View {
     func plugDictTypePicker<T : CaseIterable & HasLabel & Hashable>(val: Binding<T>) -> some View {
         ModifiedContent(content: self, modifier: PlugDictTypeModifier(binding: val))
     }
     
+    func plugDictTypePicker<T : CaseIterable & HasLabel & Hashable>(optional: Binding<T?>) -> some View {
+        plugDictTypePicker(val: Binding<T>(
+            get: { optional.wrappedValue ?? T.allCases.first! },
+            set: { optional.wrappedValue = $0 }
+        ))
+    }
+
     @ViewBuilder
     func plugDictTypePicker<T : CaseIterable & HasLabel & Hashable, Parent>(for parent: Binding<Parent?>, bind keyPath: WritableKeyPath<Parent, T?>) -> some View {
         plugDictTypePicker(val: Binding<T>(
             get: { parent.wrappedValue?[keyPath: keyPath] ?? T.allCases.first! },
             set: { parent.wrappedValue?[keyPath: keyPath] = $0 }
         ))
+    }
+    
+    func plugPicker<Picker: View>(_ builder: @escaping PickerBuilder<Picker>) -> some View {
+        ModifiedContent(content: self, modifier: PlugPickerModifier(builder: builder))
     }
 }

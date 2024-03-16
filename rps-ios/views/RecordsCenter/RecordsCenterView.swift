@@ -121,23 +121,14 @@ struct RecordsCenterView: View {
             .padding(.horizontal, 16)
             
             HStack {
-//                menu(title: "记录类型", allCases: RecordType.allCases, binding: $param.recordType)
-                Menu {
-                    Picker("", selection: $param.recordType) {
-                        ForEach(RecordType.allCases, id: \.self) { type in
-                            Text(type.label)
-                                .customText(size: 14, color: param.recordType == type ? .main : .green)
-                        }
-                    }
-                } label: {
-                    HStack(spacing: 0) {
-                        Text("记录类型")
-                            .customText(size: 14, color: .main)
-                        Image.main.arrowIconDown
-                            .resizable()
-                            .frame(width: 14, height: 14)
-                    }
+                HStack(spacing: 0) {
+                    Text("记录类型")
+                        .customText(size: 14, color: .main)
+                    Image.main.arrowIconDown
+                        .resizable()
+                        .frame(width: 14, height: 14)
                 }
+                .plugDictTypePicker(val: $param.recordType)
 
                 menu(title: "物业类型", allCases: DictType.EstateType.allCases, binding: $param.estateType)
                 Group {
@@ -205,25 +196,71 @@ struct RecordsCenterView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    private func menu<T: Hashable & HasLabel>(title: String, allCases: [T?], binding: Binding<T?>) -> some View {
-        Menu {
-            Picker("", selection: binding) {
-                ForEach([.none] + allCases, id: \.self) { type in
-                    Text(type?.label ?? "全部")
-                        .customText(size: 14, color: binding.wrappedValue == type ? .main : .green)
-                }
-            }
-        } label: {
-            HStack(spacing: 0) {
-                Text(title)
-                    .customText(size: 14, color: .main)
-                Image.main.arrowIconDown
-                    .resizable()
-                    .frame(width: 14, height: 14)
-            }
+    @ViewBuilder
+    private func menu<
+        T: CaseIterable & Hashable & HasLabel
+    >(
+        title: String, allCases: [T?], binding: Binding<T?>
+    ) -> some View {
+        HStack(spacing: 0) {
+            Text(title)
+                .customText(size: 14, color: .main)
+            Image.main.arrowIconDown
+                .resizable()
+                .frame(width: 14, height: 14)
+        }
+        .plugPicker { show in
+            RecordsCenterDictTypePicker(binding: binding, allCases: allCases, show: show)
         }
     }
 }
+
+private struct RecordsCenterDictTypePicker<T: CaseIterable & HasLabel & Hashable>: View {
+    @State private var val: T?
+    
+    init(binding: Binding<T?>, allCases: [T?], show: Binding<Bool>) {
+        self.val = binding.wrappedValue
+        self.binding = binding
+        self.show = show
+        self.allCases = allCases
+    }
+    
+    private var binding: Binding<T?>
+    private var show: Binding<Bool>
+    private var allCases: [T?]
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Text("取消")
+                    .customText(size: 14, color: .text.gray6)
+                    .background(.white)
+                    .onTapGesture {
+                        show.wrappedValue = false
+                    }
+                Spacer()
+                Text("确定")
+                    .customText(size: 14, color: .text.gray3)
+                    .background(.white)
+                    .onTapGesture {
+                        show.wrappedValue = false
+                        binding.wrappedValue = val
+                    }
+            }
+            
+            Picker("", selection: $val) {
+                ForEach([.none] + allCases, id: \.self) { type in
+                    Text(type?.label ?? "全部")
+                        .foregroundStyle(binding.wrappedValue == type ? Color.main : Color.text.gray3)
+                        .tag(type)
+                }
+            }
+           .pickerStyle(.wheel)
+        }
+        .padding()
+    }
+}
+
 
 //private extension RecordPage {
 //    func stateMenu(: some View {

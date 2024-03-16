@@ -41,6 +41,7 @@ struct DictTypePicker<T: CaseIterable & HasLabel & Hashable>: View {
             Picker("", selection: $val) {
                 ForEach(list.indices, id: \.self) { idx in
                     Text(list[idx].label)
+                        .foregroundStyle(list[idx] == binding.wrappedValue ? Color.main : Color.text.gray3)
                         .tag(list[idx])
                 }
             }

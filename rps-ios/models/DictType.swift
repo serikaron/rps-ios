@@ -132,10 +132,14 @@ protocol HasLabel {
 }
 
 extension DictType {
-    enum PropertyAttribute: Hashable {
+    enum PropertyAttribute: CaseIterable, Hashable, HasLabel {
         case mainHouse
         case auxiliaryHouse(subType: AuxiliaryHouse?)
         case appendages(subType: Appendages?)
+        
+        static var allCases: [DictType.PropertyAttribute] {
+            [.mainHouse, .auxiliaryHouse(subType: nil), .appendages(subType: nil)]
+        }
         
         init?(mainType: String?, subType: String?) {
             switch mainType {
@@ -170,7 +174,7 @@ extension DictType {
         var label: String { DictType.mainHouse.label(of: dictKey) ?? "" }
     }
     
-    enum AuxiliaryHouse: String, CaseIterable {
+    enum AuxiliaryHouse: String, CaseIterable, HasLabel {
         case garden, terrace, attic, basement
         
         var dictKey: String { rawValue }
@@ -179,14 +183,14 @@ extension DictType {
         }
     }
     
-    enum Appendages: String, CaseIterable {
+    enum Appendages: String, CaseIterable, HasLabel {
         case attic, main_room, jump_layer, sheds, automatic_garage, storeroom, ground_garage, stilt_floor, ground_vehicles, underground_car, theunderground_garage, basement, terrace
         
         var dictKey: String { rawValue }
         var label: String { DictType.appendages.label(of: dictKey) ?? "" }
     }
     
-    enum CommonHas: CaseIterable {
+    enum CommonHas: CaseIterable, HasLabel, Hashable {
         case has, not
         init?(rawValue: String) {
             switch rawValue {
@@ -343,7 +347,7 @@ extension DictType {
         var label: String { DictType.fv_land_se.label(of: dictKey) ?? "" }
     }
     
-    enum TemporaryRoadConditions: CaseIterable {
+    enum TemporaryRoadConditions: CaseIterable, HasLabel, Hashable {
         case _1, _2, _3, _4, _5, _6
         
         init?(rawValue: String?) {
@@ -405,7 +409,7 @@ extension DictType {
         var label: String { DictType.buildingStructure.label(of: dictKey) ?? "" }
     }
     
-    enum Position: CaseIterable {
+    enum Position: CaseIterable, HasLabel, Hashable {
         case _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11
         
         init?(rawValue: String?) {
@@ -444,7 +448,7 @@ extension DictType {
         var label: String { DictType.position.label(of: dictKey) ?? "" }
     }
     
-    enum NoRoomPosition: CaseIterable {
+    enum NoRoomPosition: CaseIterable, HasLabel, Hashable {
         case _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13
         
         init?(rawValue: String?) {
@@ -487,7 +491,7 @@ extension DictType {
         var label: String { DictType.noRoomPosition.label(of: dictKey) ?? "" }
     }
     
-    enum LandingroomPosition: CaseIterable {
+    enum LandingroomPosition: CaseIterable, HasLabel, Hashable {
         case _1, _2, _3, _4, _5
         
         init?(rawValue: String?) {
@@ -514,7 +518,7 @@ extension DictType {
         var label: String { DictType.landingroomPosition.label(of: dictKey) ?? "" }
     }
     
-    enum ShopPosition: CaseIterable {
+    enum ShopPosition: CaseIterable, HasLabel, Hashable{
         case _1, _2, _3, _4, _5, _6
         
         init?(rawValue: String?) {

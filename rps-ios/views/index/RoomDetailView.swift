@@ -756,20 +756,11 @@ private struct DecorateView: View {
     
     private var gardenPicker: some View {
         FlexibleListItem(title: "花园情况") {
-            Menu {
-                ForEach(DictType.GardenStandard.allCases, id: \.self) { garden in
-                    Button {
-                        inquiry?.garden = garden
-                    } label: {
-                        Text(garden.label)
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(inquiry?.garden?.label ?? "请选择花园情况")
-                    Image.main.arrowIconRight
-                }
+            HStack {
+                Text(inquiry?.garden?.label ?? "请选择花园情况")
+                Image.main.arrowIconRight
             }
+            .plugDictTypePicker(for: $inquiry, bind: \.garden)
         }
     }
     
@@ -956,50 +947,31 @@ private struct AuxiliaryRoomCreateView: View {
     
     private var propertyPickerView: some View {
         FlexibleListItem(title: "物业类型") {
-            Menu {
-                ForEach(Array(zip(propertyList.indices, propertyList)), id: \.0) { _, property in
-                    Button {
-                        newRoom.propertyAttribute = property
-                    } label: {
-                        Text(property.label)
-                            .itemContent()
-                    }
-                }
-            } label: {
-                label(newRoom.propertyAttribute?.label)
-            }
+            label(newRoom.propertyAttribute?.label)
+                .plugDictTypePicker(optional: $newRoom.propertyAttribute)
         }
     }
     
+    @ViewBuilder
     private var namePickerView: some View {
         FlexibleListItem(title: "物业名称") {
             switch newRoom.propertyAttribute {
             case .mainHouse:
                 label(DictType.MainHouse.mian.label)
             case .auxiliaryHouse(let subType):
-                Menu {
-                    ForEach(DictType.AuxiliaryHouse.allCases, id: \.self) { subType in
-                        Button {
-                            newRoom.propertyAttribute = .auxiliaryHouse(subType: subType)
-                        } label: {
-                            Text(subType.label)
-                        }
-                    }
-                } label: {
-                    label(subType?.label)
-                }
+                let binding = Binding<DictType.AuxiliaryHouse?>(
+                    get: { subType },
+                    set: { newRoom.propertyAttribute = .auxiliaryHouse(subType: $0) }
+                )
+                label(subType?.label)
+                    .plugDictTypePicker(optional: binding)
             case .appendages(let subType):
-                Menu {
-                    ForEach(DictType.Appendages.allCases, id: \.self) { subType in
-                        Button {
-                            newRoom.propertyAttribute = .appendages(subType: subType)
-                        } label: {
-                            Text(subType.label)
-                        }
-                    }
-                } label: {
-                    label(subType?.label)
-                }
+                let binding = Binding<DictType.Appendages?>(
+                    get: { subType },
+                    set: { newRoom.propertyAttribute = .appendages(subType: $0) }
+                )
+                label(subType?.label)
+                    .plugDictTypePicker(optional: binding)
             default:
                 label("请选择")
             }
@@ -1008,17 +980,8 @@ private struct AuxiliaryRoomCreateView: View {
     
     private var hasPickerView: some View {
         FlexibleListItem(title: "有无产权") {
-            Menu {
-                ForEach(DictType.CommonHas.allCases, id: \.self) { v in
-                    Button {
-                        newRoom.commonHas = v
-                    } label: {
-                        Text(v.label)
-                    }
-                }
-            } label: {
-                label(newRoom.commonHas?.label)
-            }
+            label(newRoom.commonHas?.label)
+                .plugDictTypePicker(optional: $newRoom.commonHas)
         }
     }
     
@@ -1286,56 +1249,29 @@ private struct LandCreateView: View {
                     Text("m²")
                 }
                 FlexibleListItem(title: "土地性质") {
-                    Menu {
-                        ForEach(DictType.LandUser.allCases, id: \.self) { landUser in
-                            Button {
-                                newLand.landUser = landUser
-                            } label: {
-                                Text(landUser.label)
-                            }
-                        }
-                    } label: {
-                        HStack {
-                            Text(newLand.landUser?.label ?? "请选择")
-                            Image.main.arrowIconRight
-                        }
+                    HStack {
+                        Text(newLand.landUser?.label ?? "请选择")
+                        Image.main.arrowIconRight
                     }
+                    .plugDictTypePicker(optional: $newLand.landUser)
                 }
                 FlexibleListItem(title: "土地终止日期") {
                     Text(newLand.endDate ?? "请选择日期")
                         .plugDatePicker(date: date)
                 }
                 FlexibleListItem(title: "土地用途") {
-                    Menu {
-                        ForEach(DictType.LandSe.allCases, id: \.self) { landSe in
-                            Button {
-                                newLand.landSe = landSe
-                            } label: {
-                                Text(landSe.label)
-                            }
-                        }
-                    } label: {
-                        HStack {
-                            Text(newLand.landSe?.label ?? "请选择")
-                            Image.main.arrowIconRight
-                        }
+                    HStack {
+                        Text(newLand.landSe?.label ?? "请选择")
+                        Image.main.arrowIconRight
                     }
+                    .plugDictTypePicker(optional: $newLand.landSe)
                 }
                 FlexibleListItem(title: "临路状况") {
-                    Menu {
-                        ForEach(DictType.TemporaryRoadConditions.allCases, id: \.self) { roadCondition in
-                            Button {
-                                newLand.roadCondition = roadCondition
-                            } label: {
-                                Text(roadCondition.label)
-                            }
-                        }
-                    } label: {
-                        HStack {
-                            Text(newLand.roadCondition?.label ?? "请选择")
-                            Image.main.arrowIconRight
-                        }
+                    HStack {
+                        Text(newLand.roadCondition?.label ?? "请选择")
+                        Image.main.arrowIconRight
                     }
+                    .plugDictTypePicker(optional: $newLand.roadCondition)
                 }
             }
             .sectionStyle()
@@ -1519,25 +1455,16 @@ private struct BuildCreateView: View {
                         .plugDatePicker(date: date)
                 }
                 FlexibleListItem(title: "建筑结构") {
-                    Menu {
-                        ForEach(DictType.BuildingStructure.allCases, id: \.self) { item in
-                            Button {
-                                newBuild.structure = item
-                            } label: {
-                                Text(item.label)
-                            }
-                        }
-                    } label: {
-                        HStack {
-                            Text(newBuild.structure?.label ?? "请选择")
-                                .foregroundColor(
-                                    newBuild.structure == nil ?
-                                    Color.text.grayCD :
-                                            .text.gray6
-                                )
-                            Image.main.arrowIconRight
-                        }
+                    HStack {
+                        Text(newBuild.structure?.label ?? "请选择")
+                            .foregroundColor(
+                                newBuild.structure == nil ?
+                                Color.text.grayCD :
+                                        .text.gray6
+                            )
+                        Image.main.arrowIconRight
                     }
+                    .plugDictTypePicker(optional: $newBuild.structure)
                 }
                 FlexibleListItem(title: "厂房层高") {
                     TextField("请输入", text: height)
@@ -1918,23 +1845,13 @@ private struct InfoFixView: View {
     }
     
     private var landUserMenu: some View {
-        Menu {
-            ForEach(DictType.LandUser.allCases, id: \.self) { i in
-                print("landUserMenu key:\(i.dictKey) label:\(i.label)")
-                return Button {
-                    data.landUser = i
-                } label: {
-                    Text(i.label)
-                }
-            }
-        } label: {
-            Text(data.landUser?.label ?? "请选择\(Item.landUser.title)")
-                .foregroundColor(
-                    data.landUser == nil ?
-                        .text.grayCD : .text.gray6
-                )
-                .fixViewLabelStyle()
-        }
+        Text(data.landUser?.label ?? "请选择\(Item.landUser.title)")
+            .foregroundColor(
+                data.landUser == nil ?
+                    .text.grayCD : .text.gray6
+            )
+            .fixViewLabelStyle()
+            .plugDictTypePicker(optional: $data.landUser)
     }
     
     private enum Position {
@@ -1944,82 +1861,56 @@ private struct InfoFixView: View {
         case shopPosition(DictType.ShopPosition?)
     }
     
+    @ViewBuilder
     private var positionMenu: some View {
         let placeholder = "请选择\(Item.position.title)"
         switch data.position {
         case .position(let position):
-            return Menu {
-                ForEach(DictType.Position.allCases, id: \.self) { i in
-                    Button {
-                        data.position = .position(i)
-                    } label: {
-                        Text(i.label)
-                    }
-                }
-            } label: {
-                Text(position?.label ?? placeholder)
-                    .foregroundColor(
-                        position == nil ?
-                            .text.grayCD : .text.gray6
-                    )
-                    .fixViewLabelStyle()
-            }
-            .earseToAnyView()
+            let binding = Binding<DictType.Position?> (
+                get: { position },
+                set: { data.position = .position($0)}
+            )
+            Text(position?.label ?? placeholder)
+                .foregroundColor( position == nil ? .text.grayCD : .text.gray6 )
+                .fixViewLabelStyle()
+                .plugDictTypePicker(optional: binding)
         case .noRoomPosition(let noRoomPosition):
-            return Menu {
-                ForEach(DictType.NoRoomPosition.allCases, id: \.self) { i in
-                    Button {
-                        data.position = .noRoomPosition(i)
-                    } label: {
-                        Text(i.label)
-                    }
-                }
-            } label: {
-                Text(noRoomPosition?.label ?? placeholder)
-                    .foregroundColor(
-                        noRoomPosition == nil ?
-                            .text.grayCD : .text.gray6
-                    )
-                    .fixViewLabelStyle()
-            }
-            .earseToAnyView()
+            let binding = Binding<DictType.NoRoomPosition?> (
+                get: { noRoomPosition },
+                set: { data.position = .noRoomPosition($0)}
+            )
+            Text(noRoomPosition?.label ?? placeholder)
+                .foregroundColor(
+                    noRoomPosition == nil ?
+                        .text.grayCD : .text.gray6
+                )
+                .fixViewLabelStyle()
+                .plugDictTypePicker(optional: binding)
         case .landingroomPosition(let landingroomPosition):
-            return Menu {
-                ForEach(DictType.LandingroomPosition.allCases, id: \.self) { i in
-                    Button {
-                        data.position = .landingroomPosition(i)
-                    } label: {
-                        Text(i.label)
-                    }
-                }
-            } label: {
-                Text(landingroomPosition?.label ?? placeholder)
-                    .foregroundColor(
-                        landingroomPosition == nil ?
-                            .text.grayCD : .text.gray6
-                    )
-                    .fixViewLabelStyle()
-            }
-            .earseToAnyView()
+            let binding = Binding<DictType.LandingroomPosition?> (
+                get: { landingroomPosition },
+                set: { data.position = .landingroomPosition($0)}
+            )
+            Text(landingroomPosition?.label ?? placeholder)
+                .foregroundColor(
+                    landingroomPosition == nil ?
+                        .text.grayCD : .text.gray6
+                )
+                .fixViewLabelStyle()
+                .plugDictTypePicker(optional: binding)
         case .shopPosition(let shopPosition):
-            return Menu {
-                ForEach(DictType.ShopPosition.allCases, id: \.self) { i in
-                    Button {
-                        data.position = .shopPosition(i)
-                    } label: {
-                        Text(i.label)
-                    }
-                }
-            } label: {
-                Text(shopPosition?.label ?? placeholder)
-                    .foregroundColor(
-                        shopPosition == nil ?
-                            .text.grayCD : .text.gray6
-                    )
-                    .fixViewLabelStyle()
-            }
-            .earseToAnyView()
-        case .none: return EmptyView().earseToAnyView()
+            let binding = Binding<DictType.ShopPosition?> (
+                get: { shopPosition },
+                set: { data.position = .shopPosition($0)}
+            )
+            Text(shopPosition?.label ?? placeholder)
+                .foregroundColor(
+                    shopPosition == nil ?
+                        .text.grayCD : .text.gray6
+                )
+                .fixViewLabelStyle()
+                .plugDictTypePicker(optional: binding)
+        case .none: EmptyView()
         }
     }
     
@@ -2028,46 +1919,35 @@ private struct InfoFixView: View {
         case buildDirection(DictType.BuildDirection?)
     }
     
+    @ViewBuilder
     private var facingMenu: some View {
         let placeholder = "请选择\(Item.facing.title)"
         switch data.facing {
         case .orientation(let orientation):
-            return Menu {
-                ForEach(DictType.Orientation.allCases, id: \.self) { i in
-                    Button {
-                        data.facing = .orientation(i)
-                    } label: {
-                        return Text(i.label)
-                    }
-                }
-            } label: {
-                Text(orientation?.label ?? placeholder)
-                    .foregroundColor(
-                        orientation == nil ?
-                            .text.grayCD : .text.gray6
-                    )
-                    .fixViewLabelStyle()
-            }
-            .earseToAnyView()
+            let binding = Binding<DictType.Orientation?> (
+                get: { orientation },
+                set: { data.facing = .orientation($0)}
+            )
+            Text(orientation?.label ?? placeholder)
+                .foregroundColor(
+                    orientation == nil ?
+                        .text.grayCD : .text.gray6
+                )
+                .fixViewLabelStyle()
+                .plugDictTypePicker(optional: binding)
         case .buildDirection(let buildDirection):
-            return Menu {
-                ForEach(DictType.BuildDirection.allCases, id: \.self) { i in
-                    Button {
-                        data.facing = .buildDirection(i)
-                    } label: {
-                        Text(i.label)
-                    }
-                }
-            } label: {
-                Text(buildDirection?.label ?? placeholder)
-                    .foregroundColor(
-                        buildDirection == nil ?
-                            .text.grayCD : .text.gray6
-                    )
-                    .fixViewLabelStyle()
-            }
-            .earseToAnyView()
-        case .none: return EmptyView().earseToAnyView()
+            let binding = Binding<DictType.BuildDirection?> (
+                get: { buildDirection },
+                set: { data.facing = .buildDirection($0)}
+            )
+            Text(buildDirection?.label ?? placeholder)
+                .foregroundColor(
+                    buildDirection == nil ?
+                        .text.grayCD : .text.gray6
+                )
+                .fixViewLabelStyle()
+                .plugDictTypePicker(optional: binding)
+        case .none: EmptyView()
         }
     }
     

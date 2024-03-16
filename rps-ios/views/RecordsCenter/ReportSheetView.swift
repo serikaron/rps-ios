@@ -89,21 +89,45 @@ private struct TemplateView: View {
                 Text("*")
                     .customText(size: 14, color: .hex("#FF3030"))
                 Text("模板名称").itemTitle()
-                Menu {
-                    ForEach(templateList, id: \.id) { t in
-                        Button {
-                            selectedTemplate = t
-                        } label: {
-                            Text(t.name).itemContent()
-                        }
-                    }
-                } label: {
+                HStack {
                     Text(selectedTemplate == nil ? "请选择模板" : selectedTemplate!.name)
                         .customText(
                             size: 14,
                             color: selectedTemplate == nil ? .text.grayCD : .text.gray6)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                     Image.main.arrowIconRight
+                }
+                .plugPicker { show in
+                    VStack {
+                        HStack {
+                            Text("取消")
+                                .customText(size: 14, color: .text.gray6)
+                                .background(.white)
+                                .onTapGesture {
+                                    show.wrappedValue = false
+                                }
+                            Spacer()
+                            Text("确定")
+                                .customText(size: 14, color: .text.gray3)
+                                .background(.white)
+                                .onTapGesture {
+                                    show.wrappedValue = false
+                                }
+                        }
+                        
+                        if templateList.isEmpty {
+                            Text("该单位未配置模版, 请先联系管理员配置咨询单模版")
+                        } else {
+                            Picker("", selection: $selectedTemplate) {
+                                ForEach(templateList, id: \.id) { t in
+                                    Text(t.name).itemContent()
+                                        .tag(t)
+                                }
+                            }
+                            .pickerStyle(.wheel)
+                        }
+                    }
+                    .padding()
                 }
             }
             Spacer().frame(height: 16)
@@ -348,25 +372,25 @@ private struct InputView: View {
         }
     }
     
-    private func dictTypePicker<DT: HasLabel>(name: String, allCases: [DT], binding: Binding<DT?>) -> some View {
-        Menu {
-            ForEach(Array(zip(allCases.indices, allCases)),
-                    id: \.0) { _, type in
-                Button {
-                    binding.wrappedValue = type
-                } label: {
-                    Text(type.label)
-                }
-            }
-        } label: {
+    private func dictTypePicker<
+        DT: HasLabel & CaseIterable & Hashable
+    >(
+        name: String, allCases: [DT], binding: Binding<DT?>
+    ) -> some View {
+        HStack {
             Text(binding.wrappedValue == nil ? "请选择\(name)" : binding.wrappedValue?.label ?? "")
                 .customText(size: 14,
                             color: binding.wrappedValue == nil ? .text.grayCD : .text.gray3)
             Image.main.arrowIconRight
         }
+        .plugDictTypePicker(optional: binding)
     }
     
-    private func dictTypeItemView<DT: HasLabel>(title: String, isRequire: Bool, allCases: [DT], binding: Binding<DT?>) -> some View {
+    private func dictTypeItemView<
+        DT: HasLabel & CaseIterable & Hashable
+    >(
+        title: String, isRequire: Bool, allCases: [DT], binding: Binding<DT?>
+    ) -> some View {
         itemView(title: title, isRequire: isRequire) {
             dictTypePicker(name: title, allCases: allCases, binding: binding)
         }

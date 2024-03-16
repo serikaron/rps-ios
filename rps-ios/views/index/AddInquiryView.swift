@@ -408,90 +408,35 @@ struct AddInquiryView: View {
             areaName: $sheet.areaName
         )
     }
-    private var addressPicker1: some View {
-        Menu {
-            ForEach(areaTree.children, id: \.code) { province in
-                Menu {
-                    ForEach(province.children, id: \.code) { city in
-                        Menu {
-                            ForEach(city.children, id: \.code) { area in
-                                Button {
-                                    sheet.provinceCode = Int(province.code) ?? 0
-                                    sheet.provinceName = province.name
-                                    sheet.cityCode = Int(city.code) ?? 0
-                                    sheet.cityName = city.name
-                                    sheet.areaCode = Int(area.code) ?? 0
-                                    sheet.areaName = area.name
-                                } label: {
-                                    Text(area.name)
-                                }
-                            }
-                        } label: {
-                            Text(city.name)
-                        }
-                    }
-                } label: {
-                    Text(province.name)
-                }
-            }
-        } label: {
-            HStack {
-                Text(addressString.isEmpty ? "请选择物业地址" : addressString)
-                    .customText(size: 14, color: addressString.isEmpty ? .text.grayCD : .text.gray3)
-                Image.main.arrowIconRight
-            }
-        }
-    }
     
     private var estateTypePicker: some View {
-        Menu {
-            ForEach(DictType.EstateType.allCases, id: \.self) { type in
-                Button {
-                    sheet.estateType = type
-                } label: {
-                    Text(type.label)
-                }
-            }
-        } label: {
+        HStack {
             Text(sheet.estateType == nil ? "请选择物业类型" : sheet.estateType?.label ?? "")
                 .customText(size: 14,
                             color: sheet.estateType == nil ? .text.grayCD : .text.gray3)
             Image.main.arrowIconRight
         }
+        .plugDictTypePicker(optional: $sheet.estateType)
     }
     
     private var purposePicker: some View {
-        Menu {
-            ForEach(DictType.ValuationPurpose.allCases, id: \.self) { type in
-                Button {
-                    sheet.purpose = type
-                } label: {
-                    Text(type.label)
-                }
-            }
-        } label: {
+        HStack {
             Text(sheet.purpose == nil ? "请选择估价目的" : sheet.purpose?.label ?? "")
                 .customText(size: 14,
                             color: sheet.purpose == nil ? .text.grayCD : .text.gray3)
             Image.main.arrowIconRight
         }
+        .plugDictTypePicker(optional: $sheet.purpose)
     }
     
     private var structurePicker: some View {
-        Menu {
-            ForEach(DictType.BuildingStructure.allCases, id: \.self) { type in
-                Button {
-                    sheet.structure = type
-                } label: {
-                    Text(type.label)
-                }
-            }
-        } label: {
+        HStack {
             Text(sheet.structure == nil ? "请选择建筑结构" : sheet.structure?.label ?? "")
                 .customText(size: 14,
                             color: sheet.structure == nil ? .text.grayCD : .text.gray3)
             Image.main.arrowIconRight
         }
+        .plugDictTypePicker(optional: $sheet.structure)
     }
     
     private var valuationDatePicker: some View {

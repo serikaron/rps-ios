@@ -231,25 +231,25 @@ struct AddReportView: View {
         }
     }
     
-    private func dictTypePicker<DT: HasLabel>(name: String, allCases: [DT], binding: Binding<DT?>) -> some View {
-        Menu {
-            ForEach(Array(zip(allCases.indices, allCases)),
-                    id: \.0) { _, type in
-                Button {
-                    binding.wrappedValue = type
-                } label: {
-                    Text(type.label)
-                }
-            }
-        } label: {
+    private func dictTypePicker<
+        DT: CaseIterable & HasLabel & Hashable
+    >(
+        name: String, allCases: [DT], binding: Binding<DT?>
+    ) -> some View {
+        HStack {
             Text(binding.wrappedValue == nil ? "请选择\(name)" : binding.wrappedValue?.label ?? "")
                 .customText(size: 14,
                             color: binding.wrappedValue == nil ? .text.grayCD : .text.gray3)
             Image.main.arrowIconRight
         }
+        .plugDictTypePicker(optional: binding)
     }
     
-    private func dictTypeItemView<DT: HasLabel>(title: String, isRequire: Bool, allCases: [DT], binding: Binding<DT?>) -> some View {
+    private func dictTypeItemView<
+        DT: CaseIterable & HasLabel & Hashable
+    >(
+        title: String, isRequire: Bool, allCases: [DT], binding: Binding<DT?>
+    ) -> some View {
         itemView(title: title, isRequire: isRequire) {
             dictTypePicker(name: title, allCases: allCases, binding: binding)
         }
@@ -304,40 +304,6 @@ struct AddReportView: View {
             areaCode: $sheet.areaCode,
             areaName: $sheet.areaName
         )
-    }
-    private var addressPicker1: some View {
-        Menu {
-            ForEach(areaTree.children, id: \.code) { province in
-                Menu {
-                    ForEach(province.children, id: \.code) { city in
-                        Menu {
-                            ForEach(city.children, id: \.code) { area in
-                                Button {
-                                    sheet.provinceCode = Int(province.code) ?? 0
-                                    sheet.provinceName = province.name
-                                    sheet.cityCode = Int(city.code) ?? 0
-                                    sheet.cityName = city.name
-                                    sheet.areaCode = Int(area.code) ?? 0
-                                    sheet.areaName = area.name
-                                } label: {
-                                    Text(area.name)
-                                }
-                            }
-                        } label: {
-                            Text(city.name)
-                        }
-                    }
-                } label: {
-                    Text(province.name)
-                }
-            }
-        } label: {
-            HStack {
-                Text(addressString.isEmpty ? "请选择物业地址" : addressString)
-                    .customText(size: 14, color: addressString.isEmpty ? .text.grayCD : .text.gray3)
-                Image.main.arrowIconRight
-            }
-        }
     }
     
     private var floorInput: some View {
