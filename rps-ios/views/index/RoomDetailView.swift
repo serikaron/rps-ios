@@ -423,6 +423,14 @@ private struct RoomInfoView: View {
                     .customText(size: 14, color: .text.gray3)
                 Spacer()
             }
+            Spacer().frame(height: 10)
+            HStack {
+                Text("小区查询情况说明")
+                    .customText(size: 14, color: .text.gray6)
+                Text(roomDetail.queryExplain)
+                    .customText(size: 14, color: .red)
+                Spacer()
+            }
             Spacer().frame(height: 15)
             VStack(spacing: 10) {
                 ForEach(Array(zip(itemToShow.indices, itemToShow)), id: \.0) { _, row in
@@ -498,7 +506,7 @@ private struct RoomInfoView: View {
     }
     
     private var itemToShow: [[RoomInfoItem]] {
-        print("debug itemToShow, estateType: \(estateType)")
+//        print("debug itemToShow, estateType: \(estateType)")
         switch estateType {
         case .commApartment:
             fallthrough

@@ -67,8 +67,8 @@ struct RoomDetail {
             return DictType.estate.label(of: t) ?? nilText
             
         case .villa:
-            guard let t = dcBuilding.fvEstateType else { return nilText }
-            return DictType.estate.label(of: t) ?? nilText
+            guard let t = dcBuilding.fvPropertyClassifyThirdVilla else { return nilText }
+            return DictType.valueOf(type: .fv_property_classify_third_villa, key: t) ?? nilText
         case .shopStreet:
             guard let t = hasRoom ? networkRoomDetail.fvEstateType : dcBuilding.fvEstateType
             else { return nilText }
@@ -716,6 +716,10 @@ struct RoomDetail {
             print("decode fvPois FAILED!!!, estatType:\(estateTypeString), fvPois:\(dcCompound.fvPois)")
             return nil
         }
+    }
+    
+    var queryExplain: String {
+        networkRoomDetail.dcCompound.fvQueryExplain ?? nilText
     }
 }
 

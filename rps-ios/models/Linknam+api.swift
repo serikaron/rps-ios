@@ -356,6 +356,7 @@ extension Linkman {
         var fvCityName: String?
         var fvAreaName: String?
         var fvSubdistrictName: String?
+        var fvPropertyClassifyThirdVilla: String?
     }
     
     struct DCCompound: Codable {
@@ -461,6 +462,7 @@ extension Linkman {
         var fvParkKeyEnterprises: String?
         var fvIndustryLimit: String?
         var fvCommunityName: String?
+        var fvQueryExplain: String?
     }
     
     struct NetworkRoomDetail: Codable {
