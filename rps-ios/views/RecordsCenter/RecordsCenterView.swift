@@ -511,12 +511,13 @@ private struct RecordView: View {
             .cornerRadius(4)
     }
     
+    @ViewBuilder
     private var buttonView: some View {
         switch record.page {
         case .inquiry:
-            return buttonViewInquiry.earseToAnyView()
+            buttonViewInquiry
         case .report:
-            return buttonViewReport.earseToAnyView()
+            buttonViewReport
         }
     }
     
@@ -635,7 +636,7 @@ private struct RecordView: View {
     }
     
     private var buttonViewReport: some View {
-        ScrollView(.horizontal) {
+//        ScrollView(.horizontal) {
             HStack {
                 NavigationLink {
                     AddReportView(inquiryId: nil, recordId: record.id, detail: nil)
@@ -643,6 +644,7 @@ private struct RecordView: View {
                     Text("提交委托")
                 }
                 .disabled(reportButton1Disabled)
+                Spacer()
                 Button("撤销委托") {
                     Task {
                         await estateService.withdrawReport(id: record.id)
@@ -651,18 +653,20 @@ private struct RecordView: View {
                     }
                 }
                 .disabled(reportButton2Disabled)
+                Spacer()
                 Button("查看结果") {
                     withAnimation {
                         popupRecord = record
                     }
                 }
-                    .disabled(reportButton3Disabled)
+                .disabled(reportButton3Disabled)
+                Spacer()
                 Button("客户咨询") {
                     tabService.selectedTab = .cs
                 }
                     .disabled(reportButton4Disabled)
             }
-        }
+//        }
         .font(.system(size: 12))
         .padding(.horizontal, 16)
         .padding(.vertical, 15)
