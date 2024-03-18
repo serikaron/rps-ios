@@ -174,8 +174,6 @@ struct RoomDetail {
             fallthrough
         case .singleApartment:
             fallthrough
-        case .villa:
-            fallthrough
         case .office:
             fallthrough
         case .industrialSmallGarden:
@@ -193,6 +191,9 @@ struct RoomDetail {
             return hasRoom ?
             DictType.shopPosition.label(of: position) ?? nilText :
             DictType.noRoomPosition.label(of: position) ?? nilText
+        case .villa:
+            guard let position = networkRoomDetail.fvPosition else { return nilText }
+            return DictType.valueOf(type: .fv_property_classify_third_villa, key: position) ?? position
         case .industrialFactory:
             fallthrough
         case nil: return nilText

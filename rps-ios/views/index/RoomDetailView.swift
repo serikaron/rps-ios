@@ -462,7 +462,7 @@ private struct RoomInfoView: View {
         switch item {
         case .estateType:
             switch estateType {
-            case .villa: return "房产分类"
+            case .villa: return "别墅类型"
             case .shopStreet: return "商业类型"
             default: return "物业类型"
             }

@@ -39,7 +39,7 @@ final class rps_iosTests: XCTestCase {
         Linkman.shared.standalone = true
         
         func test(type: String, key: String, value: String) async {
-            let v = await DictType.valueOf(type: type, key: key)
+            let v = await DictType.asyncValueOf(type: type, key: key)
             assert(v == value, "testDictType, expect value (\(value)) not match actual value (\(v))")
         }
         

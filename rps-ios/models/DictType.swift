@@ -49,12 +49,16 @@ extension DictType {
     
     static private var task: Task<Void, Never>?
     
-    static func valueOf(type: String, key: String) async -> String? {
+    static func asyncValueOf(type: String, key: String) async -> String? {
         if dict == nil {
             await getDict()
         }
         
         return pickValue(type: type, key: key)
+    }
+    
+    static func valueOf(type: DictType, key: String) -> String? {
+        pickValue(type: type.rawValue, key: key)
     }
     
     fileprivate static func pickValue(type: String, key: String) -> String? {
@@ -105,7 +109,7 @@ extension DictType {
     }
     
     func asyncLabel(of key: String) async -> String? {
-        await Self.valueOf(type: typeName, key: key)
+        await Self.asyncValueOf(type: typeName, key: key)
     }
     
     func label(of key: String) -> String? {
