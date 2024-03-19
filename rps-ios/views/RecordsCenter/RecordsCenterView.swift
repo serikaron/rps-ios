@@ -122,7 +122,7 @@ struct RecordsCenterView: View {
             
             HStack {
                 HStack(spacing: 0) {
-                    Text("记录类型")
+                    Text(param.recordType.label)
                         .customText(size: 14, color: .main)
                     Image.main.arrowIconDown
                         .resizable()
@@ -132,12 +132,12 @@ struct RecordsCenterView: View {
 
                 Spacer()
                 
-                menu(title: "物业类型", allCases: DictType.EstateType.allCases, binding: $param.estateType)
+                menu(title: param.estateType?.label ?? "物业类型", allCases: DictType.EstateType.allCases, binding: $param.estateType)
                 Spacer()
                 Group {
                     switch page {
                     case .inquiry:
-                        menu(title: "询价系统", allCases: InquiryType.allCases, binding: $param.inquiryType)
+                        menu(title: param.inquiryType?.label ?? "询价系统", allCases: InquiryType.allCases, binding: $param.inquiryType)
                         Spacer()
                     case .report:
                         EmptyView()
@@ -146,9 +146,9 @@ struct RecordsCenterView: View {
                 Group {
                     switch page {
                     case .inquiry:
-                        menu(title: "业务状态", allCases: InquiryState.allCases, binding: $param.inquiryState)
+                        menu(title: param.inquiryState?.label ?? "业务状态", allCases: InquiryState.allCases, binding: $param.inquiryState)
                     case .report:
-                        menu(title: "业务状态", allCases: [
+                        menu(title: param.reportState?.label ?? "业务状态", allCases: [
                             ReportState._0, ._2, ._3, ._6, ._7
                         ], binding: $param.reportState)
                     }
@@ -465,7 +465,12 @@ private struct RecordView: View {
                     }
                     Spacer().frame(height: 9)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("询价人： \(record.clientName)")
+                        switch record.page {
+                        case .inquiry:
+                            Text("询价人： \(record.clientName)")
+                        case .report:
+                            Text("委托人： \(record.clientName)")
+                        }
                         Text("询价时间： \(record.valuationDate)")
                         switch record.page {
                         case .inquiry:
@@ -473,7 +478,12 @@ private struct RecordView: View {
                         case .report:
                             Text("业务状态：\(record.reportState!.label)")
                         }
-                        Text("下载状态：\(record.downloadState?.label ?? "")")
+                        switch record.page {
+                        case .inquiry:
+                            Text("下载状态：\(record.downloadState?.label ?? "未申请下载")")
+                        case .report:
+                            EmptyView()
+                        }
                     }
                     .customText(size: 12, color: .text.gray6)
                 }

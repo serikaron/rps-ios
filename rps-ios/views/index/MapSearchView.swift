@@ -60,7 +60,7 @@ struct MapSearchView: View {
     
     private var content: some View {
         VStack {
-            infoView
+//            infoView
             Spacer().frame(height: 100)
             inputView
         }

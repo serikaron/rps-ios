@@ -25,6 +25,7 @@ struct LoadingView: View {
             }
         }
         .onReceive(Box.shared.loadingSubject) { loading in
+//            print("loading: \(loading)")
             show = loading
         }
     }

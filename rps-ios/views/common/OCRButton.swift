@@ -30,7 +30,9 @@ struct OCRButton<Content: View>: View {
             .onChange(of: ocrImage) { _ in
                 guard !ocrImage.imageURL.isEmpty else { return }
                 Task {
+                    Box.setLoading(true)
                     let (searchResult, area) = await estateService.ocr(image: .from(pickerImage: ocrImage))
+                    Box.setLoading(false)
                     guard let searchResult = searchResult,
                           let area = area
                     else {

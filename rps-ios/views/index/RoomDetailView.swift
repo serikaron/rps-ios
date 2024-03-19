@@ -595,6 +595,7 @@ private struct OverlayView: View {
                 .background(Color.hex("#FFB23F"))
                 .cornerRadius(8)
                 .onTapGesture {
+                    hideKeyboard()
                     Task {
                         guard var inquiry = inquiry else { return }
                         inquiry.coverImg = detail.coverImg

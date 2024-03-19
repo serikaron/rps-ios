@@ -915,6 +915,7 @@ extension Linkman {
         let fvBuildingStructure: String?
         let fvSearchAddr: String?
         let fiDataOrgId: Int?
+        let fvWtNickName: String?
     }
     
     struct NetworkRecordImage: Codable {

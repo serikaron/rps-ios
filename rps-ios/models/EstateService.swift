@@ -551,11 +551,23 @@ class EstateService: ObservableObject {
         if let inquiryType = filter.inquiryType {
             dict["fiType"] = "\(inquiryType.dictKey)"
         }
-        if let inquiryState = filter.inquiryState {
-            dict["fiState"] = inquiryState.dictKey
-        }
-        if let reportState = filter.reportState {
-            dict["fiReportState"] = reportState.dictKey
+        switch page {
+        case .inquiry:
+            if let inquiryState = filter.inquiryState {
+                dict["fiState"] = inquiryState.dictKey
+            }
+        case .report:
+            if let reportState = filter.reportState {
+                dict["fiReportState"] = reportState.dictKey
+            } else {
+                let l = [
+                    ReportState._0, ._2, ._3, ._6, ._7
+                ]
+                
+                l.indices.forEach { i in
+                    dict["fiReportStateList[\(i)]"] = l[i].dictKey
+                }
+            }
         }
         if !filter.startDate.isEmpty {
             dict["fvValuationDateStart"] = filter.startDate
@@ -596,6 +608,13 @@ class EstateService: ObservableObject {
                         guard reportState != nil else { return nil }
                     }
                     
+                    let clientName: () -> String = {
+                        switch page {
+                        case .inquiry: return r.fvInquiryUserName ?? ""
+                        case .report: return r.fvWtNickName ?? ""
+                        }
+                    }
+                    
                     return Record(
                         page: page,
                         id: r.id ?? 0,
@@ -604,7 +623,7 @@ class EstateService: ObservableObject {
                         district: r.fvAreaName ?? "",
                         estateType: estateType,
                         address: r.fvPropertyRightAddr ?? "",
-                        clientName: r.fvInquiryUserName ?? "",
+                        clientName: clientName(),
                         valuationDate: r.fvValuationDate ?? "",
                         inquiryState: inquiryState,
                         reportState: reportState,

@@ -43,6 +43,8 @@ struct MapView: UIViewRepresentable {
                 overlay.boundingMapRect(),
                 edgePadding: .init(top: 10, left: 10, bottom: 10, right: 10),
                 animated: true)
+        } else if let pointAnnotation = mapViewCoordinate.pointAnnotation {
+            view.addAnnotation(pointAnnotation)
         }
     }
     
@@ -104,6 +106,16 @@ private extension MapViewCoordinate {
             return MAPolyline(coordinates: l.unsafePointer, count: UInt(l.count))
         case .plane(let l):
             return MAPolygon(coordinates: l.unsafePointer, count: UInt(l.count))
+        }
+    }
+    
+    var pointAnnotation: MAPointAnnotation? {
+        switch self {
+        case .point(let l):
+            let out = MAPointAnnotation()
+            out.coordinate = l[0]
+            return out
+        default: return nil
         }
     }
 }
