@@ -2095,7 +2095,7 @@ private struct ReferenceCaseView: View {
     
     private func view(for item: ReferenceCase, isHeader: Bool) -> some View {
         HStack(spacing: 4) {
-            caseText(item.compoundName.isEmpty ? detail.compoundName : item.compoundName, isHeader: isHeader)
+            caseText(detail.compoundCompoundName, isHeader: isHeader)
             caseText(item.caseAddress, isHeader: isHeader)
             caseText(item.tradeType, isHeader: isHeader)
             caseText(item.area, isHeader: isHeader)
