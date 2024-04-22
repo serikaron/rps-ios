@@ -942,10 +942,11 @@ extension SearchResult {
     
     static func fromNetwork(_ item: Linkman.NetworkSearchResult) async -> SearchResult {
         let getCity: () async -> String = {
-            guard let pc = item.fiProvinceCode,
-                  let cc = item.fiCityCode
-            else { return "" }
-            return await AreaTree.root.name(by: ["\(pc)", "\(cc)"])
+            return ""
+//            guard let pc = item.fiProvinceCode,
+//                  let cc = item.fiCityCode
+//            else { return "" }
+//            return await AreaTree.root.name(by: ["\(pc)", "\(cc)"])
         }
         let city = await getCity()
         return SearchResult(

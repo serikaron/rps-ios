@@ -9,7 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var accountService = AccountService()
-    
+    @StateObject var areaTreeService = AreaTreeService()
+
     init () {
         Linkman.shared.showLog = true
 //        Task {
@@ -41,6 +42,7 @@ struct ContentView: View {
             }
         }
         .environmentObject(accountService)
+        .environmentObject(areaTreeService)
     }
     
     private var showMainView: Bool {

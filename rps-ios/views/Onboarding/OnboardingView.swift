@@ -211,6 +211,7 @@ private enum Sheet: CaseIterable {
 
 private struct RegisterView: View {
     @EnvironmentObject var accountService: AccountService
+    @EnvironmentObject var areaTreeService: AreaTreeService
     @Binding var viewType: ViewType
     
     @State private var account: String = ""
@@ -232,8 +233,6 @@ private struct RegisterView: View {
     @State private var cityName: String = ""
     @State private var areaName: String = ""
 
-    @State private var areaTree = AreaTree(code: "", name: "", children: [])
-    
     private var address: String{
         "\(provinceName)\(cityName)\(areaName)"
     }
@@ -273,11 +272,6 @@ private struct RegisterView: View {
             Spacer().frame(height: 52)
         }
         .padding(.horizontal, 28)
-        .onAppear {
-            Task {
-                areaTree = await AreaTree.root
-            }
-        }
         .onTapGesture {
             hideKeyboard()
         }
@@ -407,47 +401,6 @@ private struct RegisterView: View {
             cityName: $cityName,
             areaCode: $areaCode,
             areaName: $areaName)
-    }
-    private var addressPicker1: some View {
-        Menu {
-            ForEach(areaTree.children, id: \.code) { province in
-                Menu {
-                    ForEach(province.children, id: \.code) { city in
-                        Menu {
-                            ForEach(city.children, id: \.code) { area in
-                                Button {
-                                    provinceCode = Int(province.code) ?? 0
-                                    provinceName = province.name
-                                    cityCode = Int(city.code) ?? 0
-                                    cityName = city.name
-                                    areaCode = Int(area.code) ?? 0
-                                    areaName = area.name
-                                } label: {
-                                    Text(area.name)
-                                }
-                            }
-                        } label: {
-                            Text(city.name)
-                        }
-                    }
-                } label: {
-                    Text(province.name)
-                }
-            }
-        } label: {
-            HStack {
-                Text(address.isEmpty ? "请选择" : address)
-                    .customText(size: 14, color: address.isEmpty ? .text.grayCD : .text.gray3)
-                Spacer()
-                Image.main.arrowIconRight
-            }
-            .frame(height: 30)
-            .padding(.horizontal, 16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 4)
-                    .stroke(Color.hex("#CDCDCD"))
-            )
-        }
     }
 }
 

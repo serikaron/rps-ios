@@ -10,7 +10,7 @@
 		720C96B52B10850300E85AC5 /* data+RoomDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720C96B42B10850300E85AC5 /* data+RoomDetail.swift */; };
 		720C96B72B10862900E85AC5 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720C96B62B10862900E85AC5 /* MapView.swift */; };
 		722DA22D2B0AFD0500C0A3DF /* AddInquiryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA22C2B0AFD0500C0A3DF /* AddInquiryView.swift */; };
-		722DA22F2B0B029C00C0A3DF /* AreaTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA22E2B0B029C00C0A3DF /* AreaTree.swift */; };
+		722DA22F2B0B029C00C0A3DF /* AreaTreeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA22E2B0B029C00C0A3DF /* AreaTreeService.swift */; };
 		722DA2312B0B05E600C0A3DF /* SectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2302B0B05E600C0A3DF /* SectionView.swift */; };
 		722DA2332B0B4F3000C0A3DF /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2322B0B4F3000C0A3DF /* ImagePicker.swift */; };
 		722DA2352B0C865B00C0A3DF /* AddReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722DA2342B0C865B00C0A3DF /* AddReportView.swift */; };
@@ -116,7 +116,7 @@
 		720C96B42B10850300E85AC5 /* data+RoomDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "data+RoomDetail.swift"; sourceTree = "<group>"; };
 		720C96B62B10862900E85AC5 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		722DA22C2B0AFD0500C0A3DF /* AddInquiryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddInquiryView.swift; sourceTree = "<group>"; };
-		722DA22E2B0B029C00C0A3DF /* AreaTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTree.swift; sourceTree = "<group>"; };
+		722DA22E2B0B029C00C0A3DF /* AreaTreeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreaTreeService.swift; sourceTree = "<group>"; };
 		722DA2302B0B05E600C0A3DF /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
 		722DA2322B0B4F3000C0A3DF /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		722DA2342B0C865B00C0A3DF /* AddReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReportView.swift; sourceTree = "<group>"; };
@@ -152,8 +152,8 @@
 		7287067F2B457E8C00411189 /* NoticeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeListView.swift; sourceTree = "<group>"; };
 		728706812B458A6E00411189 /* NoticeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetailView.swift; sourceTree = "<group>"; };
 		728D964B2B020CA900E1ACC4 /* RoomDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDetailView.swift; sourceTree = "<group>"; };
-		72A455072BD68C480028B77B /* MAMapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MAMapKit.framework; path = frameworks/MAMapKit.framework; sourceTree = "<group>"; };
-		72A455082BD68C480028B77B /* AMapFoundationKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AMapFoundationKit.framework; path = frameworks/AMapFoundationKit.framework; sourceTree = "<group>"; };
+		72A455072BD68C480028B77B /* MAMapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MAMapKit.framework; sourceTree = "<group>"; };
+		72A455082BD68C480028B77B /* AMapFoundationKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AMapFoundationKit.framework; sourceTree = "<group>"; };
 		72A4550B2BD68D040028B77B /* AMap.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = AMap.bundle; path = MAMapKit.framework/AMap.bundle; sourceTree = "<group>"; };
 		72A9644D2AFF9060006E503A /* datas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = datas.swift; sourceTree = "<group>"; };
 		72A9644F2AFF92A1006E503A /* BuildingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingsView.swift; sourceTree = "<group>"; };
@@ -280,6 +280,8 @@
 		72A454F72BD687470028B77B /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				72A455082BD68C480028B77B /* AMapFoundationKit.framework */,
+				72A455072BD68C480028B77B /* MAMapKit.framework */,
 				72A4550B2BD68D040028B77B /* AMap.bundle */,
 			);
 			path = frameworks;
@@ -289,8 +291,6 @@
 			isa = PBXGroup;
 			children = (
 				72A454F72BD687470028B77B /* frameworks */,
-				72A455082BD68C480028B77B /* AMapFoundationKit.framework */,
-				72A455072BD68C480028B77B /* MAMapKit.framework */,
 				72DFCEE72AFA00F50001831F /* rps-ios */,
 				728697EF2AFF24BE00CA31C5 /* rps-iosTests */,
 				72DFCEE62AFA00F50001831F /* Products */,
@@ -413,7 +413,7 @@
 				72DE5A232B15975900CE36AA /* data+Inquiry.swift */,
 				72DE5A212B15849200CE36AA /* data+ReportSheet.swift */,
 				720C96B42B10850300E85AC5 /* data+RoomDetail.swift */,
-				722DA22E2B0B029C00C0A3DF /* AreaTree.swift */,
+				722DA22E2B0B029C00C0A3DF /* AreaTreeService.swift */,
 				72D810172B08F6320035355A /* Banner.swift */,
 				72D810192B09207C0035355A /* Curve.swift */,
 				72749E8B2B0E3C4F000258C2 /* CustomService.swift */,
@@ -571,7 +571,7 @@
 				722DA2312B0B05E600C0A3DF /* SectionView.swift in Sources */,
 				7236994C2B3FC0B40075C5E9 /* PDFShareSheet.swift in Sources */,
 				72DFCEFA2AFA03BA0001831F /* MainView.swift in Sources */,
-				722DA22F2B0B029C00C0A3DF /* AreaTree.swift in Sources */,
+				722DA22F2B0B029C00C0A3DF /* AreaTreeService.swift in Sources */,
 				72DFCF242AFCCD520001831F /* ErrorView.swift in Sources */,
 				72749F132B10359B000258C2 /* MapService.swift in Sources */,
 				728697F82AFF346600CA31C5 /* sequence+.swift in Sources */,

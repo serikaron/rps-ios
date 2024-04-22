@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AddInquiryView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject var estateService: EstateService
+    @EnvironmentObject private var estateService: EstateService
+    @EnvironmentObject private var areaTreeService: AreaTreeService
 
     let inquiryId: Int?
     let roomDetail: RoomDetail?
@@ -90,19 +91,25 @@ struct AddInquiryView: View {
         }
         .onAppear {
             fillSheet()
-            Task {
-                areaTree = await AreaTree.root
-                if sheet.provinceCode != 0 {
-                    let pCode = "\(sheet.provinceCode)"
-                    sheet.provinceName = areaTree.name(by: [pCode])
-                    if sheet.cityCode != 0 {
-                        let cCode = "\(sheet.cityCode)"
-                        sheet.cityName = areaTree.name(by: [pCode, cCode])
-                        if sheet.areaCode != 0 {
-                            let aCode = "\(sheet.areaCode)"
-                            sheet.areaName = areaTree.name(by: [pCode, cCode, aCode])
-                        }
-                    }
+            updateAreaName()
+        }
+        .onReceive(areaTreeService.$areaTree) {_ in
+            updateAreaName()
+        }
+    }
+    
+    private func updateAreaName() {
+        guard let tree = areaTreeService.areaTree else { return }
+        
+        if sheet.provinceCode != 0 {
+            let pCode = "\(sheet.provinceCode)"
+            sheet.provinceName = tree.name(by: [pCode])
+            if sheet.cityCode != 0 {
+                let cCode = "\(sheet.cityCode)"
+                sheet.cityName = tree.name(by: [pCode, cCode])
+                if sheet.areaCode != 0 {
+                    let aCode = "\(sheet.areaCode)"
+                    sheet.areaName = tree.name(by: [pCode, cCode, aCode])
                 }
             }
         }

@@ -21,6 +21,7 @@ private class ViewModel: ObservableObject {
     @Published var areaName: String = ""
     @Published private(set) var list = AreaListType.province
     @Published var treeNodes: [AreaTree] = []
+    var areaTreeService: AreaTreeService?
     
     var bindingProvinceCode: Binding<Int>
     var bindingProvinceName: Binding<String>
@@ -55,7 +56,11 @@ private class ViewModel: ObservableObject {
     
     private func refreshTreeNodes() {
         Task {
-            treeNodes = await AreaTree.root.children(by: codeList)
+            if areaTreeService?.areaTree == nil {
+                await areaTreeService?.loadAreaTree()
+            }
+            
+            treeNodes = areaTreeService?.areaTree?.children(by: codeList) ?? []
         }
     }
     
@@ -96,6 +101,7 @@ private class ViewModel: ObservableObject {
 
 struct AreaPicker: View {
     @StateObject private var viewModel: ViewModel
+    @EnvironmentObject private var areaTreeService: AreaTreeService
     
     init(provinceCode: Binding<Int>,
          provinceName: Binding<String>,
@@ -136,6 +142,7 @@ struct AreaPicker: View {
         .padding()
         .environmentObject(viewModel)
         .onAppear {
+            viewModel.areaTreeService = areaTreeService
             viewModel.activate(list: .province)
         }
     }
