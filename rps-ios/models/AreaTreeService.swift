@@ -7,6 +7,22 @@
 
 import Foundation
 
+struct AreaTreeData: Equatable {
+    var provinceCode: Int
+    var cityCode: Int
+    var areaCode: Int
+    var provinceName: String
+    var cityName: String
+    var areaName: String
+    
+    static var empty: AreaTreeData {
+        .init(provinceCode: 0, cityCode: 0, areaCode: 0, provinceName: "", cityName: "", areaName: "")
+    }
+    
+    var isEmpty: Bool {
+        provinceCode == 0 && cityCode == 0 && areaCode == 0
+    }
+}
 
 struct AreaTree {
     let code: String
@@ -40,6 +56,13 @@ private extension AreaTree {
     static func from(network: Linkman.NetworkArea) -> AreaTree {
         AreaTree(
             code: network.id, name: network.label,
+            children: network.children?.map { AreaTree.from(network: $0) } ?? []
+        )
+    }
+    
+    static func from(network: Linkman.NetworkUserArea) -> AreaTree {
+        AreaTree(
+            code: "\(network.id)", name: network.label,
             children: network.children?.map { AreaTree.from(network: $0) } ?? []
         )
     }
@@ -95,13 +118,12 @@ class AreaTreeService: ObservableObject {
         
         do {
             let rsp = try await Linkman.shared.getUserAreaTree(unitId: unitId)
-            guard let has = rsp.treeList?.isEmpty, has else { throw "area tree is empty"}
             userAreaTree = UserAreaTree(
-                tree: .from(network: rsp.treeList![0]),
+                tree: .from(network: Linkman.NetworkUserArea(id: 0, label: "", children: rsp.treeList)),
                 provinceCode: rsp.defaultParentCode,
                 cityCode: rsp.defaultCode)
         } catch {
-            print("getAreaTree FAILED!!! \(error)")
+            print("getUserAreaTree FAILED!!! \(error)")
             Box.sendError("加载用户省市区失败")
         }
     }

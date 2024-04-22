@@ -292,6 +292,7 @@ private struct PlugAreaPickerModifier: ViewModifier {
     var cityName: Binding<String>
     var areaCode: Binding<Int>
     var areaName: Binding<String>
+    var treeType: TreeType
     
     func body(content: Content) -> some View {
         content
@@ -304,7 +305,8 @@ private struct PlugAreaPickerModifier: ViewModifier {
                     cityName: cityName,
                     areaCode: areaCode,
                     areaName: areaName,
-                    show: $show
+                    show: $show,
+                    treeType: treeType
                 )
                 .presentationDetents([.medium, .large])
             }
@@ -326,7 +328,28 @@ extension View {
             cityCode: cityCode,
             cityName: cityName,
             areaCode: areaCode,
-            areaName: areaName
+            areaName: areaName,
+            treeType: .system
+        ))
+    }
+    
+    func plugUserAreaPicker(
+        provinceCode: Binding<Int>,
+        provinceName: Binding<String>,
+        cityCode: Binding<Int>,
+        cityName: Binding<String>,
+        areaCode: Binding<Int>,
+        areaName: Binding<String>,
+        unitId: Int
+    ) -> some View {
+        ModifiedContent(content: self, modifier: PlugAreaPickerModifier(
+            provinceCode: provinceCode,
+            provinceName: provinceName,
+            cityCode: cityCode,
+            cityName: cityName,
+            areaCode: areaCode,
+            areaName: areaName,
+            treeType: .user(unitId: unitId)
         ))
     }
 }

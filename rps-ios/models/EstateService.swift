@@ -42,7 +42,7 @@ class EstateService: ObservableObject {
     
     let refreshInquiryList = PassthroughSubject<Void, Never>()
     
-    func fuzzySearch() {
+    func fuzzySearch(provinceCode: Int, cityCode: Int) {
         fuzzySearchTask?.cancel()
         
         fuzzySearchTask = Task {
@@ -56,17 +56,17 @@ class EstateService: ObservableObject {
                     return
                 }
                 
-                fuzzySearchResult = await _searchRoom(keyword: fuzzyKeyword)
+                fuzzySearchResult = await _searchRoom(keyword: fuzzyKeyword, provinceCode: provinceCode, cityCode: cityCode)
             } catch {
                 fuzzySearchResult = []
             }
         }
     }
     
-    private func _searchRoom(keyword: String) async -> SearchResultList {
+    private func _searchRoom(keyword: String, provinceCode: Int, cityCode: Int) async -> SearchResultList {
         
         do {
-            let rsp = try await Linkman.shared.fuzzySearch(keyword: keyword)
+            let rsp = try await Linkman.shared.fuzzySearch(keyword: keyword, provinceCode: provinceCode, cityCode: cityCode)
             return await .fromNetwork(rsp)
         } catch {
             return []
@@ -822,13 +822,13 @@ class EstateService: ObservableObject {
         }
     }
     
-    func ocr(image: RpsImage) async -> (SearchResult?, String?) {
+    func ocr(image: RpsImage, provinceCode: Int, cityCode: Int) async -> (SearchResult?, String?) {
         do {
             let rsp = try await Linkman.shared.upload(image: image.image, filename: image.filename)
             guard let url = rsp.url else { return (nil, nil) }
             let ocrRsp = try await Linkman.shared.recognizeEstateCertificationWithOptions(ossUrl: url)
             guard let address = ocrRsp.fvThePropertyIsLocated else { return (nil, nil) }
-            let searchRsp = try await Linkman.shared.fuzzySearch(keyword: address)
+            let searchRsp = try await Linkman.shared.fuzzySearch(keyword: address, provinceCode: provinceCode, cityCode: cityCode)
             guard !searchRsp.isEmpty else { return (nil, nil) }
             return (await SearchResult.fromNetwork(searchRsp[0]), ocrRsp.fvBuildingFloorArea)
         } catch {

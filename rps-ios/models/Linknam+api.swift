@@ -172,12 +172,14 @@ extension Linkman {
     
     typealias FuzzySearchResopnse = [NetworkSearchResult]
     
-    func fuzzySearch(keyword: String) async throws -> FuzzySearchResopnse {
+    func fuzzySearch(keyword: String, provinceCode: Int, cityCode: Int) async throws -> FuzzySearchResopnse {
         return try await Request()
             .with(\.path, setTo: "/data/rps/dcdata/selectRoomAddr")
             .with(\.method, setTo: .GET)
             .with(\.query, setTo: [
-                "fvFamilyRoomName": keyword
+                "fvFamilyRoomName": keyword,
+                "fiProvinceCode": "\(provinceCode)",
+                "fiCityCode": "\(cityCode)"
             ])
             .with(\.standaloneResponse, setTo: standaloneResponse([NetworkSearchResult.mock]))
             .with(\.sendError, setTo: false)
@@ -887,8 +889,14 @@ extension Linkman {
         return try r.decoded() as AreaTreeResponse
     }
     
+    struct NetworkUserArea: Codable {
+        let id: Int
+        let label: String
+        let children: [NetworkUserArea]?
+    }
+
     struct UserAreaTreeResponse: Codable {
-        let treeList: [NetworkArea]?
+        let treeList: [NetworkUserArea]?
         let defaultCode: Int?
         let defaultParentCode: Int?
     }

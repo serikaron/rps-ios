@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum TreeType {
+    case system
+    case user(unitId: Int)
+}
+
 enum AreaListType {
     case province, city, area
 }
@@ -30,13 +35,16 @@ private class ViewModel: ObservableObject {
     var bindingAreaCode: Binding<Int>
     var bindingAreaName: Binding<String>
     
+    private(set) var treeType: TreeType
+    
     init(
         bindingProvinceCode: Binding<Int>,
         bindingProvinceName: Binding<String>,
         bindingCityCode: Binding<Int>,
         bindingCityName: Binding<String>,
         bindingAreaCode: Binding<Int>,
-        bindingAreaName: Binding<String>
+        bindingAreaName: Binding<String>,
+        treeType: TreeType
     ) {
         self.bindingProvinceCode = bindingProvinceCode
         self.bindingProvinceName = bindingProvinceName
@@ -44,8 +52,8 @@ private class ViewModel: ObservableObject {
         self.bindingCityName = bindingCityName
         self.bindingAreaCode = bindingAreaCode
         self.bindingAreaName = bindingAreaName
+        self.treeType = treeType
     }
-
     
     func activate(list: AreaListType) {
         withAnimation(.linear(duration: 0.2)) {
@@ -56,11 +64,21 @@ private class ViewModel: ObservableObject {
     
     private func refreshTreeNodes() {
         Task {
-            if areaTreeService?.areaTree == nil {
-                await areaTreeService?.loadAreaTree()
+            switch treeType {
+            case .system:
+                if areaTreeService?.areaTree == nil {
+                    await areaTreeService?.loadAreaTree()
+                }
+                
+                treeNodes = areaTreeService?.areaTree?.children(by: codeList) ?? []
+                
+            case .user(let unitId):
+                if areaTreeService?.userAreaTree == nil {
+                    await areaTreeService?.loadUserAreaTree(with: unitId)
+                }
+                
+                treeNodes = areaTreeService?.userAreaTree?.tree?.children(by: codeList) ?? []
             }
-            
-            treeNodes = areaTreeService?.areaTree?.children(by: codeList) ?? []
         }
     }
     
@@ -81,7 +99,12 @@ private class ViewModel: ObservableObject {
         case .city:
             cityCode = node.code
             cityName = node.name
-            activate(list: .area)
+            switch treeType {
+            case .system:
+                activate(list: .area)
+            case .user:
+                updateBinding()
+            }
         case .area:
             areaCode = node.code
             areaName = node.name
@@ -109,7 +132,8 @@ struct AreaPicker: View {
          cityName: Binding<String>,
          areaCode: Binding<Int>,
          areaName: Binding<String>,
-         show: Binding<Bool>
+         show: Binding<Bool>,
+         treeType: TreeType
     ) {
         _viewModel = StateObject(wrappedValue: ViewModel(
             bindingProvinceCode: provinceCode,
@@ -117,7 +141,8 @@ struct AreaPicker: View {
             bindingCityCode: cityCode,
             bindingCityName: cityName,
             bindingAreaCode: areaCode,
-            bindingAreaName: areaName
+            bindingAreaName: areaName,
+            treeType: treeType
         ))
         self.show = show
     }
@@ -203,21 +228,29 @@ private struct AreaTabView: View {
         }
     }
     
+    @ViewBuilder
     private var area: some View {
-        Button {
-            viewModel.activate(list: .area)
-        } label: {
-            Group {
-                if !viewModel.areaCode.isEmpty {
-                    nameLabel(text: viewModel.areaName)
-                } else if !viewModel.cityCode.isEmpty {
-                    placeholder(text: "区")
-                } else {
-                    Color.white
+        Group {
+            switch viewModel.treeType {
+            case .system:
+                Button {
+                    viewModel.activate(list: .area)
+                } label: {
+                    Group {
+                        if !viewModel.areaCode.isEmpty {
+                            nameLabel(text: viewModel.areaName)
+                        } else if !viewModel.cityCode.isEmpty {
+                            placeholder(text: "区")
+                        } else {
+                            Color.white
+                        }
+                    }
                 }
+            case .user:
+                Color.white
             }
-            .frame(width: 50)
         }
+            .frame(width: 50)
     }
     
     private func nameLabel(text: String) -> some View {
@@ -270,6 +303,7 @@ private struct AreaListView: View {
         cityName: .constant(""),
         areaCode: .constant(0),
         areaName: .constant(""),
-        show: .constant(false)
+        show: .constant(false),
+        treeType: .system
     )
 }
