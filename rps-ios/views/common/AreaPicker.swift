@@ -55,7 +55,7 @@ private class ViewModel: ObservableObject {
     
     private func refreshTreeNodes() {
         Task {
-            treeNodes = await AreaTree.children(by: codeList)
+            treeNodes = await AreaTree.root.children(by: codeList)
         }
     }
     

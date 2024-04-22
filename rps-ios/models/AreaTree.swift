@@ -47,15 +47,12 @@ struct AreaTree {
         return foundNode?.name ?? ""
     }
     
-    static func children(by codeList: [String]) async -> [AreaTree] {
-        let tree = await Self.root
-        guard !tree.code.isEmpty else { return [] }
-
+    func children(by codeList: [String]) async -> [AreaTree] {
         if codeList.isEmpty {
-            return tree.children
+            return self.children
         }
         
-        let foundNode = codeList.reduce(tree) { treeNode, currCode -> AreaTree? in
+        let foundNode = codeList.reduce(self) { treeNode, currCode -> AreaTree? in
             guard let treeNode = treeNode else { return nil }
             return treeNode.children.first { $0.code == currCode }
         }

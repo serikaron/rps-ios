@@ -887,6 +887,21 @@ extension Linkman {
         return try r.decoded() as AreaTreeResponse
     }
     
+    struct UserAreaTreeResponse: Codable {
+        let treeList: [NetworkArea]?
+        let defaultCode: Int?
+        let defaultParentCode: Int?
+    }
+    
+    func getUserAreaTree(unitId: Int) async throws -> UserAreaTreeResponse {
+        try await Request()
+            .with(\.path, setTo: "/account/rps/clientUnit/getRpsCityAuth")
+            .with(\.query, setTo: ["unitId": "\(unitId)"])
+            .with(\.method, setTo: .GET)
+            .make()
+            .response() as UserAreaTreeResponse
+    }
+    
     struct NetworkRecord: Codable {
         let id: Int?
         let fvCoverImg: String?
