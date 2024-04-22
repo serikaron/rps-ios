@@ -82,7 +82,7 @@ class EstateService: ObservableObject {
     }
     private var searchParam = SearchParam(keyword: "")
     
-    func exactSearch(keyword: String) async {
+    func exactSearch(keyword: String, provinceCode: Int, cityCode: Int) async {
         if keyword.isEmpty { return }
         
         if searchParam.keyword != keyword {
@@ -95,7 +95,8 @@ class EstateService: ObservableObject {
         
         
         do {
-            let rsp = try await Linkman.shared.exactSearch(keyword: keyword, pageSize: searchParam.pageSize, pageNum: searchParam.pageNum)
+            let rsp = try await Linkman.shared.exactSearch(keyword: keyword, pageSize: searchParam.pageSize, pageNum: searchParam.pageNum,
+                                                           provinceCode: provinceCode, cityCode: cityCode)
             let l = await SearchResultList.fromNetwork(rsp.records)
             if searchParam.pageNum == 1 {
                 exactSearchResult = l
@@ -746,11 +747,11 @@ class EstateService: ObservableObject {
         }
     }
     
-    func searchMap(address: String) async -> MapCompound? {
+    func searchMap(address: String, provinceCode: Int, cityCode: Int) async -> MapCompound? {
         if Box.isPreview { return .mock }
         
         do {
-            let rsp = try await Linkman.shared.exactSearch(keyword: address, pageSize: 1, pageNum: 1)
+            let rsp = try await Linkman.shared.exactSearch(keyword: address, pageSize: 1, pageNum: 1, provinceCode: provinceCode, cityCode: cityCode)
             guard !rsp.records.isEmpty else {
                 throw "record not found"
             }

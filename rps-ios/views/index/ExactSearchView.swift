@@ -10,7 +10,8 @@ import SBPAsyncImage
 
 struct ExactSearchView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject var estateService: EstateService
+    @EnvironmentObject private var estateService: EstateService
+    @EnvironmentObject private var areaTreeService: AreaTreeService
     @State var text: String = ""
     
     var resultList: SearchResultList {
@@ -20,8 +21,9 @@ struct ExactSearchView: View {
     var body: some View {
         VStack {
             Spacer().frame(height: 10)
+            UserAreaPicker()
+            Spacer().frame(height: 10)
             SearchInputView(text: $text, searchAction: {
-                guard !text.isEmpty else { return }
                 search()
             })
             Spacer().frame(height: 10)
@@ -32,11 +34,26 @@ struct ExactSearchView: View {
         .setupNavigationBar(title: "小区列表") {
             presentationMode.wrappedValue.dismiss()
         }
+        .onReceive(areaTreeService.$userAreaTree) {_ in
+            search()
+        }
     }
     
     private func search() {
+        guard let provinceCode = areaTreeService.userAreaTree?.provinceCode,
+              provinceCode != 0,
+              let cityCode = areaTreeService.userAreaTree?.cityCode,
+              cityCode != 0,
+              !text.isEmpty
+        else {
+            return
+        }
+        
         Task {
-            await estateService.exactSearch(keyword: text)
+            await estateService.exactSearch(
+                keyword: text,
+                provinceCode: provinceCode,
+                cityCode: cityCode)
         }
     }
     
@@ -44,6 +61,7 @@ struct ExactSearchView: View {
     private var listView: some View {
         if resultList.isEmpty {
             Image.main.emptyList
+                .frame(maxHeight: .infinity, alignment: .top)
         } else {
             List {
                 ForEach(Array(zip(resultList.indices, resultList)), id: \.0) { idx, result in

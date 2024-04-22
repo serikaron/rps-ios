@@ -13,8 +13,9 @@ import Combine
 struct MapSearchView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
-    @EnvironmentObject var estateService: EstateService
-    @EnvironmentObject var tabService: TabService
+    @EnvironmentObject private var estateService: EstateService
+    @EnvironmentObject private var tabService: TabService
+    @EnvironmentObject private var areaTreeService: AreaTreeService
  
     @State private var inputText = ""
     @State private var showMap = true
@@ -66,6 +67,9 @@ struct MapSearchView: View {
         }
         .frame(maxHeight: .infinity, alignment: .bottom)
         .padding(.bottom, 40)
+        .onReceive(areaTreeService.$userAreaTree) {_ in
+            search(estateService: estateService, areaTreeService: areaTreeService, keyword: inputText)
+        }
     }
     
     private var infoView: some View {
@@ -141,6 +145,8 @@ struct MapSearchView: View {
     
     private var inputView: some View {
         VStack(spacing: 30) {
+            UserAreaPicker()
+            
             HStack {
                 TextField("", text: $inputText)
                 Spacer()
@@ -161,8 +167,7 @@ struct MapSearchView: View {
                 .onTapGesture {
                     hideKeyboard()
                     Task {
-//                        compound = await estateService.searchMap(address: inputText)
-                        await estateService.exactSearch(keyword: inputText)
+                        search(estateService: estateService, areaTreeService: areaTreeService, keyword: inputText)
                         showPopover = true
                     }
                 }
@@ -189,6 +194,7 @@ struct MapSearchView: View {
 
 private struct ResultListView: View {
     @EnvironmentObject private var estateService: EstateService
+    @EnvironmentObject private var areaTreeService: AreaTreeService
     var show: Binding<Bool>
     
     @State private var pickerValue: Int = 0
@@ -244,9 +250,7 @@ private struct ResultListView: View {
                     .tag(i)
                     .onAppear {
                         if i == resultList.count - 2 {
-                            Task {
-                                await estateService.exactSearch(keyword: keyword)
-                            }
+                            search(estateService: estateService, areaTreeService: areaTreeService, keyword: keyword)
                         }
                     }
             }
@@ -262,7 +266,26 @@ private struct ResultListView: View {
         .environmentObject(TabService())
 }
 
-//
-//#Preview {
-//    MapView()
-//}
+@MainActor
+private func search (
+    estateService: EstateService,
+    areaTreeService: AreaTreeService,
+    keyword: String
+) {
+    guard let provinceCode = areaTreeService.userAreaTree?.provinceCode,
+          provinceCode != 0,
+          let cityCode = areaTreeService.userAreaTree?.cityCode,
+          cityCode != 0,
+          !keyword.isEmpty
+    else {
+        return
+    }
+    
+    Task {
+        await estateService.exactSearch(
+            keyword: keyword,
+            provinceCode: provinceCode,
+            cityCode: cityCode)
+    }
+
+}

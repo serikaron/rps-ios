@@ -128,21 +128,14 @@ class AreaTreeService: ObservableObject {
         }
     }
     
-    func setProvince(code: Int) {
-        userAreaTree?.setProvince(code: code)
-    }
-    
-    func setCity(code: Int) {
-        userAreaTree?.setCity(code: code)
+    func setCode(province: Int, city: Int) {
+        userAreaTree?.setCode(province: province, city: city)
     }
 }
 
 private extension UserAreaTree {
-    mutating func setProvince(code: Int) {
-        provinceCode = code
-    }
-    
-    mutating func setCity(code: Int) {
-        cityCode = code
+    mutating func setCode(province: Int, city: Int) {
+        provinceCode = province
+        cityCode = city
     }
 }

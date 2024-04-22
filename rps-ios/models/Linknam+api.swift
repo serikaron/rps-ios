@@ -193,14 +193,16 @@ extension Linkman {
         let size: Int
     }
     
-    func exactSearch(keyword: String, pageSize: Int, pageNum: Int) async throws -> ExactSearchResponse {
+    func exactSearch(keyword: String, pageSize: Int, pageNum: Int, provinceCode: Int, cityCode: Int) async throws -> ExactSearchResponse {
         return try await Request()
             .with(\.path, setTo: "/data/rps/dcdata/getCompoundByComName")
             .with(\.method, setTo: .GET)
             .with(\.query, setTo: [
                 "fvCompoundName": keyword,
                 "pageSize": "\(pageSize)",
-                "pageNum": "\(pageNum)"
+                "pageNum": "\(pageNum)",
+                "fiProvinceCode": "\(provinceCode)",
+                "fiCityCode": "\(cityCode)"
             ])
 //            .with(\.standaloneResponse, setTo: standaloneResponse(ExactSearchResponse(records: [NetworkSearchResult.mock])))
             .with(\.standaloneResponse, setTo: standaloneResponse(ExactSearchResponse(

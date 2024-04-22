@@ -307,3 +307,63 @@ private struct AreaListView: View {
         treeType: .system
     )
 }
+
+//MARK: - AreaPickerForSearch
+
+struct UserAreaPicker: View {
+    @EnvironmentObject private var areaTreeService: AreaTreeService
+    @EnvironmentObject private var accountService: AccountService
+    
+    @State private var areaTreeData = AreaTreeData.empty
+
+    var body: some View {
+        HStack {
+            if areaTreeData.isEmpty {
+                Text("请选择省市")
+            } else {
+                HStack {
+                    Text(areaTreeData.provinceName)
+                    Text(areaTreeData.cityName)
+                }
+            }
+            
+            Image.index.mapIcon
+        }
+        .plugUserAreaPicker(
+            provinceCode: $areaTreeData.provinceCode,
+            provinceName: $areaTreeData.provinceName,
+            cityCode: $areaTreeData.cityCode,
+            cityName: $areaTreeData.cityName,
+            areaCode: $areaTreeData.areaCode,
+            areaName: $areaTreeData.areaName,
+            unitId: accountService.account?.unitId ?? 0
+        )
+        .onAppear {
+            Task {
+                guard let unitId = accountService.account?.unitId else {
+                    Box.sendError("用户资料错误")
+                    return
+                }
+                
+                await areaTreeService.loadUserAreaTree(with: unitId)
+                guard let tree = areaTreeService.userAreaTree else { return }
+                
+                areaTreeData.provinceCode = tree.provinceCode ?? 0
+                areaTreeData.cityCode = tree.cityCode ?? 0
+                if areaTreeData.provinceCode != 0 {
+                    let pCode = "\(areaTreeData.provinceCode)"
+                    areaTreeData.provinceName = tree.name(by: [pCode])
+                    if areaTreeData.cityCode != 0 {
+                        let cCode = "\(areaTreeData.cityCode)"
+                        areaTreeData.cityName = tree.name(by: [pCode, cCode])
+                    }
+                }
+            }
+        }
+        .onChange(of: areaTreeData) { _ in
+            areaTreeService.setCode(
+                province: areaTreeData.provinceCode,
+                city: areaTreeData.cityCode)
+        }
+    }
+}
